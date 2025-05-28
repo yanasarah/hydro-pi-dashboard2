@@ -17,9 +17,7 @@ if uploaded_file:
 
     time_col = df.columns[0]
     sensor_cols = df.columns[1:]
-
-    # Dashboard Tabs
-    tabs = st.tabs(sensor_cols)
+    tabs = st.tabs(sensor_cols.tolist())
 
     for i, sensor in enumerate(sensor_cols):
         with tabs[i]:
@@ -36,6 +34,5 @@ if uploaded_file:
             st.metric("Average", round(df[sensor].mean(), 2))
             st.metric("Max", round(df[sensor].max(), 2))
             st.metric("Min", round(df[sensor].min(), 2))
-
 else:
     st.info("Upload a CSV file to begin. Example format: Time, Temperature, pH, TDS, Light, WaterLevel")
