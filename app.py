@@ -1,25 +1,28 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
-st.title("📈 Plant Sensor Dashboard")
+st.set_page_config(page_title="Hydro-Pi Dashboard", layout="wide")
 
-# File uploader
-uploaded_file = st.file_uploader("Upload your sensor CSV file", type="csv")
+st.title("🌿 Hydro-Pi Smart Plant Dashboard")
+
+uploaded_file = st.file_uploader("📤 Upload your sensor CSV file", type="csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    st.subheader("Data Preview")
-    st.write(df.head())
+    st.subheader("🔍 Data Preview")
+    st.dataframe(df, use_container_width=True)
 
-    # Select a column to plot
-    sensor_column = st.selectbox("Choose a sensor column to plot", df.columns[1:])
+    time_column = df.columns[0]
+    sensor_options = df.columns[1:]
 
-    # Plot
-    st.subheader(f"Line Chart for: {sensor_column}")
-    fig, ax = plt.subplots()
-    ax.plot(df[df.columns[0]], df[sensor_column], marker='o')
-    ax.set_xlabel(df.columns[0])
-    ax.set_ylabel(sensor_column)
-    st.pyplot(fig)
+    sensor = st.selectbox("📊 Choose a sensor to visualize", sensor_options)
+
+    fig = px.line(df, x=time_column, y=sensor, markers=True,
+                  title=f"{sensor} Over Time",
+                  labels={time_column: "Timestamp", sensor: sensor})
+
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.info("Please upload a CSV file to begin.")
