@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.express as px
 import datetime
 
-st.set_page_config(layout="wide")
-
 # ----- CONFIGURE PAGE -----
 st.set_page_config(page_title="Hydro-Pi Dashboard", layout="wide")
 
