@@ -46,7 +46,7 @@ elif selected == "project":
             df['timestamp'] = pd.to_datetime(df['timestamp'])
 
         # For each sensor column, plot a chart if it exists
-        sensor_columns = ['LDR', 'pH', 'TDS', 'Temperature', 'Distance']
+        sensor_columns = ['LED Relay Status', 'pH', 'TDS', 'Temperature (Â°C)', 'Distance (cm)']
 
         for sensor in sensor_columns:
             if sensor in df.columns:
