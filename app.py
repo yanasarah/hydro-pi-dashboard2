@@ -1,15 +1,16 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 
-st.set_page_config(page_title="Hydro-Pi Home", layout="wide")
-st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
+with st.sidebar:
+selected = option_menu(
+  menu_title="MAIN MENU",
+  options=["home","project","contact"],
+)
+if selected == "home":
+  st.title(f"🌱 Welcome to Hydro-Pi Smart Farming Dashboard { selected }")
+if selected == "project":
+  st.title(f"🌱 this is project { selected }")
+  if selected == "contact":
+  st.title(f"🌱this is contact { selected }")
+  
 
-st.markdown("""
-This is the **home page** of your smart plant monitoring system.
-
-Use the sidebar to navigate:
-- 📈 Sensor Charts
-- 🔮 Prediction
-- ℹ️ About
-
-Upload data and start visualizing!
-""")
