@@ -15,7 +15,8 @@ data = {
     "LED Relay Status": np.random.choice([0, 1], size=30)
 }
 
-df = pd.DataFrame(data)
-csv_path = "/mnt/data/hydro_pi_sample.csv"
-df.to_csv(csv_path, index=False)
-csv_path
+uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.dataframe(df)
+
