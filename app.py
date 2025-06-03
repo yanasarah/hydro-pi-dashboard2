@@ -22,18 +22,3 @@ with st.sidebar:
         default_index=0
     )
 
-
-if selected == "Home":
-    # Home page content
-
-elif selected == "Environment Monitor":
-    # Sensor charts
-
-elif selected == "Growth Consistency":
-    # Growth trend analysis
-
-elif selected == "Insights":
-    # Suggestions / feature importance
-
-elif selected == "Contact":
-    # Contact/help info
