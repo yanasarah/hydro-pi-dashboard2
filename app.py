@@ -26,48 +26,49 @@ if selected == "home":
     uploaded_file = st.file_uploader("📂 Upload CSV file", type=["csv"])
 
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.subheader("📄 Raw Uploaded Data")
-        st.dataframe(df)
+    df = pd.read_csv(uploaded_file)
+    st.subheader("📄 Raw Uploaded Data")
+    st.dataframe(df)
 
-        if 'plant_growth' not in df.columns:
-            st.error("Your CSV must include a column named 'plant_growth' for prediction.")
-        else:
-            # Features and labels
-            X = df.drop(columns=['plant_growth'])
-            y = df['plant_growth']
+    if 'plant_growth' not in df.columns:
+        st.error("Your CSV must include a column named 'plant_growth' for prediction.")
+    else:
+        # Drop target and select only numeric features
+        X = df.drop(columns=['plant_growth'])
+        X = X.select_dtypes(include=['float64', 'int64'])
+        y = df['plant_growth']
 
-            # Preprocessing: impute + scale
-            imputer = SimpleImputer(strategy='mean')
-            X_imputed = imputer.fit_transform(X)
+        # Preprocessing: impute + scale
+        imputer = SimpleImputer(strategy='mean')
+        X_imputed = imputer.fit_transform(X)
 
-            scaler = StandardScaler()
-            X_scaled = scaler.fit_transform(X_imputed)
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X_imputed)
 
-            # Train/test split
-            X_train, X_test, y_train, y_test = train_test_split(
-                X_scaled, y, test_size=0.2, random_state=42
-            )
+        # Train/test split
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_scaled, y, test_size=0.2, random_state=42
+        )
 
-            # Train model
-            model = RandomForestRegressor()
-            model.fit(X_train, y_train)
+        # Train model
+        model = RandomForestRegressor()
+        model.fit(X_train, y_train)
 
-            # Predict and evaluate
-            predictions = model.predict(X_test)
-            mse = mean_squared_error(y_test, predictions)
-            r2 = r2_score(y_test, predictions)
+        # Predict and evaluate
+        predictions = model.predict(X_test)
+        mse = mean_squared_error(y_test, predictions)
+        r2 = r2_score(y_test, predictions)
 
-            st.subheader("📈 Predicted vs Actual Plant Growth")
-            results = pd.DataFrame({'Actual': y_test.values, 'Predicted': predictions})
-            st.dataframe(results)
+        st.subheader("📈 Predicted vs Actual Plant Growth")
+        results = pd.DataFrame({'Actual': y_test.values, 'Predicted': predictions})
+        st.dataframe(results)
 
-            # Optional plot
-            fig = px.line(results, y=['Actual', 'Predicted'], title="Growth Trend")
-            st.plotly_chart(fig)
+        fig = px.line(results, y=['Actual', 'Predicted'], title="Growth Trend")
+        st.plotly_chart(fig)
 
-            st.markdown(f"✅ **R² Score:** `{r2:.2f}`")
-            st.markdown(f"📉 **Mean Squared Error:** `{mse:.2f}`")
+        st.markdown(f"✅ **R² Score:** `{r2:.2f}`")
+        st.markdown(f"📉 **Mean Squared Error:** `{mse:.2f}`")
+
 
 # ====================== PROJECT PAGE ======================
 elif selected == "project":
