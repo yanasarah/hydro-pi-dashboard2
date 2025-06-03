@@ -1,5 +1,10 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
 
 # Set Streamlit page config
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
