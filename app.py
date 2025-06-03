@@ -48,7 +48,10 @@ if selected == "Home":
                 st.stop()
 
         # Drop non-numeric or unused columns if any
-        X = df.drop(columns=['plant_growth'])
+       # Drop 'plant_growth' and non-numeric columns (like datetime)
+X = df.drop(columns=['plant_growth'])
+X = X.select_dtypes(include=['float64', 'int64'])
+
         y = df['plant_growth']
 
         # Impute and scale
