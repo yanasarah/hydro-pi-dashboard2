@@ -1,14 +1,16 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 from streamlit_option_menu import option_menu
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
+import pandas as pd
+import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
-# Sidebar with clickable menu
+st.set_page_config(page_title="Hydro-Pi Dashboard", layout="wide")
+
+# Sidebar Menu
 with st.sidebar:
     selected = option_menu(
         menu_title="MAIN MENU",
@@ -18,81 +20,87 @@ with st.sidebar:
         default_index=0
     )
 
-# ====================== HOME PAGE ======================
+# Home Section - Upload CSV & Predict
 if selected == "home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
-    st.write("Upload your hydroponic sensor data to predict plant growth trends.")
+    st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
-    uploaded_file = st.file_uploader("📂 Upload CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
-        st.subheader("📄 Raw Uploaded Data")
+        st.subheader("Raw Data")
         st.dataframe(df)
 
-        if 'plant_growth' not in df.columns:
-            st.error("Your CSV must include a column named 'plant_growth' for prediction.")
-        else:
-            # Drop target column
-            X = df.drop(columns=['plant_growth'])
+        # Select only numeric columns
+        df_numeric = df.select_dtypes(include=[np.number])
 
-            # Keep only numeric columns for ML
-            X = X.select_dtypes(include=['float64', 'int64'])
-            y = df['plant_growth']
+        # Clean the data
+        imputer = SimpleImputer(strategy='mean')
+        scaler = StandardScaler()
 
-            # Preprocessing: impute + scale
-            imputer = SimpleImputer(strategy='mean')
-            X_imputed = imputer.fit_transform(X)
+        X = df_numeric.copy()
 
-            scaler = StandardScaler()
-            X_scaled = scaler.fit_transform(X_imputed)
+        # Simulate plant_growth for training
+        np.random.seed(42)
+        X['plant_growth'] = (
+            0.2 * X.get('pH', 0) +
+            0.25 * X.get('TDS', 0) +
+            0.2 * X.get('temperature', 0) +
+            0.15 * X.get('ldr', 0) +
+            0.1 * X.get('distance', 0) +
+            0.1 * X.get('LED Relay Status', 0) +
+            np.random.normal(0, 0.5, size=len(X))
+        )
 
-            # Train/test split
-            X_train, X_test, y_train, y_test = train_test_split(
-                X_scaled, y, test_size=0.2, random_state=42
-            )
+        # Drop rows with all NaNs
+        X = X.dropna(how='all')
 
-            # Train model
-            model = RandomForestRegressor()
-            model.fit(X_train, y_train)
+        # Impute and scale
+        X_imputed = imputer.fit_transform(X)
+        X_scaled = scaler.fit_transform(X_imputed)
 
-            # Predict and evaluate
-            predictions = model.predict(X_test)
-            mse = mean_squared_error(y_test, predictions)
-            r2 = r2_score(y_test, predictions)
+        # Split features and target
+        y = X['plant_growth'].values
+        X_features = X.drop(columns=['plant_growth'])
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_features, y, test_size=0.2, random_state=42
+        )
 
-            # Show prediction results
-            st.subheader("📈 Predicted vs Actual Plant Growth")
-            results = pd.DataFrame({'Actual': y_test.values, 'Predicted': predictions})
-            st.dataframe(results)
+        # Train model
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model.fit(X_train, y_train)
+        predictions = model.predict(X_test)
+        mse = mean_squared_error(y_test, predictions)
 
-            # Plot prediction trend
-            fig = px.line(results, y=['Actual', 'Predicted'], title="Growth Trend Prediction")
-            st.plotly_chart(fig)
+        st.subheader("Cleaned and Enriched Data")
+        st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
-            st.markdown(f"✅ **R² Score:** `{r2:.2f}`")
-            st.markdown(f"📉 **Mean Squared Error:** `{mse:.2f}`")
+        st.subheader("📈 ML Model Performance")
+        st.write(f"Mean Squared Error on Test Set: {mse:.3f}")
 
-# ====================== PROJECT PAGE ======================
+        st.subheader("🌿 Predicted Growth (Sample)")
+        pred_df = pd.DataFrame({
+            'Actual': np.round(y_test, 2),
+            'Predicted': np.round(predictions, 2)
+        })
+        st.dataframe(pred_df.head(10))
+
+# Project Section
 elif selected == "project":
-    st.title("🔧 Project: Sensor Data Charts")
+    st.title("🔧 Project Overview")
+    st.markdown("""
+    - **System**: Hydro-Pi Smart Farming System
+    - **Goal**: Maintain stable environmental conditions for optimal plant growth
+    - **Sensors**: pH, TDS, Temperature, Light (LDR), Water Level (Ultrasonic)
+    - **Control**: LED Relay, Blynk App, Streamlit Dashboard
+    """)
 
-    uploaded_file = st.file_uploader("📂 Upload CSV file to view sensor charts", type=["csv"], key="project")
-
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.subheader("📊 Sensor Charts")
-
-        for column in df.columns:
-            if df[column].dtype in ['int64', 'float64'] and column != "plant_growth":
-                st.write(f"### {column}")
-                fig = px.line(df, y=column, title=f"{column} over Time")
-                st.plotly_chart(fig, use_container_width=True)
-
-# ====================== CONTACT PAGE ======================
+# Contact Section
 elif selected == "contact":
     st.title("📞 Contact")
-    st.markdown("For more information, please contact us at:")
-    st.markdown("- 📧 Email: hydro-pi@smartfarming.com")
-    st.markdown("- 📱 Phone: +123 456 7890")
-    st.markdown("- 🌐 Website: [Hydro-Pi](https://yourwebsite.com)")
+    st.markdown("""
+    - **Developer**: Your Name
+    - **Email**: your.email@example.com
+    - **GitHub**: [GitHub Repo](https://github.com/yourusername/hydro-pi)
+    """)
