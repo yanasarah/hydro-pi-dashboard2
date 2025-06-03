@@ -1,51 +1,47 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
+import pandas as pd
+import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
-from streamlit_option_menu import option_menu
-import pandas as pd
-import numpy as np
+from sklearn.metrics import mean_squared_error
 
-
-# Set Streamlit page config
+# Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
-# Sidebar navigation menu
+# Sidebar Navigation
 with st.sidebar:
     selected = option_menu(
-        menu_title="🌿 Hydro-Pi Dashboard",  # Sidebar title
+        menu_title="🌿 Hydro-Pi Dashboard",
         options=["Home", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
         icons=["house", "bar-chart", "activity", "lightbulb", "envelope"],
         menu_icon="cast",
         default_index=0
     )
 
-    
-
-# Home Section - Upload CSV & Predict
+# HOME SECTION
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
-    if uploaded_file is not None:
+    if uploaded_file:
+        st.session_state.uploaded_file = uploaded_file  # Save file
         df = pd.read_csv(uploaded_file)
-        st.subheader("Raw Data")
+        st.session_state.df = df  # Save DataFrame to session
+
+        st.subheader("📂 Raw Data")
         st.dataframe(df)
 
-        # Select only numeric columns
+        # Only numeric columns
         df_numeric = df.select_dtypes(include=[np.number])
 
-        # Clean the data
-        imputer = SimpleImputer(strategy='mean')
-        scaler = StandardScaler()
-
+        # Prepare and simulate plant_growth
         X = df_numeric.copy()
 
-        # Simulate plant_growth for training
         np.random.seed(42)
         X['plant_growth'] = (
             0.2 * X.get('pH', 0) +
@@ -57,32 +53,34 @@ if selected == "Home":
             np.random.normal(0, 0.5, size=len(X))
         )
 
-        # Drop rows with all NaNs
         X = X.dropna(how='all')
 
-        # Impute and scale
+        # ML Preprocessing
+        imputer = SimpleImputer(strategy='mean')
+        scaler = StandardScaler()
+
         X_imputed = imputer.fit_transform(X)
         X_scaled = scaler.fit_transform(X_imputed)
 
-        # Split features and target
         y = X['plant_growth'].values
         X_features = X.drop(columns=['plant_growth'])
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_features, y, test_size=0.2, random_state=42
-        )
+        X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
 
-        # Train model
+        # Train RandomForest
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X_train, y_train)
         predictions = model.predict(X_test)
         mse = mean_squared_error(y_test, predictions)
 
-        st.subheader("Cleaned and Enriched Data")
+        # Display Cleaned Data
+        st.subheader("🧹 Cleaned & Enriched Data")
         st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
+        # ML Performance
         st.subheader("📈 ML Model Performance")
-        st.write(f"Mean Squared Error on Test Set: {mse:.3f}")
+        st.write(f"Mean Squared Error: {mse:.3f}")
 
+        # Sample Predictions
         st.subheader("🌿 Predicted Growth (Sample)")
         pred_df = pd.DataFrame({
             'Actual': np.round(y_test, 2),
@@ -90,16 +88,41 @@ if selected == "Home":
         })
         st.dataframe(pred_df.head(10))
 
-# Environment Monitor Section
+
+# ENVIRONMENT MONITOR SECTION
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring")
+    
+    if 'df' in st.session_state:
+        df = st.session_state.df
+        st.markdown("Visualizing trends from your uploaded data.")
 
-    if uploaded_file is not None:
-        st.markdown("Visualizing sensor trends from your uploaded data.")
         for col in ['pH', 'TDS', 'Temperature', 'LDR', 'Distance (cm)']:
             if col in df.columns:
                 st.subheader(f"{col} Trend")
                 st.line_chart(df[col])
     else:
         st.warning("⚠️ Please upload a CSV file from the Home section first.")
+
+
+# GROWTH CONSISTENCY SECTION (Placeholder for now)
+elif selected == "Growth Consistency":
+    st.title("🌾 Growth Consistency Analysis")
+    st.info("Coming soon: Analysis of environmental stability vs. plant growth consistency.")
+
+
+# INSIGHTS SECTION (Placeholder)
+elif selected == "Insights":
+    st.title("💡 Insights & Recommendations")
+    st.info("Coming soon: Smart suggestions based on plant conditions.")
+
+
+# CONTACT SECTION
+elif selected == "Contact":
+    st.title("📞 Contact Us")
+    st.markdown("""
+        **Hydro-Pi Team**  
+        📧 Email: support@hydro-pi.local  
+        🌍 Website: [www.hydro-pi.local](#)
+    """)
 
