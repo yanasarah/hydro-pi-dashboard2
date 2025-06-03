@@ -1,10 +1,19 @@
-import pandas as pd
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
 import streamlit as st
+from streamlit_option_menu import option_menu
 
+# Set Streamlit page config
+st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
+
+# Sidebar navigation menu
+with st.sidebar:
+    selected = option_menu(
+        menu_title="🌿 Hydro-Pi Dashboard",  # Sidebar title
+        options=["Home", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
+        icons=["house", "bar-chart", "activity", "lightbulb", "envelope"],
+        menu_icon="cast",
+        default_index=0
+    )
+#=======FOR HOME================
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
     st.write("Upload your sensor data CSV to view predictions of plant growth.")
