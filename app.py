@@ -89,3 +89,17 @@ if selected == "Home":
             'Predicted': np.round(predictions, 2)
         })
         st.dataframe(pred_df.head(10))
+
+# Environment Monitor Section
+elif selected == "Environment Monitor":
+    st.title("📊 Environmental Monitoring")
+
+    if uploaded_file is not None:
+        st.markdown("Visualizing sensor trends from your uploaded data.")
+        for col in ['pH', 'TDS', 'Temperature', 'LDR', 'Distance (cm)']:
+            if col in df.columns:
+                st.subheader(f"{col} Trend")
+                st.line_chart(df[col])
+    else:
+        st.warning("⚠️ Please upload a CSV file from the Home section first.")
+
