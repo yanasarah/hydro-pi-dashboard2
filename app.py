@@ -21,66 +21,71 @@ with st.sidebar:
         menu_icon="cast",
         default_index=0
     )
-#=======FOR HOME================
+
+    )
+
+# Home Section - Upload CSV & Predict
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
-    st.write("Upload your sensor data CSV to view predictions of plant growth.")
+    st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
-    uploaded_file = st.file_uploader("📁 Upload CSV file", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
     if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
+        df = pd.read_csv(uploaded_file)
+        st.subheader("Raw Data")
+        st.dataframe(df)
 
-    # Show raw data
-    st.subheader("Raw Uploaded Data")
-    st.dataframe(df)
+        # Select only numeric columns
+        df_numeric = df.select_dtypes(include=[np.number])
 
-    # Drop target column and filter non-numeric columns
-    X = df.drop(columns=['plant_growth'])
-    non_numeric_cols = X.select_dtypes(exclude=['number']).columns.tolist()
-    if non_numeric_cols:
-        st.warning(f"⚠️ The following non-numeric columns were excluded from ML input: {non_numeric_cols}")
-        X = X.select_dtypes(include=['number'])
-
-    # Target column
-    y = df['plant_growth']  # ← This line must be aligned with the others above
-
-        # Impute and scale
-        imputer = SimpleImputer(strategy="mean")
+        # Clean the data
+        imputer = SimpleImputer(strategy='mean')
         scaler = StandardScaler()
 
-        try:
-            X_imputed = imputer.fit_transform(X)
-            X_scaled = scaler.fit_transform(X_imputed)
-        except Exception as e:
-            st.error(f"Preprocessing error: {e}")
-            st.stop()
+        X = df_numeric.copy()
 
-        # Train-test split
-        X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+        # Simulate plant_growth for training
+        np.random.seed(42)
+        X['plant_growth'] = (
+            0.2 * X.get('pH', 0) +
+            0.25 * X.get('TDS', 0) +
+            0.2 * X.get('temperature', 0) +
+            0.15 * X.get('ldr', 0) +
+            0.1 * X.get('distance', 0) +
+            0.1 * X.get('LED Relay Status', 0) +
+            np.random.normal(0, 0.5, size=len(X))
+        )
+
+        # Drop rows with all NaNs
+        X = X.dropna(how='all')
+
+        # Impute and scale
+        X_imputed = imputer.fit_transform(X)
+        X_scaled = scaler.fit_transform(X_imputed)
+
+        # Split features and target
+        y = X['plant_growth'].values
+        X_features = X.drop(columns=['plant_growth'])
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_features, y, test_size=0.2, random_state=42
+        )
 
         # Train model
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X_train, y_train)
+        predictions = model.predict(X_test)
+        mse = mean_squared_error(y_test, predictions)
 
-        # Predict
-        y_pred = model.predict(X_test)
+        st.subheader("Cleaned and Enriched Data")
+        st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
-        st.subheader("📊 Machine Learning Prediction Results")
-        results_df = pd.DataFrame({
-            "Actual Growth": y_test.values,
-            "Predicted Growth": y_pred
+        st.subheader("📈 ML Model Performance")
+        st.write(f"Mean Squared Error on Test Set: {mse:.3f}")
+
+        st.subheader("🌿 Predicted Growth (Sample)")
+        pred_df = pd.DataFrame({
+            'Actual': np.round(y_test, 2),
+            'Predicted': np.round(predictions, 2)
         })
-        st.dataframe(results_df)
-
-        # Display cleaned input table
-        st.subheader("✅ Cleaned Data with Simulated Growth")
-        df['predicted_growth'] = model.predict(scaler.transform(imputer.transform(X)))
-        st.dataframe(df)
-
-        # Optional: Show model performance
-        from sklearn.metrics import mean_squared_error, r2_score
-        mse = mean_squared_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-        st.metric("R² Score", round(r2, 3))
-        st.metric("Mean Squared Error", round(mse, 3))
+        st.dataframe(pred_df.head(10))
