@@ -29,40 +29,21 @@ if selected == "Home":
     uploaded_file = st.file_uploader("📁 Upload CSV file", type=["csv"])
 
     if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.subheader("📄 Raw Uploaded Data")
-        st.dataframe(df)
+    df = pd.read_csv(uploaded_file)
 
-        # Simulate plant_growth (if not already there)
-        if 'plant_growth' not in df.columns:
-            try:
-                df['plant_growth'] = (
-                    0.3 * df['temperature'] +
-                    0.2 * df['tds'] +
-                    0.2 * df['ldr'] -
-                    0.2 * abs(df['ph'] - 6.5) +  # Optimal pH is ~6.5
-                    0.1 * df['distance']
-                )
-            except Exception as e:
-                st.error(f"Missing expected sensor columns. Please check your file. Error: {e}")
-                st.stop()
+    # Show raw data
+    st.subheader("Raw Uploaded Data")
+    st.dataframe(df)
 
-        # Drop non-numeric or unused columns if any
-       # Drop 'plant_growth' and non-numeric columns (like datetime)
-# Drop 'plant_growth' to get features
-X = df.drop(columns=['plant_growth'])
+    # Drop target column and filter non-numeric columns
+    X = df.drop(columns=['plant_growth'])
+    non_numeric_cols = X.select_dtypes(exclude=['number']).columns.tolist()
+    if non_numeric_cols:
+        st.warning(f"⚠️ The following non-numeric columns were excluded from ML input: {non_numeric_cols}")
+        X = X.select_dtypes(include=['number'])
 
-# Check and drop non-numeric columns
-non_numeric_cols = X.select_dtypes(exclude=['number']).columns.tolist()
-
-if non_numeric_cols:
-    st.warning(f"⚠️ The following non-numeric columns were excluded from ML input: {non_numeric_cols}")
-    X = X.select_dtypes(include=['number'])
-
-# Proceed with ML using only numeric X
-
-
-        y = df['plant_growth']
+    # Target column
+    y = df['plant_growth']  # ← This line must be aligned with the others above
 
         # Impute and scale
         imputer = SimpleImputer(strategy="mean")
