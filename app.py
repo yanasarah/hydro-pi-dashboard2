@@ -22,7 +22,7 @@ with st.sidebar:
         default_index=0
     )
 
-    )
+    
 
 # Home Section - Upload CSV & Predict
 if selected == "Home":
