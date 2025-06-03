@@ -49,8 +49,18 @@ if selected == "Home":
 
         # Drop non-numeric or unused columns if any
        # Drop 'plant_growth' and non-numeric columns (like datetime)
+# Drop 'plant_growth' to get features
 X = df.drop(columns=['plant_growth'])
-X = X.select_dtypes(include=['float64', 'int64'])
+
+# Check and drop non-numeric columns
+non_numeric_cols = X.select_dtypes(exclude=['number']).columns.tolist()
+
+if non_numeric_cols:
+    st.warning(f"⚠️ The following non-numeric columns were excluded from ML input: {non_numeric_cols}")
+    X = X.select_dtypes(include=['number'])
+
+# Proceed with ML using only numeric X
+
 
         y = df['plant_growth']
 
