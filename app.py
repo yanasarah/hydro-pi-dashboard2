@@ -126,8 +126,15 @@ elif selected == "Growth Consistency":
 
         st.subheader("📊 Environmental Stability (Standard Deviation)")
         env_cols = ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']
-        env_stability = df_numeric[env_cols].std().round(2)
-        st.write(env_stability)
+        existing_env_cols = [col for col in env_cols if col in df_numeric.columns]
+missing_cols = [col for col in env_cols if col not in df_numeric.columns]
+
+if missing_cols:
+    st.warning(f"⚠️ These columns are missing from your data: {', '.join(missing_cols)}")
+
+env_stability = df_numeric[existing_env_cols].std().round(2)
+st.write(env_stability)
+
 
         st.subheader("🌿 Growth Consistency")
         growth_std = df_numeric['plant_growth'].std()
