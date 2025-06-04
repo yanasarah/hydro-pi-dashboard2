@@ -118,15 +118,15 @@ elif selected == "Growth Consistency":
         df_numeric['plant_growth'] = (
             0.2 * df_numeric.get('pH', 0) +
             0.25 * df_numeric.get('TDS', 0) +
-            0.2 * df_numeric.get('temperature', 0) +
-            0.15 * df_numeric.get('ldr', 0) +
-            0.1 * df_numeric.get('distance', 0) +
+            0.2 * df_numeric.get('Temperature', 0) +
+            0.15 * df_numeric.get('LDR', 0) +
+            0.1 * df_numeric.get('Distance (cm)', 0) +
             0.1 * df_numeric.get('LED Relay Status', 0) +
             np.random.normal(0, 0.5, size=len(df_numeric))
         )
 
         st.subheader("📊 Environmental Stability (Standard Deviation)")
-        env_cols = ['pH', 'TDS', 'temperature', 'ldr', 'distance']
+        env_cols = ['pH', 'TDS', 'Temperature', 'LDR', 'Distance (cm)']
         env_stability = df_numeric[env_cols].std().round(2)
         st.write(env_stability)
 
