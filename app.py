@@ -47,9 +47,9 @@ if selected == "Home":
             0.2 * X.get('pH', 0) +
             0.25 * X.get('TDS', 0) +
             0.2 * X.get('Temperature', 0) +
-            0.15 * X.get('LDR', 0) +
+            
             0.1 * X.get('Distance (cm)', 0) +
-            0.1 * X.get('LED Relay Status', 0) +
+            0.1 * X.get('LED', 0) +
             np.random.normal(0, 0.5, size=len(X))
         )
 
@@ -97,7 +97,7 @@ elif selected == "Environment Monitor":
         df = st.session_state.df
         st.markdown("Visualizing trends from your uploaded data.")
 
-        for col in ['pH', 'TDS', 'Temperature', 'LDR', 'Distance (cm)']:
+        for col in ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']:
             if col in df.columns:
                 st.subheader(f"{col} Trend")
                 st.line_chart(df[col])
@@ -119,14 +119,13 @@ elif selected == "Growth Consistency":
             0.2 * df_numeric.get('pH', 0) +
             0.25 * df_numeric.get('TDS', 0) +
             0.2 * df_numeric.get('Temperature', 0) +
-            0.15 * df_numeric.get('LDR', 0) +
             0.1 * df_numeric.get('Distance (cm)', 0) +
-            0.1 * df_numeric.get('LED Relay Status', 0) +
+            0.1 * df_numeric.get('LED', 0) +
             np.random.normal(0, 0.5, size=len(df_numeric))
         )
 
         st.subheader("📊 Environmental Stability (Standard Deviation)")
-        env_cols = ['pH', 'TDS', 'Temperature', 'LDR', 'Distance (cm)']
+        env_cols = ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']
         env_stability = df_numeric[env_cols].std().round(2)
         st.write(env_stability)
 
