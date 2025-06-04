@@ -46,9 +46,9 @@ if selected == "Home":
         X['plant_growth'] = (
             0.2 * X.get('pH', 0) +
             0.25 * X.get('TDS', 0) +
-            0.2 * X.get('temperature', 0) +
-            0.15 * X.get('ldr', 0) +
-            0.1 * X.get('distance', 0) +
+            0.2 * X.get('Temperature', 0) +
+            0.15 * X.get('LDR', 0) +
+            0.1 * X.get('Distance (cm)', 0) +
             0.1 * X.get('LED Relay Status', 0) +
             np.random.normal(0, 0.5, size=len(X))
         )
