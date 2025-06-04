@@ -10,6 +10,7 @@ from sklearn.metrics import mean_squared_error
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
+
 #=================NAVIGATION==============================
 # Sidebar Navigation
 with st.sidebar:
@@ -20,8 +21,8 @@ with st.sidebar:
         menu_icon="cast",
         default_index=0
     )
+
 #=====================HOME=========================
-# HOME SECTION
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
@@ -29,9 +30,9 @@ if selected == "Home":
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
     if uploaded_file:
-        st.session_state.uploaded_file = uploaded_file  # Save file
+        st.session_state.uploaded_file = uploaded_file
         df = pd.read_csv(uploaded_file)
-        st.session_state.df = df  # Save DataFrame to session
+        st.session_state.df = df
 
         st.subheader("📂 Raw Data")
         st.dataframe(df)
@@ -47,7 +48,6 @@ if selected == "Home":
             0.2 * X.get('pH', 0) +
             0.25 * X.get('TDS', 0) +
             0.2 * X.get('Temperature', 0) +
-            
             0.1 * X.get('Distance (cm)', 0) +
             0.1 * X.get('LED', 0) +
             np.random.normal(0, 0.5, size=len(X))
@@ -88,8 +88,7 @@ if selected == "Home":
         })
         st.dataframe(pred_df.head(10))
 
-#=============BAHAGIAN ENVIRONMENT=============================
-# ENVIRONMENT MONITOR SECTION
+#=============ENVIRONMENT MONITOR===========================
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring")
     
@@ -104,8 +103,7 @@ elif selected == "Environment Monitor":
     else:
         st.warning("⚠️ Please upload a CSV file from the Home section first.")
 
-#===================SECTION GROWTH===============
-# GROWTH CONSISTENCY SECTION (Placeholder for now)
+#===================GROWTH CONSISTENCY=======================
 elif selected == "Growth Consistency":
     st.title("🌾 Growth Consistency Analysis")
 
@@ -127,42 +125,35 @@ elif selected == "Growth Consistency":
         st.subheader("📊 Environmental Stability (Standard Deviation)")
         env_cols = ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']
         existing_env_cols = [col for col in env_cols if col in df_numeric.columns]
-missing_cols = [col for col in env_cols if col not in df_numeric.columns]
+        missing_cols = [col for col in env_cols if col not in df_numeric.columns]
 
-if missing_cols:
-    st.warning(f"⚠️ These columns are missing from your data: {', '.join(missing_cols)}")
+        if missing_cols:
+            st.warning(f"⚠️ These columns are missing from your data: {', '.join(missing_cols)}")
 
-env_stability = df_numeric[existing_env_cols].std().round(2)
-st.write(env_stability)
-
+        env_stability = df_numeric[existing_env_cols].std().round(2)
+        st.write(env_stability)
 
         st.subheader("🌿 Growth Consistency")
         growth_std = df_numeric['plant_growth'].std()
         st.metric("Growth Std Deviation", f"{growth_std:.2f}")
 
-        # Alert based on threshold
         if growth_std > 1.5:
             st.warning("⚠️ High variability in plant growth. Consider stabilizing environmental conditions.")
         else:
             st.success("✅ Growth conditions are stable.")
 
-        # Line charts
         st.subheader("📈 Environmental Trends vs. Growth")
-        for col in env_cols:
-            if col in df_numeric.columns:
-                st.line_chart(df_numeric[[col, 'plant_growth']])
+        for col in existing_env_cols:
+            st.line_chart(df_numeric[[col, 'plant_growth']])
     else:
         st.warning("⚠️ Please upload a CSV file from the Home section first.")
 
-
-
-# INSIGHTS SECTION (Placeholder)
+#===================INSIGHTS===============================
 elif selected == "Insights":
     st.title("💡 Insights & Recommendations")
     st.info("Coming soon: Smart suggestions based on plant conditions.")
 
-
-# CONTACT SECTION
+#===================CONTACT===============================
 elif selected == "Contact":
     st.title("📞 Contact Us")
     st.markdown("""
@@ -170,4 +161,3 @@ elif selected == "Contact":
         📧 Email: support@hydro-pi.local  
         🌍 Website: [www.hydro-pi.local](#)
     """)
-
