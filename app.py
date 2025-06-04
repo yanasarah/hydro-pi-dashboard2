@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
-
+#=================NAVIGATION==============================
 # Sidebar Navigation
 with st.sidebar:
     selected = option_menu(
@@ -20,7 +20,7 @@ with st.sidebar:
         menu_icon="cast",
         default_index=0
     )
-
+#=====================HOME=========================
 # HOME SECTION
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
@@ -88,7 +88,7 @@ if selected == "Home":
         })
         st.dataframe(pred_df.head(10))
 
-
+#=============BAHAGIAN ENVIRONMENT=============================
 # ENVIRONMENT MONITOR SECTION
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring")
@@ -104,11 +104,50 @@ elif selected == "Environment Monitor":
     else:
         st.warning("⚠️ Please upload a CSV file from the Home section first.")
 
-
+#===================SECTION GROWTH===============
 # GROWTH CONSISTENCY SECTION (Placeholder for now)
 elif selected == "Growth Consistency":
     st.title("🌾 Growth Consistency Analysis")
-    st.info("Coming soon: Analysis of environmental stability vs. plant growth consistency.")
+
+    if 'df' in st.session_state:
+        df = st.session_state.df
+
+        # Recalculate simulated plant_growth
+        df_numeric = df.select_dtypes(include=[np.number]).copy()
+
+        df_numeric['plant_growth'] = (
+            0.2 * df_numeric.get('pH', 0) +
+            0.25 * df_numeric.get('TDS', 0) +
+            0.2 * df_numeric.get('temperature', 0) +
+            0.15 * df_numeric.get('ldr', 0) +
+            0.1 * df_numeric.get('distance', 0) +
+            0.1 * df_numeric.get('LED Relay Status', 0) +
+            np.random.normal(0, 0.5, size=len(df_numeric))
+        )
+
+        st.subheader("📊 Environmental Stability (Standard Deviation)")
+        env_cols = ['pH', 'TDS', 'temperature', 'ldr', 'distance']
+        env_stability = df_numeric[env_cols].std().round(2)
+        st.write(env_stability)
+
+        st.subheader("🌿 Growth Consistency")
+        growth_std = df_numeric['plant_growth'].std()
+        st.metric("Growth Std Deviation", f"{growth_std:.2f}")
+
+        # Alert based on threshold
+        if growth_std > 1.5:
+            st.warning("⚠️ High variability in plant growth. Consider stabilizing environmental conditions.")
+        else:
+            st.success("✅ Growth conditions are stable.")
+
+        # Line charts
+        st.subheader("📈 Environmental Trends vs. Growth")
+        for col in env_cols:
+            if col in df_numeric.columns:
+                st.line_chart(df_numeric[[col, 'plant_growth']])
+    else:
+        st.warning("⚠️ Please upload a CSV file from the Home section first.")
+
 
 
 # INSIGHTS SECTION (Placeholder)
