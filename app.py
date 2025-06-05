@@ -79,7 +79,7 @@ with st.sidebar:
 
 #=====================HOME=========================
 if selected == "Home":
-    st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
+    st.title("🌱 Welcome to Hydro-Pi Smart Farming         Dashboard")
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
