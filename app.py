@@ -11,42 +11,49 @@ from sklearn.metrics import mean_squared_error
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 #=============BACKGROUND , COLOUR FONT ==============
-# Custom styling: light background, green font, green sidebar
 st.markdown(
     """
     <style>
         /* Main app background and font color */
         .stApp {
-            background-color: #f5fff5; /* Light mint green */
-            color: #006400; /* Dark green font */
+            background-color: #f5fff5;  /* Light mint */
+            color: #006400;  /* Dark green text */
             font-family: 'Segoe UI', sans-serif;
         }
 
-        /* Override text color in widgets */
-        .stMarkdown, .stTextInput > div > input, .stTextArea > div > textarea,
-        .stDataFrame, .stMetric, .css-1cpxqw2 {
+        /* Universal text color override */
+        .css-10trblm, .css-qrbaxs, .css-1cpxqw2, .stText, .stMarkdown, .stDataFrame, .stMetric {
             color: #006400 !important;
         }
 
-        /* Sidebar styling */
-        section[data-testid="stSidebar"] {
-            background-color: #d0f0c0; /* Light green sidebar */
-            color: #003300;
-        }
-
-        /* Sidebar text */
-        .sidebar-content, .css-1lcbmhc {
+        /* Sidebar area background */
+        [data-testid="stSidebar"] {
+            background-color: #c0ebc0 !important;  /* Light green */
             color: #003300 !important;
         }
 
-        /* Fix metric label text */
+        /* Sidebar text */
+        [data-testid="stSidebar"] .css-1v0mbdj, 
+        [data-testid="stSidebar"] .css-16idsys, 
+        [data-testid="stSidebar"] .css-1l02zno {
+            color: #003300 !important;
+        }
+
+        /* Metric label fix */
         .stMetric label {
             color: #006400;
+        }
+
+        /* Fix for Option Menu */
+        .css-1dp5vir, .css-1d391kg {
+            background-color: #c0ebc0 !important;
+            color: #003300 !important;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 #=================NAVIGATION==============================
