@@ -11,6 +11,10 @@ from sklearn.metrics import mean_squared_error
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 #=============BACKGROUND , COLOUR FONT ==============
+st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+""", unsafe_allow_html=True)
+
 st.markdown(
     """
     <style>
@@ -18,18 +22,20 @@ st.markdown(
         .stApp {
             background-color: #f5fff5;  /* Light mint */
             color: #006400;  /* Dark green text */
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Universal text color override */
         .css-10trblm, .css-qrbaxs, .css-1cpxqw2, .stText, .stMarkdown, .stDataFrame, .stMetric {
             color: #006400 !important;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Sidebar area background */
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;  /* Light green */
             color: #003300 !important;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Sidebar text */
@@ -37,22 +43,26 @@ st.markdown(
         [data-testid="stSidebar"] .css-16idsys, 
         [data-testid="stSidebar"] .css-1l02zno {
             color: #003300 !important;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Metric label fix */
         .stMetric label {
             color: #006400;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Fix for Option Menu */
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
+            font-family: 'Poppins', sans-serif;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 
