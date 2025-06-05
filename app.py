@@ -10,6 +10,17 @@ from sklearn.metrics import mean_squared_error
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
+# Custom background color using CSS
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background-color: #eafbea;  /* Light green */
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 #=================NAVIGATION==============================
 # Sidebar Navigation
