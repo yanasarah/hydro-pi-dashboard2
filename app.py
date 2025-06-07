@@ -14,6 +14,24 @@ st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
+/* Light theme DataFrame fix */
+.stDataFrame div[data-testid="stVerticalBlock"] {
+    background-color: #ffffff !important;
+    color: #006400 !important;
+}
+
+/* Table header */
+.stDataFrame thead tr th {
+    background-color: #e0f5e0 !important;  /* Light greenish header */
+    color: #006400 !important;
+}
+
+/* Table body */
+.stDataFrame tbody td {
+    background-color: #ffffff !important;
+    color: #006400 !important;
+}
+
 
 st.markdown(
     """
