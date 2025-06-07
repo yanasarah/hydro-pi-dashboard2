@@ -18,38 +18,48 @@ st.markdown("""
 st.markdown(
     """
     <style>
-        /* Main app background and universal font */
         .stApp {
-            background-color: #f5fff5;  /* Light mint */
+            background-color: #f5fff5;
             color: #006400 !important;
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Apply font color and family universally */
         html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
             color: #006400 !important;
             font-family: 'Poppins', sans-serif !important;
         }
 
-        /* Sidebar area background */
         [data-testid="stSidebar"] {
-            background-color: #c0ebc0 !important;  /* Light green */
+            background-color: #c0ebc0 !important;
         }
 
-        /* Sidebar text color */
         [data-testid="stSidebar"] * {
             color: #003300 !important;
         }
 
-        /* Metric label fix */
         .stMetric label {
             color: #006400 !important;
         }
 
-        /* Option Menu override */
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
+        }
+
+        /* Fix DataFrame styling */
+        .stDataFrame div[data-testid="stVerticalBlock"] {
+            background-color: #ffffff !important;
+            color: #006400 !important;
+        }
+
+        .stDataFrame thead tr th {
+            background-color: #e0f5e0 !important;
+            color: #006400 !important;
+        }
+
+        .stDataFrame tbody td {
+            background-color: #ffffff !important;
+            color: #006400 !important;
         }
     </style>
     """,
