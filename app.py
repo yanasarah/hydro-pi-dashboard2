@@ -25,33 +25,33 @@ st.markdown(
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Apply font and color to all base elements */
         html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
             color: #006400 !important;
             font-family: 'Poppins', sans-serif !important;
         }
 
-        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;
+            min-width: 200px !important;
+            max-width: 220px !important; /* ✅ NEW */
         }
 
         [data-testid="stSidebar"] * {
             color: #003300 !important;
         }
 
-        /* Metric label */
+        .css-1dp5vir, .css-1d391kg {
+            background-color: #c0ebc0 !important;
+            color: #003300 !important;
+            padding: 0.3rem 0.6rem !important;  /* ✅ NEW */
+            font-size: 14px !important;         /* ✅ NEW */
+            margin: 0 !important;               /* ✅ NEW */
+        }
+
         .stMetric label {
             color: #006400 !important;
         }
 
-        /* Option Menu fix (if used) */
-        .css-1dp5vir, .css-1d391kg {
-            background-color: #c0ebc0 !important;
-            color: #003300 !important;
-        }
-
-        /* DataFrame table styling */
         .stDataFrame div[data-testid="stVerticalBlock"] {
             background-color: #ffffff !important;
             color: #006400 !important;
@@ -70,6 +70,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 #=================NAVIGATION==============================
 # Sidebar Navigation
