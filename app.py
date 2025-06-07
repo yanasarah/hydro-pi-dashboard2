@@ -125,9 +125,14 @@ if selected == "Home":
     st.write("")  # spacing
 
     # File Upload
-
+# File Upload
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        st.success("✅ File uploaded successfully!")
+        st.dataframe(df)
+        
+    
     if uploaded_file:
         st.session_state.uploaded_file = uploaded_file
         df = pd.read_csv(uploaded_file)
