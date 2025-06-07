@@ -83,15 +83,16 @@ with st.sidebar:
     )
 
 #=====================HOME=========================
-from datetime import datetime  # Add this at the top
+from datetime import datetime  # Make sure this is at the top of your script
 
-# Inside your "Home" section:
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
 
-    # ✅ Date and Time Display
-    now = datetime.now().strftime("%Y-%m-%d ")
-    st.markdown(f"🕒 **Today Date :** {now}")
+    # ✅ Show only the current date
+    today = datetime.now().strftime("%Y-%m-%d")
+    st.markdown(f"📅 **Today’s Date:** {today}")
+
+
 
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
