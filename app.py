@@ -7,7 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from datetime import datetime
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
@@ -84,17 +83,17 @@ with st.sidebar:
     )
 
 #=====================HOME=========================
-#=====================HOME=========================
+from datetime import datetime  # Add this at the top
+
+# Inside your "Home" section:
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
 
-    # Display current date and time
+    # ✅ Date and Time Display
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-st.markdown(f"🕒 **Current Date & Time:** {now}")
-
+    st.markdown(f"🕒 **Current Date & Time:** {now}")
 
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
-
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
