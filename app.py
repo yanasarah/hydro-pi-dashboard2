@@ -89,8 +89,9 @@ if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
 
     # Display current date and time
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    st.markdown(f"🕒 **Current Date & Time:** {now}")
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+st.markdown(f"🕒 **Current Date & Time:** {now}")
+
 
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
