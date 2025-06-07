@@ -14,39 +14,24 @@ st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
-/* Light theme DataFrame fix */
-.stDataFrame div[data-testid="stVerticalBlock"] {
-    background-color: #ffffff !important;
-    color: #006400 !important;
-}
-
-/* Table header */
-.stDataFrame thead tr th {
-    background-color: #e0f5e0 !important;  /* Light greenish header */
-    color: #006400 !important;
-}
-
-/* Table body */
-.stDataFrame tbody td {
-    background-color: #ffffff !important;
-    color: #006400 !important;
-}
-
 
 st.markdown(
     """
     <style>
+        /* App background and text */
         .stApp {
             background-color: #f5fff5;
             color: #006400 !important;
             font-family: 'Poppins', sans-serif;
         }
 
+        /* Apply font and color to all base elements */
         html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
             color: #006400 !important;
             font-family: 'Poppins', sans-serif !important;
         }
 
+        /* Sidebar */
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;
         }
@@ -55,16 +40,18 @@ st.markdown(
             color: #003300 !important;
         }
 
+        /* Metric label */
         .stMetric label {
             color: #006400 !important;
         }
 
+        /* Option Menu fix (if used) */
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
         }
 
-        /* Fix DataFrame styling */
+        /* DataFrame table styling */
         .stDataFrame div[data-testid="stVerticalBlock"] {
             background-color: #ffffff !important;
             color: #006400 !important;
@@ -83,7 +70,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
 
 #=================NAVIGATION==============================
 # Sidebar Navigation
