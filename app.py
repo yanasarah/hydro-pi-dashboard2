@@ -85,39 +85,43 @@ with st.sidebar:
 #=====================HOME=========================
 from datetime import datetime
 
-# Stylized welcome
-st.markdown("""
-    <div style="padding: 2rem; background-color: #e6ffe6; border-radius: 20px; text-align: center;">
-        <h1 style="color: #2e8b57;">🌱 Welcome to Hydro-Pi Smart Farming Dashboard</h1>
-        <p style="color: #4d774e;">Grow your plants smarter. Monitor, predict and act 🌿</p>
-    </div>
-    <br>
-""", unsafe_allow_html=True)
-
-# Display date in a card
-today = datetime.now().strftime("%A, %d %B %Y")
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown(f"""
-        <div style="background-color: #d4edda; padding: 1rem; border-radius: 10px; box-shadow: 2px 2px 5px #aaa;">
-            <h4 style="color: #155724;">📅 Today</h4>
-            <p style="color: #155724; font-size: 18px;">{today}</p>
+ # Top Banner
+    st.markdown("""
+        <div style="
+            padding: 2rem;
+            background: linear-gradient(to right, #bdfcc9, #e0ffe0);
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;">
+            <h1 style="color: #2e8b57; font-family: Poppins;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
+            <p style="color: #4d774e; font-size: 18px;">Monitor. Predict. Grow smarter 🌿</p>
         </div>
+        <br>
     """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown(f"""
-        <div style="background-color: #fefefe; padding: 1rem; border-radius: 10px; box-shadow: 2px 2px 5px #aaa;">
-            <h4 style="color: #155724;">📤 Upload Sensor Data</h4>
-            <p style="color: #155724;">Upload your CSV file to view and predict growth trends.</p>
-        </div>
-    """, unsafe_allow_html=True)
+    # Date + Upload Section Cards
+    today = datetime.now().strftime("%A, %d %B %Y")
+    col1, col2 = st.columns(2)
 
+    with col1:
+        st.markdown(f"""
+            <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; text-align: center;
+                        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
+                <h4 style="color: #1e4620;">📅 Today</h4>
+                <p style="font-size: 20px; color: #1e4620;">{today}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
+    with col2:
+        st.markdown(f"""
+            <div style="background-color: #fefefe; padding: 1.5rem; border-radius: 15px; text-align: center;
+                        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
+                <h4 style="color: #1e4620;">📤 Upload Sensor Data</h4>
+                <p style="font-size: 16px; color: #1e4620;">Upload your CSV to view and predict plant growth trends.</p>
+            </div>
+        """, unsafe_allow_html=True)
 
-
-    st.markdown("Upload your environmental sensor data to predict plant growth trends.")
+    st.write("")  # spacing
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
