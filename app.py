@@ -85,6 +85,12 @@ with st.sidebar:
 #=====================HOME=========================
 if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming  Dashboard")
+    from datetime import datetime
+
+# Display current date and time
+now = datetime.now()
+st.markdown(f"🕒 **Current Time:** {now.strftime('%Y-%m-%d %H:%M:%S')}")
+
     st.markdown("Upload your environmental sensor data to predict plant growth trends.")
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
