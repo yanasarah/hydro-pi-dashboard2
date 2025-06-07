@@ -7,6 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from datetime import datetime
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
@@ -87,7 +88,7 @@ if selected == "Home":
     st.title("🌱 Welcome to Hydro-Pi Smart Farming  Dashboard")
     from datetime import datetime
 
-# Display current date and time
+#=============== Display current date and time===================
 now = datetime.now()
 st.markdown(f"🕒 **Current Time:** {now.strftime('%Y-%m-%d %H:%M:%S')}")
 
