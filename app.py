@@ -83,9 +83,8 @@ with st.sidebar:
     )
 
 #=====================HOME=========================
-from datetime import datetime
-
- # Top Banner
+if selected == "Home":
+    # Top Banner
     st.markdown("""
         <div style="
             padding: 2rem;
@@ -122,6 +121,8 @@ from datetime import datetime
         """, unsafe_allow_html=True)
 
     st.write("")  # spacing
+
+    # File Upload
 
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
 
