@@ -83,14 +83,37 @@ with st.sidebar:
     )
 
 #=====================HOME=========================
-from datetime import datetime  # Make sure this is at the top of your script
+from datetime import datetime
 
-if selected == "Home":
-    st.title("🌱 Welcome to Hydro-Pi Smart Farming Dashboard")
+# Stylized welcome
+st.markdown("""
+    <div style="padding: 2rem; background-color: #e6ffe6; border-radius: 20px; text-align: center;">
+        <h1 style="color: #2e8b57;">🌱 Welcome to Hydro-Pi Smart Farming Dashboard</h1>
+        <p style="color: #4d774e;">Grow your plants smarter. Monitor, predict and act 🌿</p>
+    </div>
+    <br>
+""", unsafe_allow_html=True)
 
-    # ✅ Show only the current date
-    today = datetime.now().strftime("%Y-%m-%d")
-    st.markdown(f"📅 **Today’s Date:** {today}")
+# Display date in a card
+today = datetime.now().strftime("%A, %d %B %Y")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown(f"""
+        <div style="background-color: #d4edda; padding: 1rem; border-radius: 10px; box-shadow: 2px 2px 5px #aaa;">
+            <h4 style="color: #155724;">📅 Today</h4>
+            <p style="color: #155724; font-size: 18px;">{today}</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown(f"""
+        <div style="background-color: #fefefe; padding: 1rem; border-radius: 10px; box-shadow: 2px 2px 5px #aaa;">
+            <h4 style="color: #155724;">📤 Upload Sensor Data</h4>
+            <p style="color: #155724;">Upload your CSV file to view and predict growth trends.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
 
 
 
