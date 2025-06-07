@@ -18,52 +18,43 @@ st.markdown("""
 st.markdown(
     """
     <style>
-        /* Main app background and font color */
+        /* Main app background and universal font */
         .stApp {
             background-color: #f5fff5;  /* Light mint */
-            color: #006400;  /* Dark green text */
+            color: #006400 !important;
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Universal text color override */
-        .css-10trblm, .css-qrbaxs, .css-1cpxqw2, .stText, .stMarkdown, .stDataFrame, .stMetric {
+        /* Apply font color and family universally */
+        html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
             color: #006400 !important;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Poppins', sans-serif !important;
         }
 
         /* Sidebar area background */
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;  /* Light green */
-            color: #003300 !important;
-            font-family: 'Poppins', sans-serif;
         }
 
-        /* Sidebar text */
-        [data-testid="stSidebar"] .css-1v0mbdj, 
-        [data-testid="stSidebar"] .css-16idsys, 
-        [data-testid="stSidebar"] .css-1l02zno {
+        /* Sidebar text color */
+        [data-testid="stSidebar"] * {
             color: #003300 !important;
-            font-family: 'Poppins', sans-serif;
         }
 
         /* Metric label fix */
         .stMetric label {
-            color: #006400;
-            font-family: 'Poppins', sans-serif;
+            color: #006400 !important;
         }
 
-        /* Fix for Option Menu */
+        /* Option Menu override */
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
-            font-family: 'Poppins', sans-serif;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
-
-
 
 
 #=================NAVIGATION==============================
