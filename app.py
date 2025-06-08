@@ -7,9 +7,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from datetime import datetime
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
+
 #=============BACKGROUND , COLOUR FONT ==============
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -18,82 +20,65 @@ st.markdown("""
 st.markdown(
     """
     <style>
-        /* App background and text */
         .stApp {
             background-color: #f5fff5;
             color: #006400 !important;
             font-family: 'Poppins', sans-serif;
         }
-
         html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
             color: #006400 !important;
             font-family: 'Poppins', sans-serif !important;
         }
-
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;
             min-width: 200px !important;
-            max-width: 220px !important; /* ✅ NEW */
+            max-width: 220px !important;
         }
-
         [data-testid="stSidebar"] * {
             color: #003300 !important;
         }
-
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
-            padding: 0.3rem 0.6rem !important;  /* ✅ NEW */
-            font-size: 14px !important;         /* ✅ NEW */
-            margin: 0 !important;               /* ✅ NEW */
+            padding: 0.3rem 0.6rem !important;
+            font-size: 14px !important;
+            margin: 0 !important;
         }
-
         .stMetric label {
             color: #006400 !important;
         }
-
         .stDataFrame div[data-testid="stVerticalBlock"] {
             background-color: #ffffff !important;
             color: #006400 !important;
         }
-
         .stDataFrame thead tr th {
             background-color: #e0f5e0 !important;
             color: #006400 !important;
         }
-
         .stDataFrame tbody td {
             background-color: #ffffff !important;
             color: #006400 !important;
         }
-        /* Force smaller sidebar width */
-section[data-testid="stSidebar"] > div {
-    width: 200px !important;
-    min-width: 200px !important;
-    max-width: 200px !important;
-    padding-right: 0.5rem !important;
-}
-
-/* Option menu padding/fix */
-.css-1dp5vir, .css-1d391kg {
-    padding: 0.3rem 0.6rem !important;
-    margin: 0 !important;
-    font-size: 14px !important;
-}
-
-/* Ensure main content doesn't shift weirdly */
-section[data-testid="stSidebar"] {
-    flex-shrink: 0 !important;
-}
-
+        section[data-testid="stSidebar"] > div {
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            padding-right: 0.5rem !important;
+        }
+        .css-1dp5vir, .css-1d391kg {
+            padding: 0.3rem 0.6rem !important;
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+        section[data-testid="stSidebar"] {
+            flex-shrink: 0 !important;
+        }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-
 #=================NAVIGATION==============================
-# Sidebar Navigation
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
@@ -104,10 +89,7 @@ with st.sidebar:
     )
 
 #=====================HOME=========================
-from datetime import datetime
-
 if selected == "Home":
-    # Top Banner
     st.markdown("""
         <div style="
             padding: 2rem;
@@ -121,40 +103,23 @@ if selected == "Home":
         <br>
     """, unsafe_allow_html=True)
 
-    # Date + Upload Section Cards
     today = datetime.now().strftime("%A, %d %B %Y")
-    col1, col2 = st.columns(2)
+    st.markdown(f"""
+        <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; text-align: center;
+                    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
+            <h4 style="color: #1e4620;">📅 Today</h4>
+            <p style="font-size: 20px; color: #1e4620;">{today}</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    with col1:
-        st.markdown(f"""
-            <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; text-align: center;
-                        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
-                <h4 style="color: #1e4620;">📅 Today</h4>
-                <p style="font-size: 20px; color: #1e4620;">{today}</p>
-            </div>
-        """, unsafe_allow_html=True)
+#==========Historical Data=============
+elif selected == "Historical Data":
+    st.markdown("""
+        <h1 style="color:#2e8b57; font-family: Poppins;">Welcome to the Hydro-Pi Smart Plant System</h1>
+    """, unsafe_allow_html=True)
 
-    with col2:
-        st.markdown(f"""
-            <div style="background-color: #fefefe; padding: 1.5rem; border-radius: 15px; text-align: center;
-                        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
-                <h4 style="color: #1e4620;">📤 Upload Sensor Data</h4>
-                <p style="font-size: 16px; color: #1e4620;">Upload your CSV to view and predict plant growth trends.</p>
-            </div>
-        """, unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("📤 Upload CSV Sensor Data", type=["csv"])
 
-    st.write("")  # spacing
-
-    # File Upload
-    st.markdown("Upload your environmental sensor data to predict plant growth trends.")
-    uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-
-  
-            # Proceed with your existing logic...
-            # (simulate plant_growth, preprocess, train model, etc.)
-
-        
-    
     if uploaded_file:
         st.session_state.uploaded_file = uploaded_file
         df = pd.read_csv(uploaded_file)
@@ -163,10 +128,7 @@ if selected == "Home":
         st.subheader("📂 Raw Data")
         st.dataframe(df)
 
-        # Only numeric columns
         df_numeric = df.select_dtypes(include=[np.number])
-
-        # Prepare and simulate plant_growth
         X = df_numeric.copy()
 
         np.random.seed(42)
@@ -180,8 +142,6 @@ if selected == "Home":
         )
 
         X = X.dropna(how='all')
-
-        # ML Preprocessing
         imputer = SimpleImputer(strategy='mean')
         scaler = StandardScaler()
 
@@ -192,36 +152,28 @@ if selected == "Home":
         X_features = X.drop(columns=['plant_growth'])
         X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
 
-        # Train RandomForest
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X_train, y_train)
         predictions = model.predict(X_test)
         mse = mean_squared_error(y_test, predictions)
 
-        # Display Cleaned Data
         st.subheader("🧹 Cleaned & Enriched Data")
         st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
-        # ML Performance
         st.subheader("📈 ML Model Performance")
         st.write(f"Mean Squared Error: {mse:.3f}")
 
-        # Sample Predictions
         st.subheader("🌿 Predicted Growth (Sample)")
         pred_df = pd.DataFrame({
             'Actual': np.round(y_test, 2),
             'Predicted': np.round(predictions, 2)
         })
         st.dataframe(pred_df.head(10))
-    #==========Historical Data=============
-
-elif selected == "Historical Data":
-    st.title("📊 Historical Data")
 
 #=============ENVIRONMENT MONITOR===========================
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring")
-    
+
     if 'df' in st.session_state:
         df = st.session_state.df
         st.markdown("Visualizing trends from your uploaded data.")
@@ -231,7 +183,7 @@ elif selected == "Environment Monitor":
                 st.subheader(f"{col} Trend")
                 st.line_chart(df[col])
     else:
-        st.warning("⚠️ Please upload a CSV file from the Home section first.")
+        st.warning("⚠️ Please upload a CSV file from the Historical Data section first.")
 
 #===================GROWTH CONSISTENCY=======================
 elif selected == "Growth Consistency":
@@ -239,8 +191,6 @@ elif selected == "Growth Consistency":
 
     if 'df' in st.session_state:
         df = st.session_state.df
-
-        # Recalculate simulated plant_growth
         df_numeric = df.select_dtypes(include=[np.number]).copy()
 
         df_numeric['plant_growth'] = (
@@ -276,7 +226,7 @@ elif selected == "Growth Consistency":
         for col in existing_env_cols:
             st.line_chart(df_numeric[[col, 'plant_growth']])
     else:
-        st.warning("⚠️ Please upload a CSV file from the Home section first.")
+        st.warning("⚠️ Please upload a CSV file from the Historical Data section first.")
 
 #===================INSIGHTS===============================
 elif selected == "Insights":
