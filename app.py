@@ -34,9 +34,19 @@ st.markdown(
             min-width: 200px !important;
             max-width: 220px !important;
         }
+
+        /* 🔧 Updated section below */
         [data-testid="stSidebar"] * {
+            font-size: 14px !important;
             color: #003300 !important;
+            background-color: transparent !important;
         }
+        [data-testid="stSidebar"] > div:first-child {
+            box-shadow: none !important;
+            border: none !important;
+            background-color: transparent !important;
+        }
+
         .css-1dp5vir, .css-1d391kg {
             background-color: #c0ebc0 !important;
             color: #003300 !important;
@@ -77,6 +87,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 #=================NAVIGATION==============================
 with st.sidebar:
