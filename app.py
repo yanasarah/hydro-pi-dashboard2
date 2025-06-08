@@ -136,33 +136,31 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
    #===================ABOUT US===============================
-elif selected == "About Us":
-st.markdown("""
-    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <h1 style="color: #2e8b57;">What is Hydroponics?</h1>
-        <p style="color: #4d774e; font-size: 16px;">
-            Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead.
-            It allows for faster growth, higher yields, and efficient use of space and resources.
-        </p>
-        
-        <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
-        <ul style="color: #4d774e; font-size: 16px;">
-            <li>💧 Grows crops faster with less water</li>
-            <li>🏙️ Ideal for small urban and indoor spaces</li>
-            <li>🌱 Reduces environmental impact and pesticide use</li>
-            <li>📅 Enables year-round farming with high efficiency</li>
-        </ul>
-        <br>
+elif page == "About Us":
+    st.markdown("""
+        <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <h1 style="color: #2e8b57;">What is Hydroponics?</h1>
+            <p style="color: #4d774e; font-size: 16px;">
+                Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead.
+                It allows for faster growth, higher yields, and efficient use of space and resources.
+            </p>
+            
+            <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
+            <ul style="color: #4d774e; font-size: 16px;">
+                <li>💧 Grows crops faster with less water</li>
+                <li>🏙️ Ideal for small urban and indoor spaces</li>
+                <li>🌱 Reduces environmental impact and pesticide use</li>
+                <li>📅 Enables year-round farming with high efficiency</li>
+            </ul>
+            <br>
 
-        <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
-        <p style="color: #4d774e; font-size: 16px;">
-            <strong>Hydro-Pi</strong> is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health using real-time sensors and data analytics.
-            This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
-
-
+            <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
+            <p style="color: #4d774e; font-size: 16px;">
+                <strong>Hydro-Pi</strong> is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health using real-time sensors and data analytics.
+                This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
 
 #==========Historical Data=============
