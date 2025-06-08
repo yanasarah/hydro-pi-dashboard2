@@ -146,9 +146,12 @@ if selected == "Home":
     st.write("")  # spacing
 
     # File Upload
- st.markdown("Upload your environmental sensor data to predict plant growth trends.")
-
+    st.markdown("Upload your environmental sensor data to predict plant growth trends.")
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
+
+  
+            # Proceed with your existing logic...
+            # (simulate plant_growth, preprocess, train model, etc.)
 
         
     
