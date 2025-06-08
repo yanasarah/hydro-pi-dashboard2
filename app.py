@@ -139,31 +139,29 @@ if selected == "Home":
 
    #===================ABOUT US===============================
 elif selected == "About Us":
-    st.markdown("""
-        <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-            <h1 style="color: #2e8b57;">What is Hydroponics?</h1>
-            <p style="color: #4d774e; font-size: 16px;">
-                Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead.
-                It allows for faster growth, higher yields, and efficient use of space and resources.
-            </p>
-            
-    <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
-<p style="color: #4d774e; font-size: 16px;">
-    <ul style="list-style-type: none; padding-left: 1em;">
-        <li>💧 Grows crops faster with less water</li>
-        <li>🏙️ Ideal for small urban and indoor spaces</li>
-        <li>🌱 Reduces environmental impact and pesticide use</li>
-        <li>📅 Enables year-round farming with high efficiency</li>
-    </ul>
-</p>
+    st.markdown("## 🌿 What is Hydroponics?")
+    st.write(
+        "Hydroponics is a modern method of growing plants without soil, "
+        "using nutrient-rich water instead. It allows for faster growth, "
+        "higher yields, and efficient use of space and resources."
+    )
 
-            <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
-            <p style="color: #4d774e; font-size: 16px;">
-                <strong>Hydro-Pi</strong> is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health using real-time sensors and data analytics.
-                This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place.
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 🌎 Why Hydroponics Matters")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("- 💧 Grows crops faster with less water")
+        st.markdown("- 🏙️ Ideal for small urban and indoor spaces")
+    with col2:
+        st.markdown("- 🌱 Reduces environmental impact and pesticide use")
+        st.markdown("- 📅 Enables year-round farming with high efficiency")
+
+    st.markdown("### 🤖 What is Hydro-Pi Smart System?")
+    st.write(
+        "**Hydro-Pi** is an IoT-based smart hydroponic system that helps farmers and hobbyists "
+        "monitor plant health using real-time sensors and data analytics. "
+        "This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place."
+    )
 
 
 
