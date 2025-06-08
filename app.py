@@ -141,8 +141,12 @@ if selected == "Home":
 elif selected == "About Us":
     st.markdown("""
     <div style="text-align: center; padding: 2rem;">
-        <h1 style="color: #2e8b57; font-family: Poppins; margin-bottom: 0.1rem;">About Hydroponic Systems</h1>
-        <h2 style="color: #3a6b35; font-family: Poppins; font-size: 2.9rem; margin-top: 0;">At the forefront of innovation</h2>
+        <h1 style="color: #2e8b57; font-family: Poppins; font-size: 2rem; margin-bottom: 0.1rem;">
+            About Hydroponic Systems
+        </h1>
+        <h2 style="color: #3a6b35; font-family: Poppins; font-size: 2.9rem; margin-top: 0;">
+            At the forefront of innovation
+        </h2>
     </div>
     """, unsafe_allow_html=True)
 
@@ -151,7 +155,7 @@ elif selected == "About Us":
     
     with col1:
         st.markdown("""
-        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-right: 1rem;">
+        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-right: 1rem; text-align: justify;">
             Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
             This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
             It’s particularly beneficial in environments where arable land is limited, allowing year-round food production and water conservation.
@@ -159,8 +163,7 @@ elif selected == "About Us":
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image("https://images.app.goo.gl/eS6TnxvUr7i1CZB6A",
-                 caption="Hydroponic Farming System", use_column_width=True)
+        st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
 
 
 
