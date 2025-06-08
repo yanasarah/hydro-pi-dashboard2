@@ -135,6 +135,27 @@ if selected == "Home":
             <p style="font-size: 20px; color: #1e4620;">{today}</p>
         </div>
     """, unsafe_allow_html=True)
+   #===================ABOUT US===============================
+elif selected == "About Us":
+    st.title("👨‍🌾 About Us")
+    st.markdown("""
+    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <h3 style="color: #2e8b57;">Our Mission</h3>
+        <p style="color: #4d774e;">We aim to empower urban and small-space farmers with smart, data-driven hydroponic systems. Our Hydro-Pi platform makes monitoring plant health intuitive, sustainable, and efficient.</p>
+        <br>
+        <h3 style="color: #2e8b57;">Meet the Team</h3>
+        <ul style="color: #4d774e;">
+            <li><strong>Aliya Rahman</strong> – System Architect</li>
+            <li><strong>Zain Abdullah</strong> – Data Scientist</li>
+            <li><strong>Mei Lin Tan</strong> – UI/UX Designer</li>
+            <li><strong>Harish Kumar</strong> – Embedded Systems Engineer</li>
+        </ul>
+        <br>
+        <h3 style="color: #2e8b57;">Our Vision</h3>
+        <p style="color: #4d774e;">To create smart farming tools that reduce waste, optimize yield, and inspire sustainable agriculture for all.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 #==========Historical Data=============
 elif selected == "Historical Data":
     st.markdown("""
