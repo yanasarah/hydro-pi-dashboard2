@@ -146,12 +146,12 @@ elif selected == "About Us":
             </p>
             
             <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
-            <ul style="color: #4d774e; font-size: 16px;">
-                <li>💧 Grows crops faster with less water</li>
-                <li>🏙️ Ideal for small urban and indoor spaces</li>
-                <li>🌱 Reduces environmental impact and pesticide use</li>
-                <li>📅 Enables year-round farming with high efficiency</li>
-            </ul>
+<ul style="color: #4d774e; font-size: 16px;">
+    <li>💧 Grows crops faster with less water</li>
+    <li>🏙️ Ideal for small urban and indoor spaces</li>
+    <li>🌱 Reduces environmental impact and pesticide use</li>
+    <li>📅 Enables year-round farming with high efficiency</li>
+</ul>
             <br>
 
             <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
