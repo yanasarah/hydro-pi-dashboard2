@@ -102,6 +102,46 @@ with st.sidebar:
 #=====================HOME=========================
 if selected == "Home":
     st.markdown("""
+    <div style='text-align: center; margin-bottom: 1.5rem;'>
+        <h1 style='font-size: 2.5rem; margin-bottom: 0.2rem;'>🌱 Welcome to Hydro-Pi Smart Farming</h1>
+        <p style='font-size: 1.2rem;'>Monitor. Predict. Grow smarter 🌿</p>
+    </div>
+""", unsafe_allow_html=True)
+
+# Columns: Left = Quote, Right = Plant Info
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.markdown("""
+        <div style='
+            background-color: #e6ffe6;
+            border-left: 5px solid #66bb66;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+        '>
+            🌿 <em>“Grow your health, grow a garden.”</em>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+        <div style='
+            background-color: #ffffff;
+            border: 2px solid #cceccc;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        '>
+            <h4 style='margin-top: 0;'>Your Plant:</h4>
+            <p style='font-weight: bold; color: #2e7d32;'>🥬 Spinach</p>
+            <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" alt="Spinach" width="100">
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
         <div style="
             padding: 2rem;
             background: linear-gradient(to right, #bdfcc9, #e0ffe0);
