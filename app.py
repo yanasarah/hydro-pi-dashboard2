@@ -148,10 +148,21 @@ if selected == "Home":
     # File Upload
 # File Upload
     uploaded_file = st.file_uploader("Upload CSV", type=["csv"])
-    if uploaded_file:
+   if uploaded_file:
+    try:
         df = pd.read_csv(uploaded_file)
-        st.success("✅ File uploaded successfully!")
-        st.dataframe(df)
+        if df.empty:
+            st.error("🚫 Uploaded file is empty. Please upload a valid CSV with sensor data.")
+        else:
+            st.success("✅ File uploaded successfully!")
+            st.dataframe(df)
+            st.session_state.uploaded_file = uploaded_file
+            st.session_state.df = df
+    except pd.errors.EmptyDataError:
+        st.error("🚫 File is empty or invalid CSV format. Please check your file and try again.")
+    except Exception as e:
+        st.error(f"❌ Unexpected error while reading the file: {e}")
+
         
     
     if uploaded_file:
