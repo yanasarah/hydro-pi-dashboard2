@@ -136,46 +136,30 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
    #===================ABOUT US===============================
-elif selected == "About Us":
-    st.title("🌿 About Hydro-Pi")
-
-    st.markdown("""
-    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Poppins', sans-serif;">
-        <h2 style="color: #2e8b57;">What is Hydroponics?</h2>
+st.markdown("""
+    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        <h1 style="color: #2e8b57;">What is Hydroponics?</h1>
         <p style="color: #4d774e; font-size: 16px;">
-            Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead. It allows for faster growth, higher yields, and efficient use of space and resources.
+            Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead.
+            It allows for faster growth, higher yields, and efficient use of space and resources.
         </p>
-        <br>
-
+        
         <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
         <ul style="color: #4d774e; font-size: 16px;">
-            <li>🌱 Grows crops faster with less water</li>
+            <li>💧 Grows crops faster with less water</li>
             <li>🏙️ Ideal for small urban and indoor spaces</li>
-            <li>🌍 Reduces environmental impact and pesticide use</li>
-            <li>📈 Enables year-round farming with high efficiency</li>
+            <li>🌱 Reduces environmental impact and pesticide use</li>
+            <li>📅 Enables year-round farming with high efficiency</li>
         </ul>
         <br>
 
         <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
         <p style="color: #4d774e; font-size: 16px;">
-            Hydro-Pi is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health, predict growth, and optimize farming using real-time data and machine learning.
+            <strong>Hydro-Pi</strong> is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health using real-time sensors and data analytics.
+            This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place.
         </p>
-
-        <ul style="color: #4d774e; font-size: 16px;">
-            <li>📊 Historical & raw sensor data visualization</li>
-            <li>🧠 Growth prediction powered by ML</li>
-            <li>📈 Trend comparison between environment & growth</li>
-            <li>📤 Export-ready for deeper insight</li>
-        </ul>
-
-        <br>
-        <h2 style="color: #2e8b57;">Grow Smarter, Not Harder 🌱</h2>
-        <p style="color: #4d774e; font-size: 16px;">
-            Hydro-Pi empowers you with clear data insights so you can take better care of your plants and increase yield with precision.
-        </p>
-        <p style="color: #2e8b57; font-size: 18px; font-weight: bold;">Hydro-Pi – Monitor. Predict. Grow smarter.</p>
     </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 
 
