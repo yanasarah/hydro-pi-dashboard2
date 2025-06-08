@@ -137,24 +137,46 @@ if selected == "Home":
     """, unsafe_allow_html=True)
    #===================ABOUT US===============================
 elif selected == "About Us":
-    st.title("👨‍🌾 About Us")
+    st.title("🌿 About Hydro-Pi")
+
     st.markdown("""
-    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-        <h3 style="color: #2e8b57;">Our Mission</h3>
-        <p style="color: #4d774e;">We aim to empower urban and small-space farmers with smart, data-driven hydroponic systems. Our Hydro-Pi platform makes monitoring plant health intuitive, sustainable, and efficient.</p>
+    <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Poppins', sans-serif;">
+        <h2 style="color: #2e8b57;">What is Hydroponics?</h2>
+        <p style="color: #4d774e; font-size: 16px;">
+            Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead. It allows for faster growth, higher yields, and efficient use of space and resources.
+        </p>
         <br>
-        <h3 style="color: #2e8b57;">Meet the Team</h3>
-        <ul style="color: #4d774e;">
-            <li><strong>Aliya Rahman</strong> – System Architect</li>
-            <li><strong>Zain Abdullah</strong> – Data Scientist</li>
-            <li><strong>Mei Lin Tan</strong> – UI/UX Designer</li>
-            <li><strong>Harish Kumar</strong> – Embedded Systems Engineer</li>
+
+        <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
+        <ul style="color: #4d774e; font-size: 16px;">
+            <li>🌱 Grows crops faster with less water</li>
+            <li>🏙️ Perfect for urban spaces and indoor farming</li>
+            <li>🌍 Reduces environmental impact and pesticide use</li>
+            <li>📈 Enables year-round harvest and scalable growth</li>
         </ul>
         <br>
-        <h3 style="color: #2e8b57;">Our Vision</h3>
-        <p style="color: #4d774e;">To create smart farming tools that reduce waste, optimize yield, and inspire sustainable agriculture for all.</p>
+
+        <h2 style="color: #2e8b57;">Introducing Hydro-Pi Smart System</h2>
+        <p style="color: #4d774e; font-size: 16px;">
+            Our Hydro-Pi system combines smart sensors and real-time analytics to help you monitor, analyze, and predict your plant’s health and growth. Whether you're a beginner or a commercial grower, Hydro-Pi simplifies farming decisions through:
+        </p>
+        <ul style="color: #4d774e; font-size: 16px;">
+            <li>📊 Easy-to-understand dashboards</li>
+            <li>🧠 Intelligent growth prediction using machine learning</li>
+            <li>🕒 Historical trend tracking to improve yields</li>
+            <li>📤 One-click raw data export for deeper insights</li>
+        </ul>
+        <br>
+
+        <h2 style="color: #2e8b57;">Grow Smarter, Not Harder 🌱</h2>
+        <p style="color: #4d774e; font-size: 16px;">
+            With Hydro-Pi, you don’t just grow plants—you grow data-driven confidence. Join the next generation of smart farmers and make every drop of water and every ray of light count.
+        </p>
+
+        <p style="color: #2e8b57; font-size: 18px; font-weight: bold;">Hydro-Pi – Monitor. Predict. Grow smarter.</p>
     </div>
     """, unsafe_allow_html=True)
+
 
 #==========Historical Data=============
 elif selected == "Historical Data":
