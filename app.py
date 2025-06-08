@@ -9,86 +9,138 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from datetime import datetime
 
-# Set Streamlit page config
+# Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
-#==================== FONT & STYLE ====================
+#=============BACKGROUND , COLOUR FONT ==============
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+""", unsafe_allow_html=True)
+
+st.markdown(
+    """
     <style>
         .stApp {
             background-color: #f5fff5;
-            color: #006400;
+            color: #006400 !important;
             font-family: 'Poppins', sans-serif;
+        }
+        html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
+            color: #006400 !important;
+            font-family: 'Poppins', sans-serif !important;
         }
         [data-testid="stSidebar"] {
             background-color: #c0ebc0 !important;
-            min-width: 210px !important;
-            max-width: 230px !important;
+            min-width: 200px !important;
+            max-width: 220px !important;
         }
+
+        /* 🔧 Updated section below */
         [data-testid="stSidebar"] * {
-            color: #003300 !important;
             font-size: 14px !important;
+            color: #003300 !important;
+            background-color: transparent !important;
+        }
+        [data-testid="stSidebar"] > div:first-child {
+            box-shadow: none !important;
+            border: none !important;
+            background-color: transparent !important;
+        }
+
+        .css-1dp5vir, .css-1d391kg {
+            background-color: #c0ebc0 !important;
+            color: #003300 !important;
+            padding: 0.3rem 0.6rem !important;
+            font-size: 14px !important;
+            margin: 0 !important;
         }
         .stMetric label {
+            color: #006400 !important;
+        }
+        .stDataFrame div[data-testid="stVerticalBlock"] {
+            background-color: #ffffff !important;
             color: #006400 !important;
         }
         .stDataFrame thead tr th {
             background-color: #e0f5e0 !important;
             color: #006400 !important;
         }
+        .stDataFrame tbody td {
+            background-color: #ffffff !important;
+            color: #006400 !important;
+        }
+        section[data-testid="stSidebar"] > div {
+            width: 200px !important;
+            min-width: 200px !important;
+            max-width: 200px !important;
+            padding-right: 0.5rem !important;
+        }
+        .css-1dp5vir, .css-1d391kg {
+            padding: 0.3rem 0.6rem !important;
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+        section[data-testid="stSidebar"] {
+            flex-shrink: 0 !important;
+        }
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
-#================= NAVIGATION =========================
+
+#=================NAVIGATION==============================
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
-        icons=["house", "navigation", "bar-chart", "activity", "lightbulb", "envelope"],
+        options=["Home","Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
+        icons=["house", "navigation","bar-chart", "activity", "lightbulb", "envelope"],
         menu_icon="cast",
         default_index=0
     )
 
-#================= HOME SECTION =======================
+#=====================HOME=========================
 if selected == "Home":
     st.markdown("""
-        <div style="padding: 2rem; background: linear-gradient(to right, #bdfcc9, #e0ffe0); border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center;">
-            <h1 style="color: #2e8b57;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
-            <p style="color: #4d774e; font-size: 18px;">Monitor. Predict. Grow smarter 🌿</p>
-        </div>
-        <br>
+    <div style="padding: 2rem; background: linear-gradient(to right, #bdfcc9, #e0ffe0); border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center;">
+        <h1 style="color: #2e8b57; font-family: Poppins;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
+        <p style="color: #4d774e; font-size: 18px;">Monitor. Predict. Grow smarter 🌿</p>
+    </div>
+    <br>
     """, unsafe_allow_html=True)
 
     col1, col2 = st.columns([2, 1])
 
     with col1:
         st.markdown("""
-            <div style='background-color: #e6ffe6; border-left: 5px solid #66bb66; padding: 1rem; border-radius: 12px;'>
+            <div style='background-color: #e6ffe6; border-left: 5px solid #66bb66; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 1.1rem;'>
                 🌿 <em>“Grow your health, grow a garden.”</em>
             </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-            <div style='background-color: #ffffff; border: 2px solid #cceccc; border-radius: 12px; padding: 1rem; text-align: center;'>
-                <h4>Your Plant:</h4>
+            <div style='background-color: #ffffff; border: 2px solid #cceccc; border-radius: 12px; padding: 1rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>
+                <h4 style='margin-top: 0;'>Your Plant:</h4>
                 <p style='font-weight: bold; color: #2e7d32;'>🥬 Spinach</p>
                 <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" alt="Spinach" width="100">
             </div>
         """, unsafe_allow_html=True)
 
+    today = datetime.now().strftime("%A, %d %B %Y")
     st.markdown(f"""
         <br>
-        <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; text-align: center;">
-            <h4>📅 Today</h4>
-            <p style="font-size: 20px;">{datetime.now().strftime("%A, %d %B %Y")}</p>
+        <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; text-align: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
+            <h4 style="color: #1e4620;">📅 Today</h4>
+            <p style="font-size: 20px; color: #1e4620;">{today}</p>
         </div>
     """, unsafe_allow_html=True)
-
-#================ HISTORICAL DATA ======================
+#==========Historical Data=============
 elif selected == "Historical Data":
-    st.markdown("<h1 style='color:#2e8b57;'>📁 Historical Data</h1>", unsafe_allow_html=True)
+    st.markdown("""
+        <h1 style="color:#2e8b57; font-family: Poppins;">Welcome to the Hydro-Pi Smart Plant System</h1>
+    """, unsafe_allow_html=True)
+
     uploaded_file = st.file_uploader("📤 Upload CSV Sensor Data", type=["csv"])
 
     if uploaded_file:
@@ -97,10 +149,9 @@ elif selected == "Historical Data":
         st.session_state.df = df
 
         st.subheader("📂 Raw Data")
-        st.dataframe(df.head(20))
+        st.dataframe(df)
 
-        # Prepare for ML
-        df_numeric = df.select_dtypes(include=[np.number]).copy()
+        df_numeric = df.select_dtypes(include=[np.number])
         X = df_numeric.copy()
 
         np.random.seed(42)
@@ -113,27 +164,27 @@ elif selected == "Historical Data":
             np.random.normal(0, 0.5, size=len(X))
         )
 
+        X = X.dropna(how='all')
         imputer = SimpleImputer(strategy='mean')
         scaler = StandardScaler()
 
-        with st.spinner("🧠 Training prediction model..."):
-            X_filled = imputer.fit_transform(X)
-            X_scaled = scaler.fit_transform(X_filled)
+        X_imputed = imputer.fit_transform(X)
+        X_scaled = scaler.fit_transform(X_imputed)
 
-            y = X['plant_growth'].values
-            X_features = X.drop(columns=['plant_growth'])
-            X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
+        y = X['plant_growth'].values
+        X_features = X.drop(columns=['plant_growth'])
+        X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
 
-            model = RandomForestRegressor(n_estimators=100, random_state=42)
-            model.fit(X_train, y_train)
-            predictions = model.predict(X_test)
-            mse = mean_squared_error(y_test, predictions)
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model.fit(X_train, y_train)
+        predictions = model.predict(X_test)
+        mse = mean_squared_error(y_test, predictions)
 
         st.subheader("🧹 Cleaned & Enriched Data")
-        st.dataframe(X.assign(plant_growth=np.round(y, 2)).head(20))
+        st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
-        st.subheader("📈 Model Performance")
-        st.metric("Mean Squared Error", f"{mse:.3f}")
+        st.subheader("📈 ML Model Performance")
+        st.write(f"Mean Squared Error: {mse:.3f}")
 
         st.subheader("🌿 Predicted Growth (Sample)")
         pred_df = pd.DataFrame({
@@ -142,13 +193,14 @@ elif selected == "Historical Data":
         })
         st.dataframe(pred_df.head(10))
 
-#=============== ENVIRONMENT MONITOR ===================
+#=============ENVIRONMENT MONITOR===========================
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring")
 
     if 'df' in st.session_state:
         df = st.session_state.df
         st.markdown("Visualizing trends from your uploaded data.")
+
         for col in ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']:
             if col in df.columns:
                 st.subheader(f"{col} Trend")
@@ -156,7 +208,7 @@ elif selected == "Environment Monitor":
     else:
         st.warning("⚠️ Please upload a CSV file from the Historical Data section first.")
 
-#================ GROWTH CONSISTENCY ====================
+#===================GROWTH CONSISTENCY=======================
 elif selected == "Growth Consistency":
     st.title("🌾 Growth Consistency Analysis")
 
@@ -173,34 +225,38 @@ elif selected == "Growth Consistency":
             np.random.normal(0, 0.5, size=len(df_numeric))
         )
 
-        st.subheader("📊 Environmental Stability (Std Dev)")
+        st.subheader("📊 Environmental Stability (Standard Deviation)")
         env_cols = ['pH', 'TDS', 'Temperature', 'LED', 'Distance (cm)']
-        available = [col for col in env_cols if col in df_numeric.columns]
-        missing = [col for col in env_cols if col not in df_numeric.columns]
+        existing_env_cols = [col for col in env_cols if col in df_numeric.columns]
+        missing_cols = [col for col in env_cols if col not in df_numeric.columns]
 
-        if missing:
-            st.warning(f"Missing columns: {', '.join(missing)}")
+        if missing_cols:
+            st.warning(f"⚠️ These columns are missing from your data: {', '.join(missing_cols)}")
 
-        stability = df_numeric[available].std().round(2)
-        st.write(stability)
+        env_stability = df_numeric[existing_env_cols].std().round(2)
+        st.write(env_stability)
 
         st.subheader("🌿 Growth Consistency")
         growth_std = df_numeric['plant_growth'].std()
         st.metric("Growth Std Deviation", f"{growth_std:.2f}")
-        st.success("✅ Stable Conditions") if growth_std <= 1.5 else st.warning("⚠️ High growth variability")
+
+        if growth_std > 1.5:
+            st.warning("⚠️ High variability in plant growth. Consider stabilizing environmental conditions.")
+        else:
+            st.success("✅ Growth conditions are stable.")
 
         st.subheader("📈 Environmental Trends vs. Growth")
-        for col in available:
+        for col in existing_env_cols:
             st.line_chart(df_numeric[[col, 'plant_growth']])
     else:
         st.warning("⚠️ Please upload a CSV file from the Historical Data section first.")
 
-#================= INSIGHTS ============================
+#===================INSIGHTS===============================
 elif selected == "Insights":
     st.title("💡 Insights & Recommendations")
     st.info("Coming soon: Smart suggestions based on plant conditions.")
 
-#================= CONTACT =============================
+#===================CONTACT===============================
 elif selected == "Contact":
     st.title("📞 Contact Us")
     st.markdown("""
