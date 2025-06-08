@@ -97,8 +97,8 @@ section[data-testid="stSidebar"] {
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
-        icons=["house", "bar-chart", "activity", "lightbulb", "envelope"],
+        options=["Home","Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
+        icons=["house", "navigation","bar-chart", "activity", "lightbulb", "envelope"],
         menu_icon="cast",
         default_index=0
     )
@@ -213,6 +213,10 @@ if selected == "Home":
             'Predicted': np.round(predictions, 2)
         })
         st.dataframe(pred_df.head(10))
+    #==========Historical Data=============
+
+elif selected == "Historical Data":
+    st.title("📊 Historical Data")
 
 #=============ENVIRONMENT MONITOR===========================
 elif selected == "Environment Monitor":
