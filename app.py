@@ -93,8 +93,8 @@ st.markdown(
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home","Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
-        icons=["house", "navigation","bar-chart", "activity", "lightbulb", "envelope"],
+        options=["Home","About Us","Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Contact"],
+        icons=["house","⚙️", "navigation","bar-chart", "activity", "lightbulb", "envelope"],
         menu_icon="cast",
         default_index=0
     )
