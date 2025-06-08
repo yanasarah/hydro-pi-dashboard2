@@ -150,32 +150,34 @@ elif selected == "About Us":
         <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
         <ul style="color: #4d774e; font-size: 16px;">
             <li>🌱 Grows crops faster with less water</li>
-            <li>🏙️ Perfect for urban spaces and indoor farming</li>
+            <li>🏙️ Ideal for small urban and indoor spaces</li>
             <li>🌍 Reduces environmental impact and pesticide use</li>
-            <li>📈 Enables year-round harvest and scalable growth</li>
+            <li>📈 Enables year-round farming with high efficiency</li>
         </ul>
         <br>
 
-        <h2 style="color: #2e8b57;">Introducing Hydro-Pi Smart System</h2>
+        <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
         <p style="color: #4d774e; font-size: 16px;">
-            Our Hydro-Pi system combines smart sensors and real-time analytics to help you monitor, analyze, and predict your plant’s health and growth. Whether you're a beginner or a commercial grower, Hydro-Pi simplifies farming decisions through:
+            Hydro-Pi is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health, predict growth, and optimize farming using real-time data and machine learning.
         </p>
-        <ul style="color: #4d774e; font-size: 16px;">
-            <li>📊 Easy-to-understand dashboards</li>
-            <li>🧠 Intelligent growth prediction using machine learning</li>
-            <li>🕒 Historical trend tracking to improve yields</li>
-            <li>📤 One-click raw data export for deeper insights</li>
-        </ul>
-        <br>
 
+        <ul style="color: #4d774e; font-size: 16px;">
+            <li>📊 Historical & raw sensor data visualization</li>
+            <li>🧠 Growth prediction powered by ML</li>
+            <li>📈 Trend comparison between environment & growth</li>
+            <li>📤 Export-ready for deeper insight</li>
+        </ul>
+
+        <br>
         <h2 style="color: #2e8b57;">Grow Smarter, Not Harder 🌱</h2>
         <p style="color: #4d774e; font-size: 16px;">
-            With Hydro-Pi, you don’t just grow plants—you grow data-driven confidence. Join the next generation of smart farmers and make every drop of water and every ray of light count.
+            Hydro-Pi empowers you with clear data insights so you can take better care of your plants and increase yield with precision.
         </p>
-
         <p style="color: #2e8b57; font-size: 18px; font-weight: bold;">Hydro-Pi – Monitor. Predict. Grow smarter.</p>
     </div>
     """, unsafe_allow_html=True)
+
+
 
 
 #==========Historical Data=============
