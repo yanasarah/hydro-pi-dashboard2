@@ -136,6 +136,7 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
    #===================ABOUT US===============================
+elif selected == "About Us":
 st.markdown("""
     <div style="background-color: #e6ffe6; padding: 1.5rem; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
         <h1 style="color: #2e8b57;">What is Hydroponics?</h1>
