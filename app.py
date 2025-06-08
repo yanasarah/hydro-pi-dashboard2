@@ -135,6 +135,8 @@ if selected == "Home":
             <p style="font-size: 20px; color: #1e4620;">{today}</p>
         </div>
     """, unsafe_allow_html=True)
+
+
    #===================ABOUT US===============================
 elif selected == "About Us":
     about_us_html = """
@@ -144,6 +146,7 @@ elif selected == "About Us":
             Hydroponics is a modern method of growing plants without soil, using nutrient-rich water instead.
             It allows for faster growth, higher yields, and efficient use of space and resources.
         </p>
+        
         <h2 style="color: #2e8b57;">Why Hydroponics Matters</h2>
         <ul style="color: #4d774e; font-size: 16px;">
             <li>💧 Grows crops faster with less water</li>
@@ -151,7 +154,7 @@ elif selected == "About Us":
             <li>🌱 Reduces environmental impact and pesticide use</li>
             <li>📅 Enables year-round farming with high efficiency</li>
         </ul>
-        <br>
+
         <h2 style="color: #2e8b57;">What is Hydro-Pi Smart System?</h2>
         <p style="color: #4d774e; font-size: 16px;">
             <strong>Hydro-Pi</strong> is an IoT-based smart hydroponic system that helps farmers and hobbyists monitor plant health using real-time sensors and data analytics.
