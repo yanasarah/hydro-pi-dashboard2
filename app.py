@@ -66,6 +66,26 @@ st.markdown(
             background-color: #ffffff !important;
             color: #006400 !important;
         }
+        /* Force smaller sidebar width */
+section[data-testid="stSidebar"] > div {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    padding-right: 0.5rem !important;
+}
+
+/* Option menu padding/fix */
+.css-1dp5vir, .css-1d391kg {
+    padding: 0.3rem 0.6rem !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+}
+
+/* Ensure main content doesn't shift weirdly */
+section[data-testid="stSidebar"] {
+    flex-shrink: 0 !important;
+}
+
     </style>
     """,
     unsafe_allow_html=True
