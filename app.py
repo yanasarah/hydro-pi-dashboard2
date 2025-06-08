@@ -17,66 +17,38 @@ st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
 
-st.markdown(
-    """
+st.markdown("""
     <style>
-        .stApp {
-            background-color: #f5fff5;
-            color: #006400 !important;
-            font-family: 'Poppins', sans-serif;
-        }
-        html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, li, ul, button, label, th, td, input, textarea {
-            color: #006400 !important;
-            font-family: 'Poppins', sans-serif !important;
-        }
-        [data-testid="stSidebar"] {
-            background-color: #c0ebc0 !important;
-            min-width: 200px !important;
-            max-width: 220px !important;
-        }
-        [data-testid="stSidebar"] * {
-            color: #003300 !important;
-        }
-        .css-1dp5vir, .css-1d391kg {
-            background-color: #c0ebc0 !important;
-            color: #003300 !important;
-            padding: 0.3rem 0.6rem !important;
-            font-size: 14px !important;
-            margin: 0 !important;
-        }
-        .stMetric label {
-            color: #006400 !important;
-        }
-        .stDataFrame div[data-testid="stVerticalBlock"] {
-            background-color: #ffffff !important;
-            color: #006400 !important;
-        }
-        .stDataFrame thead tr th {
-            background-color: #e0f5e0 !important;
-            color: #006400 !important;
-        }
-        .stDataFrame tbody td {
-            background-color: #ffffff !important;
-            color: #006400 !important;
-        }
-        section[data-testid="stSidebar"] > div {
-            width: 200px !important;
-            min-width: 200px !important;
-            max-width: 200px !important;
-            padding-right: 0.5rem !important;
-        }
-        .css-1dp5vir, .css-1d391kg {
-            padding: 0.3rem 0.6rem !important;
-            margin: 0 !important;
-            font-size: 14px !important;
-        }
-        section[data-testid="stSidebar"] {
-            flex-shrink: 0 !important;
-        }
+    /* Sidebar customization */
+    [data-testid="stSidebar"] {
+        background-color: #f2fff4 !important; /* light greenish */
+    }
+    [data-testid="stSidebar"] h1, 
+    [data-testid="stSidebar"] h2, 
+    [data-testid="stSidebar"] h3, 
+    [data-testid="stSidebar"] h4 {
+        font-size: 18px !important;
+        color: #2e8b57;
+    }
+
+    /* Optional: reduce overall sidebar font size */
+    .css-1d391kg, .css-q8sbsg {
+        font-size: 16px !important;
+    }
+
+    /* Make radio button text smaller and clean */
+    .css-17eq0hr {
+        font-size: 16px !important;
+    }
+
+    /* Remove any shadow or border box */
+    [data-testid="stSidebar"] > div:first-child {
+        box-shadow: none !important;
+        border: none !important;
+    }
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
+
 
 #=================NAVIGATION==============================
 with st.sidebar:
