@@ -139,29 +139,51 @@ if selected == "Home":
 
    #===================ABOUT US===============================
 elif selected == "About Us":
-    st.markdown("## 🌿 What is Hydroponics?")
-    st.write(
-        "Hydroponics is a modern method of growing plants without soil, "
-        "using nutrient-rich water instead. It allows for faster growth, "
-        "higher yields, and efficient use of space and resources."
-    )
+    st.markdown("""
+        <div style="background-color: #e9fbee; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <h1 style="color: #2e8b57; font-size: 32px;">🌱 What is Hydroponics?</h1>
+            <p style="color: #3a4f41; font-size: 16px; line-height: 1.6;">
+                Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
+                This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
+                It’s particularly beneficial in environments where arable land is limited.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("### 🌎 Why Hydroponics Matters")
-    col1, col2 = st.columns(2)
+    st.markdown("### 🌍 Why Hydroponics Matters")
+    with st.container():
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+                <div style="background-color: #f0fff4; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <ul style="color: #3a4f41; font-size: 16px;">
+                        <li>💧 <strong>Efficient Water Use:</strong> Grows crops faster using significantly less water.</li>
+                        <li>🏙️ <strong>Space-Saving:</strong> Ideal for compact urban and indoor environments.</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown("""
+                <div style="background-color: #f0fff4; padding: 1rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <ul style="color: #3a4f41; font-size: 16px;">
+                        <li>🌱 <strong>Eco-Friendly:</strong> Minimizes pesticide use and reduces environmental harm.</li>
+                        <li>📅 <strong>Year-Round Growth:</strong> Enables continuous food production regardless of season.</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
 
-    with col1:
-        st.markdown("- 💧 Grows crops faster with less water")
-        st.markdown("- 🏙️ Ideal for small urban and indoor spaces")
-    with col2:
-        st.markdown("- 🌱 Reduces environmental impact and pesticide use")
-        st.markdown("- 📅 Enables year-round farming with high efficiency")
+    st.markdown("""
+        <br>
+        <div style="background-color: #e9fbee; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <h2 style="color: #2e8b57;">🤖 What is Hydro-Pi Smart System?</h2>
+            <p style="color: #3a4f41; font-size: 16px; line-height: 1.6;">
+                <strong>Hydro-Pi</strong> is an intelligent, IoT-powered hydroponics system tailored for both farmers and hobbyists. 
+                It integrates multiple real-time sensors to monitor temperature, water levels, nutrient quality, and light exposure. 
+                The system leverages data analytics to display trends, detect anomalies, and predict optimal conditions — all visualized through an interactive dashboard.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("### 🤖 What is Hydro-Pi Smart System?")
-    st.write(
-        "**Hydro-Pi** is an IoT-based smart hydroponic system that helps farmers and hobbyists "
-        "monitor plant health using real-time sensors and data analytics. "
-        "This dashboard gives users historical trends, raw sensor data, growth predictions, and environmental insights — all in one place."
-    )
 
 
 
