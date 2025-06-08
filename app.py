@@ -159,7 +159,7 @@ elif selected == "About Us":
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Hydroponics_-_Farming_without_soil_-_geograph.org.uk_-_1048086.jpg/640px-Hydroponics_-_Farming_without_soil_-_geograph.org.uk_-_1048086.jpg",
+        st.image("https://images.app.goo.gl/eS6TnxvUr7i1CZB6A",
                  caption="Hydroponic Farming System", use_column_width=True)
 
 
