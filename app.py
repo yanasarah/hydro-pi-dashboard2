@@ -207,30 +207,26 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
- # Vision & Mission Section
-    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
+with col1:
+    st.markdown("""
+    <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="color: white !important; font-family: Poppins; text-align: center;">Vision</h3>
+        <p style="color: white !important; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+with col2:
+    st.markdown("""
+    <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="color: white !important; font-family: Poppins; text-align: center;">Mission</h3>
+        <p style="color: white !important; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    with col1:
-        st.markdown("""
-        <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-            <h3 style="color: white; font-family: Poppins; text-align: center;">Vision</h3>
-            <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
-                To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-            <h3 style="color: white; font-family: Poppins; text-align: center;">Mission</h3>
-            <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
-                To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
 
 #==========Historical Data=============
 
