@@ -165,7 +165,6 @@ elif selected == "About Us":
 
     with col2:
         st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
-
         st.markdown("""
         <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
             <strong>Why it matters:</strong><br>
@@ -175,7 +174,7 @@ elif selected == "About Us":
         </p>
         """, unsafe_allow_html=True)
 
-    # How it works
+    # How it works section
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
 
     st.markdown("""
@@ -197,27 +196,30 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-    # Vision & Mission section
-    st.markdown("""<hr style="margin-top: 3rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
+    # Vision & Mission Section
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
 
-    st.markdown("""
-    <div style="padding: 1rem 3rem;">
-        <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem; margin-bottom: 1rem;">
-            Vision & Mission
-        </h3>
-        
-        <h4 style="color: #3a6b35; font-size: 1.4rem; margin-bottom: 0.5rem;">🌱 Vision</h4>
-        <p style="color: #3a4f41; font-size: 16px; line-height: 1.6; text-align: justify;">
-            To revolutionize agriculture by making sustainable, high-tech farming accessible and achievable for everyone — from urban homes to commercial growers — across the globe.
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem;">Vision</h3>
+        </div>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
         </p>
-        
-        <h4 style="color: #3a6b35; font-size: 1.4rem; margin-top: 1rem; margin-bottom: 0.5rem;">🚀 Mission</h4>
-        <p style="color: #3a4f41; font-size: 16px; line-height: 1.6; text-align: justify;">
-            Our mission is to empower individuals and communities through innovative hydroponic technology that fosters self-sufficiency, enhances food security, and supports a greener planet.
-            We aim to deliver smart, user-friendly systems that blend science with simplicity.
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem;">Mission</h3>
+        </div>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
         </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 
 
