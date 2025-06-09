@@ -207,34 +207,87 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-# Vision & Mission Section
-st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
-
-col1, col2 = st.columns(2)
-
-with col1:
+elif selected == "About Us":
     st.markdown("""
-    <div style="background-color: #a9dfbf; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="color: black; font-family: Poppins; text-align: center;">Vision</h3>
-        <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
-            To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
+    <div style="text-align: center; padding: 2rem;">
+        <h1 style="color: #2e8b57; font-family: Poppins; font-size: 2rem; margin-bottom: 0.1rem;">
+            About Hydroponic Systems
+        </h1>
+        <h2 style="color: #3a6b35; font-family: Poppins; font-size: 2.9rem; margin-top: 0;">
+            At the forefront of innovation
+        </h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Two columns for explanation and image
+    col1, col2 = st.columns([3, 2])
+
+    with col1:
+        st.markdown("""
+        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; text-align: justify;">
+            Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
+            This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
+            It’s particularly beneficial in environments where arable land is limited, allowing year-round food production and water conservation.
+        </p>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_container_width=True)
+        st.markdown("""
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
+            <strong>Why it matters:</strong><br>
+            With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
+            It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities. 
+            It reduces the carbon footprint by bringing food production closer to consumers.
+        </p>
+        """, unsafe_allow_html=True)
+
+    # How it works section
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="padding: 1rem 3rem;">
+        <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem; margin-bottom: 0.5rem;">
+            How Our System Works for You
+        </h3>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Our hydroponic system is fully automated and beginner-friendly. Sensors monitor water quality, temperature, and light — ensuring optimal plant health at all times. 
+            Customers can easily check the status of their crops through our mobile app or web dashboard.
+        </p>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Whether you're a home gardener, a school project team, or a commercial grower, our smart system scales with your needs. 
+            You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.
+        </p>
+        <p style="color: #2e8b57; font-size: 17px; font-weight: 600; text-align: justify;">
+            Experience the future of farming — sustainable, smart, and surprisingly simple.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div style="background-color: #a9dfbf; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="color: black; font-family: Poppins; text-align: center;">Mission</h3>
-        <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
-            To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Vision & Mission Section
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
 
+    col1, col2 = st.columns(2)
 
+    with col1:
+        st.markdown("""
+        <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="color: white; font-family: Poppins; text-align: center;">Vision</h3>
+            <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
+                To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-
+    with col2:
+        st.markdown("""
+        <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="color: white; font-family: Poppins; text-align: center;">Mission</h3>
+            <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
+                To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
 #==========Historical Data=============
 
