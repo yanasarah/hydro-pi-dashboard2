@@ -165,14 +165,7 @@ elif selected == "About Us":
 
     with col2:
         st.image("Untitled-design-2.jpg", caption="Hydroponic Farming System", use_container_width=True)
-        st.markdown("""
-        <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
-            <strong>Why it matters:</strong><br>
-            With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
-            It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities. 
-            It reduces the carbon footprint by bringing food production closer to consumers.
-        </p>
-        """, unsafe_allow_html=True)
+       
 
     # 2nd section: "Why it matters" with image on the left
     col_img, spacer, col_txt = st.columns([2, 0.5, 3], vertical_alignment="top")
