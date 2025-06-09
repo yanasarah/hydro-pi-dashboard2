@@ -171,7 +171,7 @@ elif selected == "About Us":
         )
         
     # 2nd section: "Why it matters" with aligned image
-    col3, spacer, col4 = st.columns([2, 0.5, 3], vertical_alignment="top")
+    col4, spacer, col3 = st.columns([2, 0.5, 3], vertical_alignment="top")
     with col4:
         st.markdown("""
            <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: justify;">
