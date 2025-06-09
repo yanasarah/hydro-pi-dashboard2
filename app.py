@@ -289,6 +289,7 @@ elif selected == "About Us":
         </div>
         """, unsafe_allow_html=True)
 
+
 #==========Historical Data=============
 
 elif selected == "Historical Data":
