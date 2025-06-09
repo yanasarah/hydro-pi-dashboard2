@@ -183,7 +183,7 @@ elif selected == "About Us":
         """, unsafe_allow_html=True)
 
     with col4:
-        st.image("another_picture.jpg", caption="Benefits of Hydroponics", use_container_width=True)
+        st.image("Hydro-tower2.png", caption="Benefits of Hydroponics", use_container_width=True)
 
     # Full-width section: How it works for customers
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
