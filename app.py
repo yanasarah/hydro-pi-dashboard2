@@ -1,13 +1,13 @@
-import streamlit as st
-from streamlit_option_menu import option_menu
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
-from datetime import datetime
+
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
@@ -234,9 +234,6 @@ elif selected == "About Us":
 
 
 #==========Historical Data=============
-
-#==========Historical Data=============
-
 elif selected == "Historical Data":
     st.markdown("""
         <h1 style="color:#2e8b57; font-family: Poppins;">🌱 Historical Data Analysis</h1>
