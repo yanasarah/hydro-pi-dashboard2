@@ -164,7 +164,7 @@ elif selected == "About Us":
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
+        st.image("Untitled-design-2.jpg", caption="Hydroponic Farming System", use_column_width=True)
         
         # Why it's important - directly under image
         st.markdown("""
