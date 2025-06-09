@@ -170,20 +170,19 @@ elif selected == "About Us":
             use_container_width=True
         )
         
-          # New section: "Why it matters" with image aligned right
-    col3, spacer, col4 = st.columns([3, 0.5, 2])
+    # 2nd section: "Why it matters" with aligned image
+    col3, spacer, col4 = st.columns([3, 0.5, 2], vertical_alignment="top")
     with col3:
         st.markdown("""
             <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: justify;">
                 <strong>Why it matters:</strong><br>
                 With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
-                It uses up to 90% less water than traditional farming and can be set up anywhere — from rooftops to indoor facilities. 
-                It reduces the carbon footprint by bringing food production closer to consumers.
+                It uses up to 90% less water than traditional farming and can be set up anywhere—it brings food production closer to consumers and lowers carbon footprint.
             </p>
         """, unsafe_allow_html=True)
-
     with col4:
         st.image("Hydro-tower2.png", caption="Benefits of Hydroponics", use_container_width=True)
+
 
     # Full-width section: How it works for customers
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
