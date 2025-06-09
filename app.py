@@ -210,9 +210,9 @@ elif selected == "About Us":
     # Vision & Mission Section
 st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
+col3, col4 = st.columns(2)
 
-with col1:
+with col3:
     st.markdown("""
     <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
         <h3 style="color: white; font-family: Poppins; text-align: center;">Vision</h3>
@@ -222,7 +222,7 @@ with col1:
     </div>
     """, unsafe_allow_html=True)
 
-with col2:
+with col4:
     st.markdown("""
     <div style="background-color: #2e8b57; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
         <h3 style="color: white; font-family: Poppins; text-align: center;">Mission</h3>
