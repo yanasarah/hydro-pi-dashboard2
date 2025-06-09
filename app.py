@@ -164,31 +164,18 @@ elif selected == "About Us":
         """, unsafe_allow_html=True)
 
     with col2:
-        st.image(
-            "Untitled-design-2.jpg",
-            caption="Hydroponic Farming System",
-            use_container_width=True
-        )
-        
-     # 2nd section: "Why it matters" with image on the left
-    col_img, spacer, col_txt = st.columns([2, 0.5, 3], vertical_alignment="top")
-    with col_img:
-        st.image(
-            "Hydro-tower2.png",
-            caption="Benefits of Hydroponics",
-            use_container_width=True
-        )
-    with col_txt:
+        st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
+
         st.markdown("""
-            <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: justify;">
-                <strong>Why it matters:</strong><br>
-                With climate change, urbanization, and rising food demands, hydroponics offers a smart solution.
-                It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities.
-                It brings food production closer to consumers and helps reduce the carbon footprint.
-            </p>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
+            <strong>Why it matters:</strong><br>
+            With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
+            It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities. 
+            It reduces the carbon footprint by bringing food production closer to consumers.
+        </p>
         """, unsafe_allow_html=True)
 
-    # Full-width section: How it works for customers
+    # How it works
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
 
     st.markdown("""
@@ -203,16 +190,35 @@ elif selected == "About Us":
         <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
             Whether you're a home gardener, a school project team, or a commercial grower, our smart system scales with your needs. 
             You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.
-            The Hydro-Pi Smart Plant System uses cutting-edge sensors and a Raspberry Pi to monitor light, temperature, water level, pH, and nutrient concentration in real time. 
-            Our dashboard allows customers to upload data, analyze plant health trends, and receive growth predictions—all in one place. 
-            Connected with the Blynk app, users get alerts and can control irrigation remotely with a single tap. 
-            Whether you're a home grower or a commercial farmer, our system makes hydroponic farming smarter, easier, and more productive.
         </p>
         <p style="color: #2e8b57; font-size: 17px; font-weight: 600; text-align: justify;">
             Experience the future of farming — sustainable, smart, and surprisingly simple.
         </p>
     </div>
     """, unsafe_allow_html=True)
+
+    # Vision & Mission section
+    st.markdown("""<hr style="margin-top: 3rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="padding: 1rem 3rem;">
+        <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem; margin-bottom: 1rem;">
+            Vision & Mission
+        </h3>
+        
+        <h4 style="color: #3a6b35; font-size: 1.4rem; margin-bottom: 0.5rem;">🌱 Vision</h4>
+        <p style="color: #3a4f41; font-size: 16px; line-height: 1.6; text-align: justify;">
+            To revolutionize agriculture by making sustainable, high-tech farming accessible and achievable for everyone — from urban homes to commercial growers — across the globe.
+        </p>
+        
+        <h4 style="color: #3a6b35; font-size: 1.4rem; margin-top: 1rem; margin-bottom: 0.5rem;">🚀 Mission</h4>
+        <p style="color: #3a4f41; font-size: 16px; line-height: 1.6; text-align: justify;">
+            Our mission is to empower individuals and communities through innovative hydroponic technology that fosters self-sufficiency, enhances food security, and supports a greener planet.
+            We aim to deliver smart, user-friendly systems that blend science with simplicity.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 
 #==========Historical Data=============
