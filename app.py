@@ -190,7 +190,8 @@ elif selected == "About Us":
         </p>
         <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
             Whether you're a home gardener, a school project team, or a commercial grower, our smart system scales with your needs. 
-            You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.The Hydro-Pi Smart Plant System uses cutting-edge sensors and a Raspberry Pi to monitor light, temperature, water level, pH, and nutrient concentration in real time. 
+            You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.
+            The Hydro-Pi Smart Plant System uses cutting-edge sensors and a Raspberry Pi to monitor light, temperature, water level, pH, and nutrient concentration in real time. 
             Our dashboard allows customers to upload data, analyze plant health trends, and receive growth predictions—all in one place. 
             Connected with the Blynk app, users get alerts and can control irrigation remotely with a single tap. 
             Whether you're a home grower or a commercial farmer, our system makes hydroponic farming smarter, easier, and more productive.
