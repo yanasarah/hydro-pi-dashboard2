@@ -215,7 +215,7 @@ elif selected == "About Us":
     with col1:
         st.markdown("""
     <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="color: black; font-family: Poppins; text-align: center;">Vision</h3>
+        <h3 style="color: black; font-family: Poppins; text-align: center;">🌐Vision</h3>
         <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
             To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
         </p>
@@ -225,7 +225,7 @@ elif selected == "About Us":
     with col2:
         st.markdown("""
     <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="color: black; font-family: Poppins; text-align: center;">Mission</h3>
+        <h3 style="color: black; font-family: Poppins; text-align: center;">🌐Mission</h3>
         <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
             To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
         </p>
