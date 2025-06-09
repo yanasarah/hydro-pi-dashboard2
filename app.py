@@ -169,17 +169,21 @@ elif selected == "About Us":
             caption="Hydroponic Farming System",
             use_container_width=True
         )
-        st.markdown("""…Explanation after image…""", unsafe_allow_html=True)
         
-        # Why it's important - directly under image
+          # New section: "Why it matters" with image aligned right
+    col3, spacer, col4 = st.columns([3, 0.5, 2])
+    with col3:
         st.markdown("""
-        <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
-            <strong>Why it matters:</strong><br>
-            With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
-            It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities. 
-            It reduces the carbon footprint by bringing food production closer to consumers.
-        </p>
+            <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: justify;">
+                <strong>Why it matters:</strong><br>
+                With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
+                It uses up to 90% less water than traditional farming and can be set up anywhere — from rooftops to indoor facilities. 
+                It reduces the carbon footprint by bringing food production closer to consumers.
+            </p>
         """, unsafe_allow_html=True)
+
+    with col4:
+        st.image("another_picture.jpg", caption="Benefits of Hydroponics", use_container_width=True)
 
     # Full-width section: How it works for customers
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
