@@ -138,6 +138,7 @@ if selected == "Home":
 
 
    #===================ABOUT US===============================
+
 elif selected == "About Us":
     st.markdown("""
     <div style="text-align: center; padding: 2rem;">
@@ -150,29 +151,52 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
+    # Two columns for explanation and image
     col1, col2 = st.columns([3, 2])
-    
+
     with col1:
         st.markdown("""
-        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-right: 1rem; text-align: justify;">
-            <b>Why Hydroponics Matter</b><br>
-            Hydroponics is a sustainable method of cultivating plants without the need for soil. By delivering nutrients directly to the roots through water, 
-            this method uses up to 90% less water than traditional farming. It's perfect for urban areas, regions with poor soil, or places facing water scarcity. 
-            With controlled environments, hydroponics enables faster growth, higher yields, and fewer pests or diseases—making it ideal for a more food-secure future.
-        </p>
-        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-top: 2rem; text-align: justify;">
-            <b>How Our Hydro-Pi Smart System Helps Customers</b><br>
-            The Hydro-Pi Smart Plant System uses cutting-edge sensors and a Raspberry Pi to monitor light, temperature, water level, pH, and nutrient concentration in real time. 
-            Our dashboard allows customers to upload data, analyze plant health trends, and receive growth predictions—all in one place. 
-            Connected with the Blynk app, users get alerts and can control irrigation remotely with a single tap. 
-            Whether you're a home grower or a commercial farmer, our system makes hydroponic farming smarter, easier, and more productive.
+        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; text-align: justify;">
+            Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
+            This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
+            It’s particularly beneficial in environments where arable land is limited, allowing year-round food production and water conservation.
         </p>
         """, unsafe_allow_html=True)
 
     with col2:
         st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
+        
+        # Why it's important - directly under image
+        st.markdown("""
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: left; padding-top: 1rem;">
+            <strong>Why it matters:</strong><br>
+            With climate change, urbanization, and rising food demands, hydroponics offers a smart solution. 
+            It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities. 
+            It reduces the carbon footprint by bringing food production closer to consumers.
+        </p>
+        """, unsafe_allow_html=True)
 
+    # Full-width section: How it works for customers
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
 
+    st.markdown("""
+    <div style="padding: 1rem 3rem;">
+        <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem; margin-bottom: 0.5rem;">
+            How Our System Works for You
+        </h3>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Our hydroponic system is fully automated and beginner-friendly. Sensors monitor water quality, temperature, and light — ensuring optimal plant health at all times. 
+            Customers can easily check the status of their crops through our mobile app or web dashboard.
+        </p>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Whether you're a home gardener, a school project team, or a commercial grower, our smart system scales with your needs. 
+            You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.
+        </p>
+        <p style="color: #2e8b57; font-size: 17px; font-weight: 600; text-align: justify;">
+            Experience the future of farming — sustainable, smart, and surprisingly simple.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 #==========Historical Data=============
