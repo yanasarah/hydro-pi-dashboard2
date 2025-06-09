@@ -150,20 +150,28 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-    # Two columns for explanation and image
     col1, col2 = st.columns([3, 2])
     
     with col1:
         st.markdown("""
         <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-right: 1rem; text-align: justify;">
-            Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
-            This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
-            It’s particularly beneficial in environments where arable land is limited, allowing year-round food production and water conservation.
+            <b>Why Hydroponics Matter</b><br>
+            Hydroponics is a sustainable method of cultivating plants without the need for soil. By delivering nutrients directly to the roots through water, 
+            this method uses up to 90% less water than traditional farming. It's perfect for urban areas, regions with poor soil, or places facing water scarcity. 
+            With controlled environments, hydroponics enables faster growth, higher yields, and fewer pests or diseases—making it ideal for a more food-secure future.
+        </p>
+        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; margin-top: 2rem; text-align: justify;">
+            <b>How Our Hydro-Pi Smart System Helps Customers</b><br>
+            The Hydro-Pi Smart Plant System uses cutting-edge sensors and a Raspberry Pi to monitor light, temperature, water level, pH, and nutrient concentration in real time. 
+            Our dashboard allows customers to upload data, analyze plant health trends, and receive growth predictions—all in one place. 
+            Connected with the Blynk app, users get alerts and can control irrigation remotely with a single tap. 
+            Whether you're a home grower or a commercial farmer, our system makes hydroponic farming smarter, easier, and more productive.
         </p>
         """, unsafe_allow_html=True)
 
     with col2:
         st.image("https://example.com/image.jpg", caption="Hydroponic Farming System", use_column_width=True)
+
 
 
 
