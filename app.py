@@ -197,36 +197,33 @@ elif selected == "About Us":
     """, unsafe_allow_html=True)
 
     # Vision & Mission Section
-st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    st.markdown("""
-    <div style="background-color: #2e8b57; padding: 1.5rem; border-radius: 12px; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
-        <h3 style="color: white; font-family: Poppins; font-size: 1.8rem; text-align: center; margin-bottom: 1rem;">
-            Vision
-        </h3>
-        <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
+    with col1:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem;">Vision</h3>
+        </div>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
             To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
         </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div style="background-color: #2e8b57; padding: 1.5rem; border-radius: 12px; box-shadow: 0px 4px 12px rgba(0,0,0,0.1);">
-        <h3 style="color: white; font-family: Poppins; font-size: 1.8rem; text-align: center; margin-bottom: 1rem;">
-            Mission
-        </h3>
-        <p style="color: white; font-size: 17px; line-height: 1.6; text-align: justify;">
+    with col2:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem;">Mission</h3>
+        </div>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
             To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
         </p>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 
 #==========Historical Data=============
+
 elif selected == "Historical Data":
     st.markdown("""
         <h1 style="color:#2e8b57; font-family: Poppins;">Welcome to the Hydro-Pi Smart Plant System</h1>
