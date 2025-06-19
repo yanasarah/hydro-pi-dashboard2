@@ -107,7 +107,10 @@ if selected == "Home":
 
 # ============= HISTORICAL DATA PAGE =============
 elif selected == "Historical Data":
-    st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
+    st.markdown("""
+        <h1 style="color:#2e8b57; font-family: Poppins;">🌱 Historical Data Analysis</h1>
+    """, unsafe_allow_html=True)
+
     
     # ===== DATA SOURCE SELECTION =====
     data_source = st.radio("Select data source:", 
