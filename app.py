@@ -352,7 +352,10 @@ else:
                 use_container_width=True)
 
 # ============= ENVIRONMENT MONITOR PAGE =============
+
 elif selected == "Environment Monitor":
+    st.markdown("Environment stuff here")
+
     st.title("📊 Environmental Monitoring Dashboard")
     weekly_df = load_weekly()
     
