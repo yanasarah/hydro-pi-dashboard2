@@ -108,40 +108,24 @@ if selected == "Home":
 
 elif selected == "Historical Data":
     # Custom CSS for consistent dark green text
-       st.markdown("""
+    st.markdown("""
     <style>
-        /* Global text color (including sidebar, headers, markdown, etc.) */
         html, body, [class*="st-"] {
             color: #006400 !important;
         }
-
-        /* Headers */
         h1, h2, h3, h4, h5, h6 {
             color: #2e8b57 !important;
         }
-
-        /* Streamlit metric label and value */
         .stMetric label, .stMetric div {
             color: #006400 !important;
         }
-
-        /* Dataframe text */
         .dataframe td, .dataframe th {
             color: #006400 !important;
         }
-
-        /* Input components (labels and text) */
         label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader {
             color: #006400 !important;
         }
-
-        /* Alerts */
         .stAlert, .stSuccess, .stWarning {
-            color: #006400 !important;
-        }
-
-        /* Color text in matplotlib/seaborn plots (axes, ticks) if used */
-        .css-1cpxqw2, .css-1offfwp {
             color: #006400 !important;
         }
     </style>
@@ -149,10 +133,10 @@ elif selected == "Historical Data":
 
     st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
 
-    # ===== DATA SOURCE SELECTION =====
     data_source = st.radio("Select data source:",
                            ["Use built-in dataset", "Upload your own Excel file"],
                            horizontal=True)
+
     
     if data_source == "Upload your own Excel file":
         uploaded_file = st.file_uploader("📤 Upload Excel File", type=["xlsx"])
