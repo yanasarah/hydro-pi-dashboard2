@@ -354,31 +354,33 @@ elif selected == "Historical Data":
 # ============= ENVIRONMENT MONITOR PAGE =============
 
 elif selected == "Environment Monitor":
-    st.markdown("Environment stuff here")
-
-    st.title("📊 Environmental Monitoring Dashboard")
-    weekly_df = load_weekly()
+    st.title("📊 Environmental Monitoring Dashboard")  # Title first
+    
+    weekly_df = load_weekly()  # Load data
     
     if not weekly_df.empty:
+        # Week selection dropdown
         selected_week = st.selectbox("Select Week", weekly_df['Week'].unique())
         week_data = weekly_df[weekly_df['Week'] == selected_week].iloc[0]
         
-        # Metrics
+        # Display metrics in columns
         col1, col2, col3 = st.columns(3)
-        col1.metric("Weekly Avg TDS", f"{week_data['Avg TDS']:.1f} ppm")
-        col2.metric("Weekly Avg pH", f"{week_data['Avg pH']:.2f}")
-        col3.metric("Avg Water Temp", f"{week_data['Avg DS18B20']:.1f}°C")
+        col1.metric("📉 Weekly Avg TDS", f"{week_data['Avg TDS']:.1f} ppm")
+        col2.metric("📊 Weekly Avg pH", f"{week_data['Avg pH']:.2f}")
+        col3.metric("🌡️ Avg Water Temp", f"{week_data['Avg DS18B20']:.1f}°C")
         
-        # Weekly trends
-        st.subheader("Weekly Trends Over Time")
+        # Plot trends
+        st.subheader("📈 Weekly Trends Over Time")
         fig, ax = plt.subplots(figsize=(10, 6))
         weekly_df.set_index('Week')[['Avg TDS', 'Avg pH', 'Avg DS18B20']].plot(ax=ax)
         st.pyplot(fig)
         
-        # Environmental stability
-        st.subheader("Environmental Stability")
+        # Stability analysis
+        st.subheader("⚖️ Environmental Stability")
         stability_data = weekly_df.set_index('Week')[['Avg TDS', 'Avg pH']].std().reset_index()
         st.bar_chart(stability_data.set_index('index'))
+    else:
+        st.error("No data available. Check your dataset or upload new data.")
 
 # ============= GROWTH CONSISTENCY PAGE =============
 elif selected == "Growth Consistency":
