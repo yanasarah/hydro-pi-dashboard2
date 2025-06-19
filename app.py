@@ -105,23 +105,36 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-# ============= HISTORICAL DATA PAGE =============
 elif selected == "Historical Data":
-    # Add custom CSS to ensure text visibility
+    # Custom CSS for consistent dark green text
     st.markdown("""
     <style>
-        .stDataFrame, .stMetric, .stAlert, .stMarkdown {
+        /* Main text color */
+        .stMarkdown, .stRadio, .stSelectbox, .stFileUploader, 
+        .stDataFrame, .stMetric, .stAlert, .stWarning, .stSuccess {
             color: #006400 !important;
         }
-        .st-bb, .st-at, .st-ae, .st-af, .st-ag, .st-ah {
+        
+        /* Input labels and values */
+        .stTextInput label, .stNumberInput label,
+        .stSlider label, .stCheckbox label {
             color: #006400 !important;
+        }
+        
+        /* Table text */
+        .dataframe td {
+            color: #006400 !important;
+        }
+        
+        /* Headers */
+        h1, h2, h3, h4, h5, h6 {
+            color: #2e8b57 !important;
         }
     </style>
     """, unsafe_allow_html=True)
     
     st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
 
-    
     # ===== DATA SOURCE SELECTION =====
     data_source = st.radio("Select data source:", 
                          ["Use built-in dataset", "Upload your own Excel file"],
@@ -150,9 +163,11 @@ elif selected == "Historical Data":
     # ===== DATA EXPLORATION =====
     st.subheader("🔍 Data Overview")
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total Records", len(df))
-    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A")
-    col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A")
+    col1.metric("Total Records", len(df), help="Total number of data records")
+    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A", 
+               help="Number of unique days in dataset")
+    col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A",
+               help="Number of unique weeks in dataset")
 
     # ===== INTERACTIVE FILTERS =====
     st.subheader("📅 Filter Data")
@@ -160,16 +175,18 @@ elif selected == "Historical Data":
     # Create columns for filters
     filter_col1, filter_col2 = st.columns(2)
     
-    # Week filter (only if column exists)
+    # Week filter
     if 'Week' in df.columns:
-        selected_week = filter_col1.selectbox("Select Week", df['Week'].unique())
+        selected_week = filter_col1.selectbox("Select Week", df['Week'].unique(),
+                                            help="Filter data by specific week")
     else:
         selected_week = None
     
-    # Day filter (only if column exists)
+    # Day filter
     if 'Day' in df.columns and selected_week is not None:
         available_days = df[df['Week'] == selected_week]['Day'].unique()
-        selected_day = filter_col2.selectbox("Select Day", available_days)
+        selected_day = filter_col2.selectbox("Select Day", available_days,
+                                           help="Filter data by specific day")
     else:
         selected_day = None
     
@@ -186,25 +203,29 @@ elif selected == "Historical Data":
     
     # pH metric
     if 'pH' in filtered_df.columns:
-        metric_cols[0].metric("Avg pH", f"{filtered_df['pH'].mean():.2f}")
+        metric_cols[0].metric("Avg pH", f"{filtered_df['pH'].mean():.2f}",
+                             help="Average pH level (ideal: 5.8-6.2)")
     else:
         metric_cols[0].metric("Avg pH", "N/A")
     
     # TDS metric
     if 'TDS' in filtered_df.columns:
-        metric_cols[1].metric("Avg TDS", f"{filtered_df['TDS'].mean():.1f} ppm")
+        metric_cols[1].metric("Avg TDS", f"{filtered_df['TDS'].mean():.1f} ppm",
+                             help="Average Total Dissolved Solids (ideal: 650-750 ppm)")
     else:
         metric_cols[1].metric("Avg TDS", "N/A")
     
     # Temperature metric
     if 'DS18B20' in filtered_df.columns:
-        metric_cols[2].metric("Avg Temp", f"{filtered_df['DS18B20'].mean():.1f}°C")
+        metric_cols[2].metric("Avg Temp", f"{filtered_df['DS18B20'].mean():.1f}°C",
+                             help="Average water temperature")
     else:
         metric_cols[2].metric("Avg Temp", "N/A")
     
     # Humidity metric
     if 'HUM 1' in filtered_df.columns:
-        metric_cols[3].metric("Avg Humidity", f"{filtered_df['HUM 1'].mean():.1f}%")
+        metric_cols[3].metric("Avg Humidity", f"{filtered_df['HUM 1'].mean():.1f}%",
+                             help="Average humidity level")
     else:
         metric_cols[3].metric("Avg Humidity", "N/A")
 
@@ -233,7 +254,8 @@ elif selected == "Historical Data":
     if len(numeric_cols) >= 2:
         corr_matrix = filtered_df[numeric_cols].corr()
         fig, ax = plt.subplots(figsize=(8,6))
-        sns.heatmap(corr_matrix, annot=True, cmap="YlGnBu", ax=ax)
+        sns.heatmap(corr_matrix, annot=True, cmap="YlGnBu", ax=ax,
+                   annot_kws={"color": "#006400"})  # Dark green correlation numbers
         st.pyplot(fig)
     else:
         st.warning("Need at least 2 numeric columns for correlation analysis")
@@ -241,7 +263,7 @@ elif selected == "Historical Data":
     # ===== GROWTH SCORE MODEL =====
     st.subheader("🌿 Plant Health Analysis")
     
-    if st.checkbox("Calculate Growth Score", True):
+    if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
         # Check required columns exist
         required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
         if all(col in filtered_df.columns for col in required_cols):
@@ -257,7 +279,7 @@ elif selected == "Historical Data":
             st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
             
             # Machine Learning Prediction
-            if st.checkbox("Show Advanced Predictions"):
+            if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
                 X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
                 y = filtered_df['Growth_Score']
                 
