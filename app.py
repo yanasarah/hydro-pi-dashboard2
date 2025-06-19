@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -235,6 +236,7 @@ elif selected == "About Us":
 
 
 #==========Historical Data=============
+#========== Historical Data =============
 elif selected == "Historical Data":
     st.markdown("""
         <h1 style="color:#2e8b57; font-family: Poppins;">🌱 Historical Data Analysis</h1>
@@ -242,42 +244,70 @@ elif selected == "Historical Data":
 
     st.info("""
     📊 Upload your previous sensor data (Excel file) to let the Hydro-Pi system analyze and understand how your plants were growing under different conditions.
-    
+
     We'll calculate a "growth score" for each record and show you how well the system can learn and predict from your data.
     """)
 
     uploaded_file = st.file_uploader("📤 Upload Excel Sensor Data", type=["xlsx"])
 
     if uploaded_file:
-        # Load all sheet names
+        # Load sheet names
         xls = pd.ExcelFile(uploaded_file)
         sheet_names = xls.sheet_names
 
-        # Let user choose which sheet to analyze
         selected_sheet = st.selectbox("📑 Select sheet to analyze", sheet_names)
-
-        # Load the selected sheet into a DataFrame
         df = pd.read_excel(uploaded_file, sheet_name=selected_sheet)
         st.session_state.df = df
 
         st.subheader(f"📂 Raw Sensor Data from: `{selected_sheet}`")
         st.dataframe(df)
 
-        # Optional: filter only numeric columns
         df_numeric = df.select_dtypes(include=[np.number])
+
+        # Warn if not enough rows
+        if len(df_numeric) < 10:
+            st.warning("This sheet has too few data rows for analysis or machine learning.")
+            st.stop()
+
+        # Visualize sensor trends
+        st.subheader("📊 Sensor Trend Visualization")
+        sensor_col = st.selectbox("Choose a numeric column to visualize", df_numeric.columns)
+        st.line_chart(df[sensor_col])
+
+        # Show correlation heatmap
+        st.subheader("📌 Correlation Heatmap")
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.heatmap(df_numeric.corr(), cmap="YlGnBu", annot=True, ax=ax)
+        st.pyplot(fig)
+
+        # Smart growth score simulation
         X = df_numeric.copy()
+        weights = {
+            'pH': 0.2,
+            'TDS': 0.25,
+            'Temperature': 0.2,
+            'Distance (cm)': 0.1,
+            'LED': 0.1
+        }
 
-        # Simulated growth score calculation
+        score = np.zeros(len(X))
+        used_features = []
+
+        for feature, weight in weights.items():
+            if feature in X.columns:
+                score += weight * X[feature]
+                used_features.append(feature)
+
+        if len(used_features) == 0:
+            st.warning("No valid features found for growth score calculation.")
+            st.stop()
+
+        # Add randomness for simulation
         np.random.seed(42)
-        X['plant_growth'] = (
-            0.2 * X.get('pH', 0) +
-            0.25 * X.get('TDS', 0) +
-            0.2 * X.get('Temperature', 0) +
-            0.1 * X.get('Distance (cm)', 0) +
-            0.1 * X.get('LED', 0) +
-            np.random.normal(0, 0.5, size=len(X))
-        )
+        score += np.random.normal(0, 0.5, len(X))
+        X['plant_growth'] = score
 
+        # Impute and scale
         X = X.dropna(how='all')
         imputer = SimpleImputer(strategy='mean')
         scaler = StandardScaler()
@@ -287,52 +317,48 @@ elif selected == "Historical Data":
 
         y = X['plant_growth'].values
         X_features = X.drop(columns=['plant_growth'])
-        X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
 
+        # Train-test split and model
+        X_train, X_test, y_train, y_test = train_test_split(X_features, y, test_size=0.2, random_state=42)
         model = RandomForestRegressor(n_estimators=100, random_state=42)
         model.fit(X_train, y_train)
         predictions = model.predict(X_test)
         mse = mean_squared_error(y_test, predictions)
 
+        # Summary section
         st.subheader("✅ System Analysis Summary")
         st.markdown(f"""
         - Records analyzed: **{len(df)}**
-        - We calculated a growth score based on your plant's environment.
-        - The system learned from your data and can now predict plant health based on sensor readings.
+        - Growth score used features: **{', '.join(used_features)}**
+        - The system trained a model to predict plant health.
         """)
-
-        st.success("🔍 The system learned patterns with good accuracy. Prediction error is low!")
-
+        st.success("🔍 The system learned patterns with good accuracy.")
         st.markdown(f"**📉 Prediction Error (Mean Squared Error): `{mse:.3f}`**")
-        st.caption("The lower this number, the more accurate the system is.")
 
         st.subheader("🧹 Cleaned & Enriched Data with Growth Score")
         st.dataframe(X.assign(plant_growth=np.round(y, 2)))
 
         st.subheader("🌿 Sample Predictions vs Actual Growth")
-
         pred_df = pd.DataFrame({
             'Actual Growth': np.round(y_test, 2),
             'Predicted Growth': np.round(predictions, 2)
         })
-
         st.dataframe(pred_df.head(10))
 
-        # Visual plot
+        # Chart
         st.subheader("📈 Growth Prediction Chart")
-        fig, ax = plt.subplots()
-        ax.plot(y_test[:20], label='Actual Growth', marker='o')
-        ax.plot(predictions[:20], label='Predicted Growth', linestyle='--', marker='x')
-        ax.set_title('🌿 Predicted vs Actual Plant Growth')
-        ax.set_xlabel('Sample Index')
-        ax.set_ylabel('Growth Score')
-        ax.legend()
-        st.pyplot(fig)
+        fig2, ax2 = plt.subplots()
+        ax2.plot(y_test[:20], label='Actual Growth', marker='o')
+        ax2.plot(predictions[:20], label='Predicted Growth', linestyle='--', marker='x')
+        ax2.set_title('🌿 Predicted vs Actual Plant Growth')
+        ax2.set_xlabel('Sample Index')
+        ax2.set_ylabel('Growth Score')
+        ax2.legend()
+        st.pyplot(fig2)
 
-        # Final takeaway
+        # Takeaway
         st.info("""
         ✅ This shows how the Hydro-Pi system can learn from your past data and simulate how environmental factors impact plant growth.
-        
         Use this insight to plan better care for your plants in the future!
         """)
 
