@@ -241,21 +241,29 @@ elif selected == "Historical Data":
     """, unsafe_allow_html=True)
 
     st.info("""
-    📊 Upload your previous sensor data (CSV file) to let the Hydro-Pi system analyze and understand how your plants were growing under different conditions.
+    📊 Upload your previous sensor data (Excel file) to let the Hydro-Pi system analyze and understand how your plants were growing under different conditions.
     
     We'll calculate a "growth score" for each record and show you how well the system can learn and predict from your data.
     """)
 
-    uploaded_file = st.file_uploader("📤 Upload CSV Sensor Data", type=["csv"])
+    uploaded_file = st.file_uploader("📤 Upload Excel Sensor Data", type=["xlsx"])
 
     if uploaded_file:
-        st.session_state.uploaded_file = uploaded_file
-        df = pd.read_csv(uploaded_file)
+        # Load all sheet names
+        xls = pd.ExcelFile(uploaded_file)
+        sheet_names = xls.sheet_names
+
+        # Let user choose which sheet to analyze
+        selected_sheet = st.selectbox("📑 Select sheet to analyze", sheet_names)
+
+        # Load the selected sheet into a DataFrame
+        df = pd.read_excel(uploaded_file, sheet_name=selected_sheet)
         st.session_state.df = df
 
-        st.subheader("📂 Raw Sensor Data")
+        st.subheader(f"📂 Raw Sensor Data from: `{selected_sheet}`")
         st.dataframe(df)
 
+        # Optional: filter only numeric columns
         df_numeric = df.select_dtypes(include=[np.number])
         X = df_numeric.copy()
 
