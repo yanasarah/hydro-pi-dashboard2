@@ -104,6 +104,7 @@ if selected == "Home":
             <p style="font-size: 20px; color: #1e4620;">{datetime.now().strftime("%A, %d %B %Y")}</p>
         </div>
     """, unsafe_allow_html=True)
+#========= historical data====================
 
 elif selected == "Historical Data":
     # Custom CSS for consistent dark green text
@@ -145,9 +146,7 @@ elif selected == "Historical Data":
         }
     </style>
     """, unsafe_allow_html=True)
-
-    
-    st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
 
     # ===== DATA SOURCE SELECTION =====
     data_source = st.radio("Select data source:", 
