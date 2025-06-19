@@ -146,12 +146,13 @@ elif selected == "Historical Data":
         }
     </style>
     """, unsafe_allow_html=True)
-    
-st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
+
+    st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
+
     # ===== DATA SOURCE SELECTION =====
-    data_source = st.radio("Select data source:", 
-                         ["Use built-in dataset", "Upload your own Excel file"],
-                         horizontal=True)
+    data_source = st.radio("Select data source:",
+                           ["Use built-in dataset", "Upload your own Excel file"],
+                           horizontal=True)
     
     if data_source == "Upload your own Excel file":
         uploaded_file = st.file_uploader("📤 Upload Excel File", type=["xlsx"])
