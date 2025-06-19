@@ -111,8 +111,8 @@ elif selected == "Historical Data":
     
     # ===== DATA SOURCE SELECTION =====
     data_source = st.radio("Select data source:", 
-                          ["Use built-in dataset", "Upload your own Excel file"],
-                          horizontal=True)
+                         ["Use built-in dataset", "Upload your own Excel file"],
+                         horizontal=True)
     
     if data_source == "Upload your own Excel file":
         uploaded_file = st.file_uploader("📤 Upload Excel File", type=["xlsx"])
@@ -134,48 +134,104 @@ elif selected == "Historical Data":
             st.stop()
         st.success("✅ Using built-in Hydro-Pi dataset")
 
-    # ===== REST OF THE ANALYSIS CODE =====
-    # (Keep all the visualization and analysis code from previous version)
+    # ===== DATA EXPLORATION =====
     st.subheader("🔍 Data Overview")
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Records", len(df))
-    col2.metric("Days Recorded", df['Day'].nunique())
+    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A")
     col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A")
+
+    # ===== INTERACTIVE FILTERS =====
+    st.subheader("📅 Filter Data")
     
-    # ... [rest of your analysis code remains the same] ...
-
-        # Interactive Filters
-        st.subheader("📅 Filter Data")
-        week_col, day_col = st.columns(2)
-        selected_week = week_col.selectbox("Select Week", df['Week'].unique())
+    # Create columns for filters
+    filter_col1, filter_col2 = st.columns(2)
+    
+    # Week filter (only if column exists)
+    if 'Week' in df.columns:
+        selected_week = filter_col1.selectbox("Select Week", df['Week'].unique())
+    else:
+        selected_week = None
+    
+    # Day filter (only if column exists)
+    if 'Day' in df.columns and selected_week is not None:
         available_days = df[df['Week'] == selected_week]['Day'].unique()
-        selected_day = day_col.selectbox("Select Day", available_days)
-        
+        selected_day = filter_col2.selectbox("Select Day", available_days)
+    else:
+        selected_day = None
+    
+    # Apply filters
+    if selected_week is not None and selected_day is not None:
         filtered_df = df[(df['Week'] == selected_week) & (df['Day'] == selected_day)]
+    else:
+        filtered_df = df.copy()
+        st.warning("⚠️ Some filter columns not found - showing all data")
 
-        # Key Metrics
-        st.subheader("📊 Daily Summary Metrics")
-        cols = st.columns(4)
-        cols[0].metric("Avg pH", f"{filtered_df['pH'].mean():.2f}")
-        cols[1].metric("Avg TDS", f"{filtered_df['TDS'].mean():.1f} ppm")
-        cols[2].metric("Avg Temp", f"{filtered_df['DS18B20'].mean():.1f}°C")
-        cols[3].metric("Avg Humidity", f"{filtered_df['HUM 1'].mean():.1f}%")
+    # ===== KEY METRICS =====
+    st.subheader("📊 Daily Summary Metrics")
+    metric_cols = st.columns(4)
+    
+    # pH metric
+    if 'pH' in filtered_df.columns:
+        metric_cols[0].metric("Avg pH", f"{filtered_df['pH'].mean():.2f}")
+    else:
+        metric_cols[0].metric("Avg pH", "N/A")
+    
+    # TDS metric
+    if 'TDS' in filtered_df.columns:
+        metric_cols[1].metric("Avg TDS", f"{filtered_df['TDS'].mean():.1f} ppm")
+    else:
+        metric_cols[1].metric("Avg TDS", "N/A")
+    
+    # Temperature metric
+    if 'DS18B20' in filtered_df.columns:
+        metric_cols[2].metric("Avg Temp", f"{filtered_df['DS18B20'].mean():.1f}°C")
+    else:
+        metric_cols[2].metric("Avg Temp", "N/A")
+    
+    # Humidity metric
+    if 'HUM 1' in filtered_df.columns:
+        metric_cols[3].metric("Avg Humidity", f"{filtered_df['HUM 1'].mean():.1f}%")
+    else:
+        metric_cols[3].metric("Avg Humidity", "N/A")
 
-        # Visualizations
-        st.subheader("📈 Environmental Trends")
-        chart_data = filtered_df.set_index('Time')[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-        st.line_chart(chart_data)
+    # ===== VISUALIZATIONS =====
+    st.subheader("📈 Environmental Trends")
+    
+    # Prepare chart data
+    chart_data = filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)
+    columns_to_plot = []
+    
+    for col in ['pH', 'TDS', 'DS18B20', 'HUM 1']:
+        if col in filtered_df.columns:
+            columns_to_plot.append(col)
+    
+    if columns_to_plot:
+        st.line_chart(chart_data[columns_to_plot])
+    else:
+        st.warning("No compatible data columns found for visualization")
 
-        # Correlation Analysis
-        st.subheader("🔗 Parameter Correlations")
-        corr_matrix = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1', 'HUM 2']].corr()
+    # ===== CORRELATION ANALYSIS =====
+    st.subheader("🔗 Parameter Correlations")
+    
+    # Select only numeric columns
+    numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
+    
+    if len(numeric_cols) >= 2:
+        corr_matrix = filtered_df[numeric_cols].corr()
         fig, ax = plt.subplots(figsize=(8,6))
         sns.heatmap(corr_matrix, annot=True, cmap="YlGnBu", ax=ax)
         st.pyplot(fig)
+    else:
+        st.warning("Need at least 2 numeric columns for correlation analysis")
 
-        # Growth Score Model
-        st.subheader("🌿 Plant Health Analysis")
-        if st.checkbox("Calculate Growth Score", True):
+    # ===== GROWTH SCORE MODEL =====
+    st.subheader("🌿 Plant Health Analysis")
+    
+    if st.checkbox("Calculate Growth Score", True):
+        # Check required columns exist
+        required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+        if all(col in filtered_df.columns for col in required_cols):
             filtered_df['Growth_Score'] = (
                 0.3 * filtered_df['DS18B20'] + 
                 0.2 * (100 - filtered_df['HUM 1']) + 
@@ -185,7 +241,7 @@ elif selected == "Historical Data":
             filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
                                         (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
             
-            st.line_chart(filtered_df.set_index('Time')['Growth_Score'])
+            st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
             
             # Machine Learning Prediction
             if st.checkbox("Show Advanced Predictions"):
@@ -197,17 +253,21 @@ elif selected == "Historical Data":
                 predictions = model.predict(X)
                 
                 pred_df = pd.DataFrame({
-                    'Time': filtered_df['Time'],
+                    'Time': filtered_df['Time'] if 'Time' in filtered_df.columns else filtered_df.index,
                     'Actual': y,
                     'Predicted': predictions
                 }).set_index('Time')
                 
                 st.line_chart(pred_df)
                 st.metric("Prediction Accuracy", 
-                          f"{100 - mean_squared_error(y, predictions, squared=False):.1f}%")
+                         f"{100 - mean_squared_error(y, predictions, squared=False):.1f}%")
+        else:
+            st.warning("Missing required columns for growth score calculation")
 
-        # Recommendations
-        st.subheader("💡 Optimization Recommendations")
+    # ===== RECOMMENDATIONS =====
+    st.subheader("💡 Optimization Recommendations")
+    
+    if 'pH' in filtered_df.columns:
         avg_pH = filtered_df['pH'].mean()
         if avg_pH < 5.8:
             st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
@@ -215,7 +275,10 @@ elif selected == "Historical Data":
             st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
         else:
             st.success("✅ pH level is optimal")
+    else:
+        st.warning("pH data not available for recommendations")
 
+    if 'TDS' in filtered_df.columns:
         avg_tds = filtered_df['TDS'].mean()
         if avg_tds < 650:
             st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
@@ -223,10 +286,14 @@ elif selected == "Historical Data":
             st.warning("⚠️ Nutrient levels high. Consider diluting solution.")
         else:
             st.success("✅ Nutrient levels are optimal")
+    else:
+        st.warning("TDS data not available for nutrient recommendations")
 
-        # Raw Data
-        st.subheader("📋 Detailed Measurements")
-        st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), height=300)
+    # ===== RAW DATA =====
+    st.subheader("📋 Detailed Measurements")
+    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
+                height=300,
+                use_container_width=True)
 
 # ============= ENVIRONMENT MONITOR PAGE =============
 elif selected == "Environment Monitor":
@@ -296,11 +363,105 @@ elif selected == "Growth Consistency":
 # ============= OTHER PAGES =============
 elif selected == "About Us":
     st.title("About Hydroponic Systems")
-    # ... (keep your existing About Us content)
+   elif selected == "About Us":
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem;">
+        <h1 style="color: #2e8b57; font-family: Poppins; font-size: 2rem; margin-bottom: 0.1rem;">
+            About Hydroponic Systems
+        </h1>
+        <h2 style="color: #3a6b35; font-family: Poppins; font-size: 2.9rem; margin-top: 0;">
+            At the forefront of innovation
+        </h2>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Two columns for explanation and image
+    col1, col2 = st.columns([3, 2])
+
+    with col1:
+        st.markdown("""
+        <p style="color: #3a4f41; font-size: 18px; line-height: 1.6; text-align: justify;">
+            Hydroponics is a sustainable method of cultivating plants without soil by using nutrient-rich water solutions. 
+            This technique promotes faster plant growth, higher yields, and more efficient use of space and resources. 
+            It’s particularly beneficial in environments where arable land is limited, allowing year-round food production and water conservation.
+        </p>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.image("Untitled-design-2.jpg", caption="Hydroponic Farming System", use_container_width=True)
+       
+
+    # 2nd section: "Why it matters" with image on the left
+    col_img, spacer, col_txt = st.columns([2, 0.5, 3], vertical_alignment="top")
+    with col_img:
+        st.image(
+            "Hydro-tower2.png",
+            caption="Benefits of Hydroponics",
+            use_container_width=True
+        )
+    with col_txt:
+        st.markdown("""
+            <p style="color: #3a4f41; font-size: 17px; line-height: 1.5; text-align: justify;">
+                <strong>Why it matters:</strong><br>
+                With climate change, urbanization, and rising food demands, hydroponics offers a smart solution.
+                It uses up to 90% less water than traditional farming and can be set up virtually anywhere — from rooftops to indoor facilities.
+                It brings food production closer to consumers and helps reduce the carbon footprint.
+            </p>
+        """, unsafe_allow_html=True)
+
+    # How it works section
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="padding: 1rem 3rem;">
+        <h3 style="color: #2e8b57; font-family: Poppins; font-size: 1.8rem; margin-bottom: 0.5rem;">
+            How Our System Works for You
+        </h3>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Our hydroponic system is fully automated and beginner-friendly. Sensors monitor water quality, temperature, and light — ensuring optimal plant health at all times. 
+            Customers can easily check the status of their crops through our mobile app or web dashboard.
+        </p>
+        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
+            Whether you're a home gardener, a school project team, or a commercial grower, our smart system scales with your needs. 
+            You get real-time updates, AI-powered growth predictions, and tips — all to make sure your plants thrive without the guesswork.
+        </p>
+        <p style="color: #2e8b57; font-size: 17px; font-weight: 600; text-align: justify;">
+            Experience the future of farming — sustainable, smart, and surprisingly simple.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Vision & Mission Section
+    st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+    <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="color: black; font-family: Poppins; text-align: center;">🌐 Vision</h3>
+        <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To revolutionize agriculture through smart hydroponic technologies, making sustainable and efficient food production accessible to all, regardless of location or experience.
+        </p>
+    </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+    <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="color: black; font-family: Poppins; text-align: center;">🌐 Mission</h3>
+        <p style="color: black; font-size: 17px; line-height: 1.6; text-align: justify;">
+            To empower communities and individuals by delivering user-friendly, data-driven hydroponic solutions that support a greener planet and a healthier future.
+        </p>
+    </div>
+        """, unsafe_allow_html=True)
+#======insight=========================
 
 elif selected == "Insights":
     st.title("💡 Insights & Recommendations")
     st.info("Advanced insights coming in next update!")
+
+#======contact=========================
 
 elif selected == "Contact":
     st.title("📞 Contact Us")
