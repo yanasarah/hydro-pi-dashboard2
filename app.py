@@ -244,19 +244,42 @@ elif selected == "Historical Data":
         st.warning("No compatible data columns found for visualization")
 
     # ===== CORRELATION ANALYSIS =====
-    st.subheader("🔗 Parameter Correlations")
-    
-    # Select only numeric columns
-    numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
-    
-    if len(numeric_cols) >= 2:
+st.subheader("🔗 Parameter Correlations")
+
+# Select only numeric columns and exclude datetime
+numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
+
+if len(numeric_cols) >= 2:
+    try:
+        # Create correlation matrix
         corr_matrix = filtered_df[numeric_cols].corr()
-        fig, ax = plt.subplots(figsize=(8,6))
-        sns.heatmap(corr_matrix, annot=True, cmap="YlGnBu", ax=ax,
-                   annot_kws={"color": "#006400"})  # Dark green correlation numbers
+        
+        # Create figure with larger size
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        # Customize heatmap appearance
+        sns.heatmap(
+            corr_matrix, 
+            annot=True, 
+            cmap="YlGnBu", 
+            ax=ax,
+            annot_kws={"size": 10, "color": "black"},  # Darker annotation text
+            linewidths=.5
+        )
+        
+        # Rotate x-axis labels for better readability
+        plt.xticks(rotation=45)
+        
+        # Ensure tight layout to prevent cutoff
+        plt.tight_layout()
+        
+        # Display in Streamlit
         st.pyplot(fig)
-    else:
-        st.warning("Need at least 2 numeric columns for correlation analysis")
+        
+    except Exception as e:
+        st.error(f"Error generating correlation heatmap: {e}")
+else:
+    st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
     # ===== GROWTH SCORE MODEL =====
     st.subheader("🌿 Plant Health Analysis")
