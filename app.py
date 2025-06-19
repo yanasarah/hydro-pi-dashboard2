@@ -455,6 +455,7 @@ elif selected == "About Us":
         </p>
     </div>
         """, unsafe_allow_html=True)
+        
 #======insight=========================
 
 elif selected == "Insights":
