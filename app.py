@@ -107,9 +107,19 @@ if selected == "Home":
 
 # ============= HISTORICAL DATA PAGE =============
 elif selected == "Historical Data":
+    # Add custom CSS to ensure text visibility
     st.markdown("""
-        <h1 style="color:#2e8b57; font-family: Poppins;">🌱 Historical Data Analysis</h1>
+    <style>
+        .stDataFrame, .stMetric, .stAlert, .stMarkdown {
+            color: #006400 !important;
+        }
+        .st-bb, .st-at, .st-ae, .st-af, .st-ag, .st-ah {
+            color: #006400 !important;
+        }
+    </style>
     """, unsafe_allow_html=True)
+    
+    st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
 
     
     # ===== DATA SOURCE SELECTION =====
