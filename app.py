@@ -231,28 +231,26 @@ elif selected == "Historical Data":
         metric_cols[3].metric("Avg Humidity", "N/A")
 
     # ===== VISUALIZATIONS =====
-     # ===== VISUALIZATIONS =====
-    st.subheader("📈 Environmental Trends Over Time")
+st.subheader("📈 Environmental Trends by Time")
 
-    # Create a combined datetime index if possible
-    if 'DateTime' in filtered_df.columns:
-        chart_df = filtered_df.set_index('DateTime')
-    elif 'Time' in filtered_df.columns and 'Day' in filtered_df.columns:
-        chart_df = filtered_df.copy()
-        chart_df['DateTime'] = pd.to_datetime(chart_df['Day'].astype(str)) + pd.to_timedelta(chart_df['Time'])
-        chart_df = chart_df.set_index('DateTime')
-    else:
-        chart_df = filtered_df.copy()
-        chart_df.index.name = 'Index'
+if 'Time' in filtered_df.columns:
+    plot_df = filtered_df[['Time'] + columns_to_plot].dropna()
 
-    # Select columns to plot
-    columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in chart_df.columns]
+    fig, ax = plt.subplots(figsize=(10, 5))
 
-    if columns_to_plot:
-        st.line_chart(chart_df[columns_to_plot])
-        st.caption("📌 Trends over time for pH, TDS, temperature, and humidity")
-    else:
-        st.warning("⚠️ No compatible data columns found for visualization.")
+    for col in columns_to_plot:
+        ax.plot(plot_df['Time'], plot_df[col], label=col)
+
+    ax.set_xlabel("Time of Day")
+    ax.set_ylabel("Sensor Reading")
+    ax.set_title("Environmental Trends by Time")
+    ax.legend()
+    ax.grid(True)
+    plt.xticks(rotation=45)
+
+    st.pyplot(fig)
+else:
+    st.warning("⚠️ 'Time' column not found in data.")
 
 
     # ===== CORRELATION ANALYSIS =====
