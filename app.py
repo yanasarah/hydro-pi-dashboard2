@@ -228,41 +228,20 @@ elif selected == "Historical Data":
     else:
         metric_cols[3].metric("Avg Humidity", "N/A")
 #=====environemnt part===========
+st.subheader("📈 Environmental Trends")
 
-st.subheader("📈 Environmental Trends by Time")
+# Use row number as index to avoid plotting issues with string time
+plot_df = filtered_df[['Time', 'pH', 'TDS', 'DS18B20', 'HUM 1']].dropna()
 
-columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in filtered_df.columns]
+# Show time as hover labels
+st.dataframe(plot_df.reset_index(drop=True))
 
-if 'Time' in filtered_df.columns and columns_to_plot:
-    try:
-        plot_df = filtered_df[['Time'] + columns_to_plot].copy()
+# Plot without time on x-axis to avoid formatting errors
+chart_data = plot_df.drop(columns='Time')
+chart_data.index.name = "Measurement #"
 
-        # Convert to timedelta safely
-        plot_df['Time'] = plot_df['Time'].astype(str)
-        plot_df['TimeNum'] = pd.to_timedelta(plot_df['Time'], errors='coerce')
-        plot_df = plot_df.dropna(subset=['TimeNum'])  # drop rows where conversion failed
+st.line_chart(chart_data)
 
-        fig, ax = plt.subplots(figsize=(10, 5))
-
-        for col in columns_to_plot:
-            ax.plot(plot_df['TimeNum'], plot_df[col], marker='o', label=col)
-
-        ax.set_xlabel("Time of Day")
-        ax.set_ylabel("Sensor Values")
-        ax.set_title("Environmental Trends by Time (Daily View)")
-        ax.legend()
-        ax.grid(True)
-
-        # Use string labels for x-axis ticks
-        ax.set_xticks(plot_df['TimeNum'])
-        ax.set_xticklabels(plot_df['Time'], rotation=45)
-
-        st.pyplot(fig)
-
-    except Exception as e:
-        st.error(f"❌ Error creating plot: {e}")
-else:
-    st.warning("⚠️ 'Time' column or data columns not found.")
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
