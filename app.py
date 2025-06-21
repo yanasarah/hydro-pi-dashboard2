@@ -57,8 +57,18 @@ def load_main_data():
 @st.cache_data
 def load_weekly():
     try:
-        return pd.read_excel("summary data.xlsx", sheet_name="weekly trend")
-    except:
+        df = pd.read_excel("summary data.xlsx", sheet_name="weekly trend")
+        if df.empty:
+            st.warning("Weekly trend sheet exists but is empty!")
+        else:
+            st.success("Successfully loaded weekly data!")
+            st.write("First 3 rows:", df.head(3))  # Preview data
+        return df
+    except FileNotFoundError:
+        st.error("Error: 'summary data.xlsx' file not found!")
+        return pd.DataFrame()
+    except Exception as e:
+        st.error(f"Error loading weekly data: {str(e)}")
         return pd.DataFrame()
 
 @st.cache_data
