@@ -354,26 +354,36 @@ elif selected == "Historical Data":
                 height=300,
                 use_container_width=True)
 
-# ============= ENVIRONMENT MONITOR PAGE =============
-# ============= ENVIRONMENT MONITOR PAGE =============
 elif selected == "Environment Monitor":
-    st.title("Environmental Monitoring Dashboard")
-    weekly_df = load_weekly()
+    st.title("📊 Environmental Monitoring Dashboard")
 
-    st.write("Loaded Weekly Data Preview:", weekly_df.head())  # Debug output
+    uploaded_file = st.file_uploader("📂 Upload your summary data Excel file", type=["xlsx"])
 
-    if not weekly_df.empty:
-        st.subheader("Weekly Sensor Trends")
+    if uploaded_file:
+        try:
+            # Load sheet by exact name with trailing space
+            weekly_df = pd.read_excel(uploaded_file, sheet_name="weekly trend ")
+            st.success("✅ Sheet 'weekly trend ' loaded successfully")
+            st.write("Preview of Weekly Data:", weekly_df.head())
 
-        # Plot each sensor trend if column exists
-        sensor_columns = ['Avg TDS', 'Avg pH', 'Avg DS18B20']
-        for col in sensor_columns:
-            if col in weekly_df.columns:
-                st.line_chart(weekly_df[[col]].set_index(weekly_df['Week']))
+            st.subheader("📈 Weekly Sensor Trends")
+
+            if 'Week' not in weekly_df.columns:
+                st.warning("⚠️ 'Week' column not found in uploaded data.")
             else:
-                st.warning(f"Column '{col}' not found in weekly data.")
+                weekly_df = weekly_df.set_index('Week')
+
+                for col in ['Avg TDS', 'Avg pH', 'Avg DS18B20']:
+                    if col in weekly_df.columns:
+                        st.line_chart(weekly_df[[col]])
+                    else:
+                        st.warning(f"⚠️ Column '{col}' not found in uploaded data.")
+
+        except Exception as e:
+            st.error(f"❌ Error reading Excel file: {e}")
     else:
-        st.warning("No weekly data available. Please check your data source.")
+        st.info("ℹ️ Please upload your Excel file with the sheet 'weekly trend ' to view trends.")
+
 
 
 # ============= GROWTH CONSISTENCY PAGE =============
