@@ -363,6 +363,8 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
+
+
 #========ENVIROMENT PART==============
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
