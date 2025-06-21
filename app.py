@@ -55,14 +55,11 @@ def load_main_data():
         return pd.DataFrame()
 @st.cache_data
 def load_weekly():
-    uploaded_file = st.file_uploader("📤 Upload Weekly Data (summary data.xlsx)", type=["xlsx"])
-    if uploaded_file:
-        try:
-            return pd.read_excel(uploaded_file, sheet_name="weekly trend")
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            return pd.DataFrame()
-    return pd.DataFrame()
+    try:
+        return pd.read_excel("summary data.xlsx", sheet_name="weekly trend")
+    except Exception as e:
+        st.error(f"Error loading built-in data: {e}")
+        return pd.DataFrame()
 
 @st.cache_data
 def load_daily():
@@ -357,7 +354,7 @@ elif selected == "Historical Data":
 # ============= ENVIRONMENT MONITOR PAGE =============
 
 elif selected == "Environment Monitor":
-    st.title("📊 Environmental Monitoring Dashboard")  # <-- This should be the FIRST line
+    st.title("📊 Environmental Monitoring Dashboard")
     weekly_df = load_weekly()
     
     if not weekly_df.empty:
