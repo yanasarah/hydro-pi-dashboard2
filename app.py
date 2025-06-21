@@ -7,9 +7,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from streamlit_option_menu import option_menu
 from datetime import datetime
-import os
-st.write("Current directory:", os.getcwd())
-st.write("Files present:", os.listdir())
+
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
@@ -55,23 +53,16 @@ def load_main_data():
         return df
     except:
         return pd.DataFrame()
-
 @st.cache_data
 def load_weekly():
-    try:
-        df = pd.read_excel("summary data.xlsx", sheet_name="weekly trend")
-        if df.empty:
-            st.warning("Weekly trend sheet exists but is empty!")
-        else:
-            st.success("Successfully loaded weekly data!")
-            st.write("First 3 rows:", df.head(3))  # Preview data
-        return df
-    except FileNotFoundError:
-        st.error("Error: 'summary data.xlsx' file not found!")
-        return pd.DataFrame()
-    except Exception as e:
-        st.error(f"Error loading weekly data: {str(e)}")
-        return pd.DataFrame()
+    uploaded_file = st.file_uploader("📤 Upload Weekly Data (summary data.xlsx)", type=["xlsx"])
+    if uploaded_file:
+        try:
+            return pd.read_excel(uploaded_file, sheet_name="weekly trend")
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            return pd.DataFrame()
+    return pd.DataFrame()
 
 @st.cache_data
 def load_daily():
