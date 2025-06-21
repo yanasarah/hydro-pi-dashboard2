@@ -355,46 +355,26 @@ elif selected == "Historical Data":
                 use_container_width=True)
 
 # ============= ENVIRONMENT MONITOR PAGE =============
+# ============= ENVIRONMENT MONITOR PAGE =============
 elif selected == "Environment Monitor":
     st.title("Environmental Monitoring Dashboard")
     weekly_df = load_weekly()
 
-    # Debug: Show the loaded data
-    st.write("Loaded Weekly Data:", weekly_df)
+    st.write("Loaded Weekly Data Preview:", weekly_df.head())  # Debug output
 
     if not weekly_df.empty:
-        if 'Week' in weekly_df.columns:
-            selected_week = st.selectbox("Select Week", weekly_df['Week'].unique())
-            week_data = weekly_df[weekly_df['Week'] == selected_week].iloc[0]
+        st.subheader("Weekly Sensor Trends")
 
-            # Metrics
-            col1, col2, col3 = st.columns(3)
-            if 'Avg TDS' in week_data:
-                col1.metric("Weekly Avg TDS", f"{week_data['Avg TDS']:.1f} ppm")
-            if 'Avg pH' in week_data:
-                col2.metric("Weekly Avg pH", f"{week_data['Avg pH']:.2f}")
-            if 'Avg DS18B20' in week_data:
-                col3.metric("Avg Water Temp", f"{week_data['Avg DS18B20']:.1f}°C")
-
-            # Weekly trends
-            st.subheader("Weekly Trends Over Time")
-            plot_cols = [col for col in ['Avg TDS', 'Avg pH', 'Avg DS18B20'] if col in weekly_df.columns]
-            if plot_cols:
-                fig, ax = plt.subplots(figsize=(10, 6))
-                weekly_df.set_index('Week')[plot_cols].plot(ax=ax)
-                st.pyplot(fig)
+        # Plot each sensor trend if column exists
+        sensor_columns = ['Avg TDS', 'Avg pH', 'Avg DS18B20']
+        for col in sensor_columns:
+            if col in weekly_df.columns:
+                st.line_chart(weekly_df[[col]].set_index(weekly_df['Week']))
             else:
-                st.warning("No columns available for trend plotting.")
-
-            # Environmental stability
-            st.subheader("Environmental Stability")
-            stability_data = weekly_df[plot_cols].std().reset_index()
-            stability_data.columns = ['Parameter', 'Std Dev']
-            st.bar_chart(stability_data.set_index('Parameter'))
-        else:
-            st.error("'Week' column not found in weekly data.")
+                st.warning(f"Column '{col}' not found in weekly data.")
     else:
         st.warning("No weekly data available. Please check your data source.")
+
 
 # ============= GROWTH CONSISTENCY PAGE =============
 elif selected == "Growth Consistency":
