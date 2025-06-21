@@ -354,33 +354,31 @@ elif selected == "Historical Data":
 # ============= ENVIRONMENT MONITOR PAGE =============
 
 elif selected == "Environment Monitor":
-    st.title("📊 Environmental Monitoring Dashboard")  # Title first
-    
-    weekly_df = load_weekly()  # Load data
+    st.title("📊 Environmental Monitoring Dashboard")  # <-- This should be the FIRST line
+    weekly_df = load_weekly()
     
     if not weekly_df.empty:
-        # Week selection dropdown
         selected_week = st.selectbox("Select Week", weekly_df['Week'].unique())
         week_data = weekly_df[weekly_df['Week'] == selected_week].iloc[0]
         
-        # Display metrics in columns
+        # Metrics
         col1, col2, col3 = st.columns(3)
-        col1.metric("📉 Weekly Avg TDS", f"{week_data['Avg TDS']:.1f} ppm")
-        col2.metric("📊 Weekly Avg pH", f"{week_data['Avg pH']:.2f}")
-        col3.metric("🌡️ Avg Water Temp", f"{week_data['Avg DS18B20']:.1f}°C")
+        col1.metric("Weekly Avg TDS", f"{week_data['Avg TDS']:.1f} ppm")
+        col2.metric("Weekly Avg pH", f"{week_data['Avg pH']:.2f}")
+        col3.metric("Avg Water Temp", f"{week_data['Avg DS18B20']:.1f}°C")
         
-        # Plot trends
-        st.subheader("📈 Weekly Trends Over Time")
+        # Weekly trends
+        st.subheader("Weekly Trends Over Time")
         fig, ax = plt.subplots(figsize=(10, 6))
         weekly_df.set_index('Week')[['Avg TDS', 'Avg pH', 'Avg DS18B20']].plot(ax=ax)
         st.pyplot(fig)
         
-        # Stability analysis
-        st.subheader("⚖️ Environmental Stability")
+        # Environmental stability
+        st.subheader("Environmental Stability")
         stability_data = weekly_df.set_index('Week')[['Avg TDS', 'Avg pH']].std().reset_index()
         st.bar_chart(stability_data.set_index('index'))
     else:
-        st.error("No data available. Check your dataset or upload new data.")
+        st.warning("No weekly data available. Please check your data source.")
 
 # ============= GROWTH CONSISTENCY PAGE =============
 elif selected == "Growth Consistency":
