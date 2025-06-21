@@ -74,39 +74,51 @@ def load_daily():
 # ============= HOME PAGE =============
 if selected == "Home":
     st.markdown("""
-    <div style="padding: 2rem; background: linear-gradient(to right, #bdfcc9, #e0ffe0); 
-                border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center;">
-        <h1 style="color: #2e8b57;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
-        <p style="color: #4d774e; font-size: 18px;">Monitor. Predict. Grow smarter 🌿</p>
+    <div style="padding: 2rem; background: linear-gradient(135deg, #a8e6cf, #dcedc1); 
+                border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); text-align: center;">
+        <h1 style="color: #2e7d32; font-size: 3rem;">🌱 Hydro-Pi Smart Farming</h1>
+        <p style="color: #388e3c; font-size: 1.2rem; margin-top: -10px;">Smarter Growth. Greener Future. 🌿</p>
     </div>
-    <br>""", unsafe_allow_html=True)
+    <br>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 🌿 Quick Overview", unsafe_allow_html=True)
 
     col1, col2 = st.columns([2, 1])
+
     with col1:
         st.markdown("""
-            <div style='background-color: #e6ffe6; border-left: 5px solid #66bb66; 
-                        padding: 1rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>
-                🌿 <em>"Grow your health, grow a garden."</em>
-            </div>""", unsafe_allow_html=True)
-    
+        <div style="background-color: #f0fff4; border-left: 6px solid #66bb6a; 
+                    padding: 1.5rem; border-radius: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+                    font-size: 1rem;">
+            🌼 <strong>Did you know?</strong> <br>
+            <em>"A garden is a friend you can visit anytime. Start your journey to smarter farming today!"</em>
+        </div>
+        """, unsafe_allow_html=True)
+
     with col2:
         st.markdown("""
-            <div style='background-color: #ffffff; border: 2px solid #cceccc; 
-                        border-radius: 12px; padding: 1rem; text-align: center;'>
-                <h4 style='margin-top: 0;'>Your Plant:</h4>
-                <p style='font-weight: bold; color: #2e7d32;'>🥬 Spinach</p>
-                <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" 
-                     alt="Spinach" width="100">
-            </div>""", unsafe_allow_html=True)
+        <div style="background-color: #ffffff; border: 2px solid #c8e6c9; 
+                    border-radius: 15px; padding: 1.5rem; text-align: center; 
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+            <h4 style="margin-top: 0; color: #388e3c;">🌿 Current Plant</h4>
+            <p style="font-weight: bold; font-size: 1.2rem; color: #2e7d32;">🥬 Spinach</p>
+            <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" 
+                 alt="Spinach" width="100" style="margin-top: 10px;">
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown(f"""
-        <br>
-        <div style="background-color: #e0f5e9; padding: 1.5rem; border-radius: 15px; 
-                    text-align: center; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);">
-            <h4 style="color: #1e4620;">📅 Today</h4>
-            <p style="font-size: 20px; color: #1e4620;">{datetime.now().strftime("%A, %d %B %Y")}</p>
-        </div>
+    <br>
+    <div style="background: #e8f5e9; padding: 2rem; border-radius: 20px; 
+                text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <h3 style="color: #2e7d32;">📅 Today's Date</h3>
+        <p style="font-size: 22px; font-weight: bold; color: #1b5e20;">
+            {datetime.now().strftime("%A, %d %B %Y")}
+        </p>
+    </div>
     """, unsafe_allow_html=True)
+
 #========= historical data====================
 
 elif selected == "Historical Data":
