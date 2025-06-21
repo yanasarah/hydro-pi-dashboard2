@@ -265,7 +265,6 @@ if 'Time' in filtered_df.columns and columns_to_plot:
 else:
     st.warning("⚠️ 'Time' column or data columns not found.")
 
-
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
 
