@@ -7,7 +7,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from streamlit_option_menu import option_menu
 from datetime import datetime
-
+import os
+st.write("Current directory:", os.getcwd())
+st.write("Files present:", os.listdir())
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
