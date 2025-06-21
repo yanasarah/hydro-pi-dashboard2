@@ -371,18 +371,31 @@ elif selected == "Environment Monitor":
             st.success("✅ Sheet 'weekly trend ' loaded successfully")
             st.write("Preview of Weekly Data:", weekly_df.head())
 
-            st.subheader("📈 Weekly Sensor Trends")
+             st.subheader("📈 Weekly Sensor Trends")
 
             if 'Week' not in weekly_df.columns:
                 st.warning("⚠️ 'Week' column not found in uploaded data.")
             else:
                 weekly_df = weekly_df.set_index('Week')
 
-                for col in ['Avg TDS', 'Avg pH', 'Avg DS18B20', ' Avg DHT22 1','Avg HUM 1','Avg DHT 22 2','Avg HUM 2','	Avg DS18B20']:
+                # Define titles for each chart
+                trend_labels = {
+                    'Avg TDS': '📉 Average TDS per Week (ppm)',
+                    'Avg pH': '🔬 Average pH per Week',
+                    'Avg DHT22 1': '🌡️ Avg Air Temperature (Sensor 1)',
+                    'Avg HUM 1': '💧 Avg Humidity (Sensor 1)',
+                    'Avg DHT 22 2': '🌡️ Avg Air Temperature (Sensor 2)',
+                    'Avg HUM 2': '💧 Avg Humidity (Sensor 2)',
+                    'Avg DS18B20': '🌡️ Avg Water Temperature (DS18B20)'
+                }
+
+                for col, label in trend_labels.items():
                     if col in weekly_df.columns:
+                        st.markdown(f"### {label}")
                         st.line_chart(weekly_df[[col]])
                     else:
-                        st.warning(f"⚠️ Column '{col}' not found in uploaded data.")
+                        st.warning(f"⚠️ Column '{col}' not found in data.")
+
         except Exception as e:
             st.error(f"❌ Error reading Excel file: {e}")
     else:
