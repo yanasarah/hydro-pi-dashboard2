@@ -231,7 +231,7 @@ elif selected == "Historical Data":
         metric_cols[3].metric("Avg Humidity", "N/A")
 
     # ===== VISUALIZATIONS =====
-st.subheader("📈 Environmental Trends by Time")
+    st.subheader("📈 Environmental Trends by Time")
 
     columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in filtered_df.columns]
 
@@ -253,6 +253,7 @@ st.subheader("📈 Environmental Trends by Time")
         st.pyplot(fig)
     else:
         st.warning("⚠️ 'Time' column or data columns not found.")
+
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
@@ -361,6 +362,9 @@ st.subheader("📈 Environmental Trends by Time")
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
+
+
+
 
 #========ENVIROMENT PART==============
 elif selected == "Environment Monitor":
