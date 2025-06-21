@@ -353,15 +353,20 @@ elif selected == "Historical Data":
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
-
+#========ENVIROMENT PART==============
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
 
-    uploaded_file = st.file_uploader("📂 Upload your summary data Excel file", type=["xlsx"])
+    # Only show uploader if file is not already stored
+    if "weekly_file" not in st.session_state:
+        uploaded_file = st.file_uploader("📂 Upload your summary data Excel file", type=["xlsx"])
+        if uploaded_file:
+            st.session_state["weekly_file"] = uploaded_file
+    else:
+        uploaded_file = st.session_state["weekly_file"]
 
     if uploaded_file:
         try:
-            # Load sheet by exact name with trailing space
             weekly_df = pd.read_excel(uploaded_file, sheet_name="weekly trend ")
             st.success("✅ Sheet 'weekly trend ' loaded successfully")
             st.write("Preview of Weekly Data:", weekly_df.head())
@@ -378,11 +383,11 @@ elif selected == "Environment Monitor":
                         st.line_chart(weekly_df[[col]])
                     else:
                         st.warning(f"⚠️ Column '{col}' not found in uploaded data.")
-
         except Exception as e:
             st.error(f"❌ Error reading Excel file: {e}")
     else:
-        st.info("ℹ️ Please upload your Excel file with the sheet 'weekly trend ' to view trends.")
+        st.info("ℹ️ Please upload your Excel file to view environmental trends.")
+
 
 
 
