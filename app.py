@@ -121,22 +121,6 @@ if selected == "Home":
         </div>
         """, unsafe_allow_html=True)
 
-# Enhanced small card with weather
-st.markdown(f"""
-<div style="margin-top: 1rem; background: #e8f5e9; padding: 1rem; border-radius: 12px; 
-            text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-    <h5 style="color: #2e7d32; margin-bottom: 5px;">📅 Today</h5>
-    <p style="font-size: 16px; font-weight: bold; color: #1b5e20;">
-        {datetime.now().strftime("%A, %d %B %Y")}
-    </p>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <img src="https://openweathermap.org/img/wn/02d.png" width="40" alt="Weather Icon">
-        <span style="color: #388e3c; font-size: 15px;">Partly Cloudy, 29°C</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-
 
 #========= historical data====================
 
