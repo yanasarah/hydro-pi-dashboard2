@@ -233,28 +233,26 @@ elif selected == "Historical Data":
     # ===== VISUALIZATIONS =====
 st.subheader("📈 Environmental Trends by Time")
 
-# Choose sensors to show
-columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in filtered_df.columns]
+    columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in filtered_df.columns]
 
-if 'Time' in filtered_df.columns and columns_to_plot:
-    plot_df = filtered_df[['Time'] + columns_to_plot].dropna()
+    if 'Time' in filtered_df.columns and columns_to_plot:
+        plot_df = filtered_df[['Time'] + columns_to_plot].dropna()
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+        fig, ax = plt.subplots(figsize=(10, 5))
 
-    for col in columns_to_plot:
-        ax.plot(plot_df['Time'], plot_df[col], marker='o', label=col)
+        for col in columns_to_plot:
+            ax.plot(plot_df['Time'], plot_df[col], marker='o', label=col)
 
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Sensor Values")
-    ax.set_title("Environmental Trends by Time (Daily View)")
-    ax.legend()
-    ax.grid(True)
-    plt.xticks(rotation=45)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Sensor Values")
+        ax.set_title("Environmental Trends by Time (Daily View)")
+        ax.legend()
+        ax.grid(True)
+        plt.xticks(rotation=45)
 
-    st.pyplot(fig)
-else:
-    st.warning("⚠️ 'Time' column or data columns not found.")
-
+        st.pyplot(fig)
+    else:
+        st.warning("⚠️ 'Time' column or data columns not found.")
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
@@ -365,7 +363,6 @@ else:
                 use_container_width=True)
 
 #========ENVIROMENT PART==============
-
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
 
@@ -412,8 +409,6 @@ elif selected == "Environment Monitor":
             st.error(f"❌ Error reading Excel file: {e}")
     else:
         st.info("ℹ️ Please upload your Excel file to view environmental trends.")
-
-
 
 
 # ============= GROWTH CONSISTENCY PAGE =============
