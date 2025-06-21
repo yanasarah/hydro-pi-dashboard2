@@ -62,8 +62,6 @@ def load_weekly():
         st.error(f"Error loading weekly trend data: {e}")
         return pd.DataFrame()
 
-
-
 @st.cache_data
 def load_daily():
     try:
@@ -107,8 +105,11 @@ if selected == "Home":
             <p style="font-size: 20px; color: #1e4620;">{datetime.now().strftime("%A, %d %B %Y")}</p>
         </div>
     """, unsafe_allow_html=True)
-#========= historical data====================
 
+
+
+
+#========= historical data====================
 elif selected == "Historical Data":
     # Custom CSS for consistent dark green text
     st.markdown("""
