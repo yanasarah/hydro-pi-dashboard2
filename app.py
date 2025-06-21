@@ -378,7 +378,7 @@ elif selected == "Environment Monitor":
             else:
                 weekly_df = weekly_df.set_index('Week')
 
-                for col in ['Avg TDS', 'Avg pH', 'Avg DS18B20']:
+                for col in ['Avg TDS', 'Avg pH', 'Avg DS18B20', ' Avg DHT22 1','Avg HUM 1','Avg DHT 22 2','Avg HUM 2','	Avg DS18B20']:
                     if col in weekly_df.columns:
                         st.line_chart(weekly_df[[col]])
                     else:
