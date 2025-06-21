@@ -72,6 +72,7 @@ def load_daily():
         return pd.DataFrame()
 
 # ============= HOME PAGE =============
+# ============= HOME PAGE =============
 if selected == "Home":
     st.markdown("""
     <div style="padding: 2rem; background: linear-gradient(135deg, #a8e6cf, #dcedc1); 
@@ -84,40 +85,42 @@ if selected == "Home":
 
     st.markdown("### 🌿 Quick Overview", unsafe_allow_html=True)
 
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns([2, 1])  # Left (2x size), Right (1x size)
 
     with col1:
         st.markdown("""
         <div style="background-color: #f0fff4; border-left: 6px solid #66bb6a; 
                     padding: 1.5rem; border-radius: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
                     font-size: 1rem;">
-            🌼 <strong>Did you know?</strong> <br>
+            🌼 <strong>Did you know?</strong><br>
             <em>"A garden is a friend you can visit anytime. Start your journey to smarter farming today!"</em>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
+        # Current Plant box
         st.markdown("""
         <div style="background-color: #ffffff; border: 2px solid #c8e6c9; 
-                    border-radius: 15px; padding: 1.5rem; text-align: center; 
+                    border-radius: 15px; padding: 1.2rem; text-align: center; 
                     box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
             <h4 style="margin-top: 0; color: #388e3c;">🌿 Current Plant</h4>
-            <p style="font-weight: bold; font-size: 1.2rem; color: #2e7d32;">🥬 Spinach</p>
+            <p style="font-weight: bold; font-size: 1.1rem; color: #2e7d32;">🥬 Spinach</p>
             <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" 
-                 alt="Spinach" width="100" style="margin-top: 10px;">
+                 alt="Spinach" width="90" style="margin-top: 5px;">
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <br>
-    <div style="background: #e8f5e9; padding: 2rem; border-radius: 20px; 
-                text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-        <h3 style="color: #2e7d32;">📅 Today's Date</h3>
-        <p style="font-size: 22px; font-weight: bold; color: #1b5e20;">
-            {datetime.now().strftime("%A, %d %B %Y")}
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+        # Small Date box under the plant card
+        st.markdown(f"""
+        <div style="margin-top: 1rem; background: #e8f5e9; padding: 1rem; border-radius: 12px; 
+                    text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+            <h5 style="color: #2e7d32; margin-bottom: 5px;">📅 Today</h5>
+            <p style="font-size: 16px; font-weight: bold; color: #1b5e20;">
+                {datetime.now().strftime("%A, %d %B %Y")}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
 
 #========= historical data====================
 
