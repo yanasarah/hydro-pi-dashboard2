@@ -106,9 +106,6 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-
-
-
 #========= historical data====================
 elif selected == "Historical Data":
     # Custom CSS for consistent dark green text
@@ -230,6 +227,7 @@ elif selected == "Historical Data":
                              help="Average humidity level")
     else:
         metric_cols[3].metric("Avg Humidity", "N/A")
+#=====environemnt part===========
 
 st.subheader("📈 Environmental Trends by Time")
 
@@ -373,10 +371,7 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
-
-
-
-
+    
 #========ENVIROMENT PART==============
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
