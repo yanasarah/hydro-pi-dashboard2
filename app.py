@@ -62,6 +62,8 @@ def load_weekly():
         st.error(f"Error loading weekly trend data: {e}")
         return pd.DataFrame()
 
+
+
 @st.cache_data
 def load_daily():
     try:
@@ -105,8 +107,8 @@ if selected == "Home":
             <p style="font-size: 20px; color: #1e4620;">{datetime.now().strftime("%A, %d %B %Y")}</p>
         </div>
     """, unsafe_allow_html=True)
-
 #========= historical data====================
+
 elif selected == "Historical Data":
     # Custom CSS for consistent dark green text
     st.markdown("""
@@ -227,21 +229,22 @@ elif selected == "Historical Data":
                              help="Average humidity level")
     else:
         metric_cols[3].metric("Avg Humidity", "N/A")
-#=====environemnt part===========
-st.subheader("📈 Environmental Trends")
 
-# Use row number as index to avoid plotting issues with string time
-plot_df = filtered_df[['Time', 'pH', 'TDS', 'DS18B20', 'HUM 1']].dropna()
-
-# Show time as hover labels
-st.dataframe(plot_df.reset_index(drop=True))
-
-# Plot without time on x-axis to avoid formatting errors
-chart_data = plot_df.drop(columns='Time')
-chart_data.index.name = "Measurement #"
-
-st.line_chart(chart_data)
-
+    # ===== VISUALIZATIONS =====
+    st.subheader("📈 Environmental Trends")
+    
+    # Prepare chart data
+    chart_data = filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)
+    columns_to_plot = []
+    
+    for col in ['pH', 'TDS', 'DS18B20', 'HUM 1']:
+        if col in filtered_df.columns:
+            columns_to_plot.append(col)
+    
+    if columns_to_plot:
+        st.line_chart(chart_data[columns_to_plot])
+    else:
+        st.warning("No compatible data columns found for visualization")
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
@@ -350,7 +353,6 @@ st.line_chart(chart_data)
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
-    
 #========ENVIROMENT PART==============
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
@@ -398,6 +400,8 @@ elif selected == "Environment Monitor":
             st.error(f"❌ Error reading Excel file: {e}")
     else:
         st.info("ℹ️ Please upload your Excel file to view environmental trends.")
+
+
 
 
 # ============= GROWTH CONSISTENCY PAGE =============
