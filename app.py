@@ -231,20 +231,29 @@ elif selected == "Historical Data":
         metric_cols[3].metric("Avg Humidity", "N/A")
 
     # ===== VISUALIZATIONS =====
-    st.subheader("📈 Environmental Trends")
-    
-    # Prepare chart data
-    chart_data = filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)
-    columns_to_plot = []
-    
-    for col in ['pH', 'TDS', 'DS18B20', 'HUM 1']:
-        if col in filtered_df.columns:
-            columns_to_plot.append(col)
-    
-    if columns_to_plot:
-        st.line_chart(chart_data[columns_to_plot])
+     # ===== VISUALIZATIONS =====
+    st.subheader("📈 Environmental Trends Over Time")
+
+    # Create a combined datetime index if possible
+    if 'DateTime' in filtered_df.columns:
+        chart_df = filtered_df.set_index('DateTime')
+    elif 'Time' in filtered_df.columns and 'Day' in filtered_df.columns:
+        chart_df = filtered_df.copy()
+        chart_df['DateTime'] = pd.to_datetime(chart_df['Day'].astype(str)) + pd.to_timedelta(chart_df['Time'])
+        chart_df = chart_df.set_index('DateTime')
     else:
-        st.warning("No compatible data columns found for visualization")
+        chart_df = filtered_df.copy()
+        chart_df.index.name = 'Index'
+
+    # Select columns to plot
+    columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in chart_df.columns]
+
+    if columns_to_plot:
+        st.line_chart(chart_df[columns_to_plot])
+        st.caption("📌 Trends over time for pH, TDS, temperature, and humidity")
+    else:
+        st.warning("⚠️ No compatible data columns found for visualization.")
+
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
