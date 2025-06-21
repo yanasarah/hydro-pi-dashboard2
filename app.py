@@ -233,24 +233,27 @@ elif selected == "Historical Data":
     # ===== VISUALIZATIONS =====
 st.subheader("📈 Environmental Trends by Time")
 
-if 'Time' in filtered_df.columns:
+# Choose sensors to show
+columns_to_plot = [col for col in ['pH', 'TDS', 'DS18B20', 'HUM 1'] if col in filtered_df.columns]
+
+if 'Time' in filtered_df.columns and columns_to_plot:
     plot_df = filtered_df[['Time'] + columns_to_plot].dropna()
 
     fig, ax = plt.subplots(figsize=(10, 5))
 
     for col in columns_to_plot:
-        ax.plot(plot_df['Time'], plot_df[col], label=col)
+        ax.plot(plot_df['Time'], plot_df[col], marker='o', label=col)
 
-    ax.set_xlabel("Time of Day")
-    ax.set_ylabel("Sensor Reading")
-    ax.set_title("Environmental Trends by Time")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Sensor Values")
+    ax.set_title("Environmental Trends by Time (Daily View)")
     ax.legend()
     ax.grid(True)
     plt.xticks(rotation=45)
 
     st.pyplot(fig)
 else:
-    st.warning("⚠️ 'Time' column not found in data.")
+    st.warning("⚠️ 'Time' column or data columns not found.")
 
 
     # ===== CORRELATION ANALYSIS =====
