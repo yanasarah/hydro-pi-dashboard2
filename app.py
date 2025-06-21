@@ -364,8 +364,8 @@ else:
                 height=300,
                 use_container_width=True)
 
-
 #========ENVIROMENT PART==============
+
 elif selected == "Environment Monitor":
     st.title("📊 Environmental Monitoring Dashboard")
 
