@@ -56,10 +56,15 @@ def load_main_data():
 @st.cache_data
 def load_weekly():
     try:
-        return pd.read_excel("summary data.xlsx", sheet_name="weekly trend ")
+        xl = pd.ExcelFile("summary data.xlsx")
+        for sheet in xl.sheet_names:
+            if sheet.strip().lower() == "weekly trend":
+                return xl.parse(sheet)
+        raise ValueError("Sheet 'weekly trend' not found")
     except Exception as e:
         st.error(f"Error loading built-in data: {e}")
         return pd.DataFrame()
+
 
 @st.cache_data
 def load_daily():
