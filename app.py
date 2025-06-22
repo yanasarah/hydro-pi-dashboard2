@@ -182,18 +182,30 @@ elif selected == "Historical Data":
     # ===== VISUALIZATIONS =====
     st.subheader("📈 Environmental Trends")
     
-    # Prepare chart data
-    chart_data = filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)
-    columns_to_plot = []
-    
-    for col in ['pH', 'TDS', 'DS18B20', 'HUM 1']:
-        if col in filtered_df.columns:
-            columns_to_plot.append(col)
-    
-    if columns_to_plot:
-        st.line_chart(chart_data[columns_to_plot])
-    else:
-        st.warning("No compatible data columns found for visualization")
+   # ===== INTERACTIVE FILTERS =====
+st.subheader("        Filter Data")
+
+filter_col1, filter_col2 = st.columns(2)
+
+# Week filter
+if 'Week' in df.columns:
+    selected_week = filter_col1.selectbox("Select Week", df['Week'].dropna().unique())
+else:
+    selected_week = None
+
+# Day filter
+if 'Day' in df.columns and selected_week is not None:
+    available_days = df[df['Week'] == selected_week]['Day'].unique()
+    selected_day = filter_col2.selectbox("Select Day", available_days)
+else:
+    selected_day = None
+
+# Apply filters
+if selected_week is not None and selected_day is not None:
+    filtered_df = df[(df['Week'] == selected_week) & (df['Day'] == selected_day)]
+else:
+    filtered_df = df.copy()
+
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
