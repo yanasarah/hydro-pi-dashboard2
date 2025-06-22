@@ -123,9 +123,8 @@ if selected == "Home":
 
 
 
-#========= historical data==================== 
+# ========= historical data==================== 
 elif selected == "Historical Data": 
-    # Custom CSS for consistent dark green text 
     st.markdown(""" 
     <style> 
         html, body, [class*="st-"] { color: #006400 !important; } 
@@ -163,14 +162,34 @@ elif selected == "Historical Data":
             st.stop()
         st.success("Using built-in Hydro-Pi dataset")
 
-    # ===== DATA EXPLORATION ===== 
+    # ===== FILTERING =====
+    st.subheader("        Filter Data")
+    filter_col1, filter_col2 = st.columns(2)
+
+    if 'Week' in df.columns:
+        selected_week = filter_col1.selectbox("Select Week", df['Week'].dropna().unique())
+    else:
+        selected_week = None
+
+    if 'Day' in df.columns and selected_week is not None:
+        available_days = df[df['Week'] == selected_week]['Day'].unique()
+        selected_day = filter_col2.selectbox("Select Day", available_days)
+    else:
+        selected_day = None
+
+    if selected_week is not None and selected_day is not None:
+        filtered_df = df[(df['Week'] == selected_week) & (df['Day'] == selected_day)]
+    else:
+        filtered_df = df.copy()
+
+    # ===== SUMMARY =====
     st.subheader("           Data Overview") 
     col1, col2, col3 = st.columns(3) 
     col1.metric("Total Records", len(df)) 
     col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A") 
     col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A") 
 
-    # ===== WEEKLY STATISTICS TABLE =====
+    # ===== WEEKLY STATISTICS =====
     st.subheader("Weekly Summary (Mean and Standard Deviation)")
 
     if 'Week' in df.columns:
@@ -179,33 +198,7 @@ elif selected == "Historical Data":
     else:
         st.warning("Week column not found — unable to compute weekly summary.")
 
-    # ===== VISUALIZATIONS =====
-    st.subheader("📈 Environmental Trends")
 
-
-   # ===== INTERACTIVE FILTERS =====
-st.subheader("        Filter Data")
-
-filter_col1, filter_col2 = st.columns(2)
-
-# Week filter
-if 'Week' in df.columns:
-    selected_week = filter_col1.selectbox("Select Week", df['Week'].dropna().unique())
-else:
-    selected_week = None
-
-# Day filter
-if 'Day' in df.columns and selected_week is not None:
-    available_days = df[df['Week'] == selected_week]['Day'].unique()
-    selected_day = filter_col2.selectbox("Select Day", available_days)
-else:
-    selected_day = None
-
-# Apply filters
-if selected_week is not None and selected_day is not None:
-    filtered_df = df[(df['Week'] == selected_week) & (df['Day'] == selected_day)]
-else:
-    filtered_df = df.copy()
 
 
     # ===== CORRELATION ANALYSIS =====
