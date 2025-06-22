@@ -122,95 +122,53 @@ if selected == "Home":
         """, unsafe_allow_html=True)
 
 
-#========= historical data====================
 
-elif selected == "Historical Data":
-    # Custom CSS for consistent dark green text
-    st.markdown("""
-    <style>
-        html, body, [class*="st-"] {
-            color: #006400 !important;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #2e8b57 !important;
-        }
-        .stMetric label, .stMetric div {
-            color: #006400 !important;
-        }
-        .dataframe td, .dataframe th {
-            color: #006400 !important;
-        }
-        label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader {
-            color: #006400 !important;
-        }
-        .stAlert, .stSuccess, .stWarning {
-            color: #006400 !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+#========= historical data==================== 
+elif selected == "Historical Data": 
+    # Custom CSS for consistent dark green text 
+    st.markdown(""" 
+    <style> 
+        html, body, [class*="st-"] { color: #006400 !important; } 
+        h1, h2, h3, h4, h5, h6 { color: #2e8b57 !important; } 
+        .stMetric label, .stMetric div { color: #006400 !important; } 
+        .dataframe td, .dataframe th { color: #006400 !important; } 
+        label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader { color: #006400 !important; } 
+        .stAlert, .stSuccess, .stWarning { color: #006400 !important; } 
+    </style> 
+    """, unsafe_allow_html=True) 
 
-    st.markdown("<h1 style='color:#2e8b57;'>🌱 Historical Data Analysis</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
 
-    data_source = st.radio("Select data source:",
-                           ["Use built-in dataset", "Upload your own Excel file"],
-                           horizontal=True)
+    data_source = st.radio("Select data source:", 
+                           ["Use built-in dataset", "Upload your own Excel file"], 
+                           horizontal=True) 
 
-    
     if data_source == "Upload your own Excel file":
-    uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
-    if uploaded_file:
-        try:
-            df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
-            df['Week'] = df['Week'].ffill()  # Fill missing week numbers
-                st.success("✅ File uploaded successfully!")
+        uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
+        if uploaded_file:
+            try:
+                df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
+                df['Week'] = df['Week'].ffill()
+                st.success("File uploaded successfully!")
             except Exception as e:
                 st.error(f"Error reading file: {e}")
                 st.stop()
         else:
-            st.info("ℹ️ Please upload an Excel file or switch to built-in dataset")
+            st.info("Please upload an Excel file or switch to built-in dataset")
             st.stop()
     else:
-        # Use the built-in dataset
         df = load_main_data()
         if df.empty:
             st.error("Built-in data not available. Please upload a file instead.")
             st.stop()
-        st.success("✅ Using built-in Hydro-Pi dataset")
+        st.success("Using built-in Hydro-Pi dataset")
 
-  # ===== DATA EXPLORATION ===== 
+    # ===== DATA EXPLORATION ===== 
     st.subheader("           Data Overview") 
     col1, col2, col3 = st.columns(3) 
     col1.metric("Total Records", len(df)) 
     col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A") 
     col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A") 
-
-    # ===== INTERACTIVE FILTERS =====
-    st.subheader("📅 Filter Data")
-    
-    # Create columns for filters
-    filter_col1, filter_col2 = st.columns(2)
-    
-    # Week filter
-    if 'Week' in df.columns:
-        selected_week = filter_col1.selectbox("Select Week", df['Week'].unique(),
-                                            help="Filter data by specific week")
-    else:
-        selected_week = None
-    
-    # Day filter
-    if 'Day' in df.columns and selected_week is not None:
-        available_days = df[df['Week'] == selected_week]['Day'].unique()
-        selected_day = filter_col2.selectbox("Select Day", available_days,
-                                           help="Filter data by specific day")
-    else:
-        selected_day = None
-    
-    # Apply filters
-    if selected_week is not None and selected_day is not None:
-        filtered_df = df[(df['Week'] == selected_week) & (df['Day'] == selected_day)]
-    else:
-        filtered_df = df.copy()
-        st.warning("⚠️ Some filter columns not found - showing all data")
 
     # ===== WEEKLY STATISTICS TABLE =====
     st.subheader("Weekly Summary (Mean and Standard Deviation)")
