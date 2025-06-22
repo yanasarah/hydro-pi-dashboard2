@@ -177,14 +177,12 @@ elif selected == "Historical Data":
             st.stop()
         st.success("✅ Using built-in Hydro-Pi dataset")
 
-    # ===== DATA EXPLORATION =====
-    st.subheader("🔍 Data Overview")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total Records", len(df), help="Total number of data records")
-    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A", 
-               help="Number of unique days in dataset")
-    col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A",
-               help="Number of unique weeks in dataset")
+  # ===== DATA EXPLORATION ===== 
+    st.subheader("           Data Overview") 
+    col1, col2, col3 = st.columns(3) 
+    col1.metric("Total Records", len(df)) 
+    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A") 
+    col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A") 
 
     # ===== INTERACTIVE FILTERS =====
     st.subheader("📅 Filter Data")
@@ -214,46 +212,14 @@ elif selected == "Historical Data":
         filtered_df = df.copy()
         st.warning("⚠️ Some filter columns not found - showing all data")
 
-    # ===== KEY METRICS =====
-    st.subheader("📊 Daily Summary Metrics")
-# ===== WEEKLY STATISTICS TABLE =====
-st.subheader("Weekly Summary (Mean and Standard Deviation)")
+    # ===== WEEKLY STATISTICS TABLE =====
+    st.subheader("Weekly Summary (Mean and Standard Deviation)")
 
-if 'Week' in df.columns:
-    stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
-    st.dataframe(stat_table.style.format("{:.2f}"), height=350, use_container_width=True)
-else:
-    st.warning("Week column not found — unable to compute weekly summary.")
-
-    metric_cols = st.columns(4)
-    
-    # pH metric
-    if 'pH' in filtered_df.columns:
-        metric_cols[0].metric("Avg pH", f"{filtered_df['pH'].mean():.2f}",
-                             help="Average pH level (ideal: 5.8-6.2)")
+    if 'Week' in df.columns:
+        stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
+        st.dataframe(stat_table.style.format("{:.2f}"), height=350, use_container_width=True)
     else:
-        metric_cols[0].metric("Avg pH", "N/A")
-    
-    # TDS metric
-    if 'TDS' in filtered_df.columns:
-        metric_cols[1].metric("Avg TDS", f"{filtered_df['TDS'].mean():.1f} ppm",
-                             help="Average Total Dissolved Solids (ideal: 650-750 ppm)")
-    else:
-        metric_cols[1].metric("Avg TDS", "N/A")
-    
-    # Temperature metric
-    if 'DS18B20' in filtered_df.columns:
-        metric_cols[2].metric("Avg Temp", f"{filtered_df['DS18B20'].mean():.1f}°C",
-                             help="Average water temperature")
-    else:
-        metric_cols[2].metric("Avg Temp", "N/A")
-    
-    # Humidity metric
-    if 'HUM 1' in filtered_df.columns:
-        metric_cols[3].metric("Avg Humidity", f"{filtered_df['HUM 1'].mean():.1f}%",
-                             help="Average humidity level")
-    else:
-        metric_cols[3].metric("Avg Humidity", "N/A")
+        st.warning("Week column not found — unable to compute weekly summary.")
 
     # ===== VISUALIZATIONS =====
     st.subheader("📈 Environmental Trends")
