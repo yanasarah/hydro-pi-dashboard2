@@ -157,10 +157,11 @@ elif selected == "Historical Data":
 
     
     if data_source == "Upload your own Excel file":
-        uploaded_file = st.file_uploader("📤 Upload Excel File", type=["xlsx"])
-        if uploaded_file:
-            try:
-                df = pd.read_excel(uploaded_file)
+    uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
+    if uploaded_file:
+        try:
+            df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
+            df['Week'] = df['Week'].ffill()  # Fill missing week numbers
                 st.success("✅ File uploaded successfully!")
             except Exception as e:
                 st.error(f"Error reading file: {e}")
@@ -215,6 +216,15 @@ elif selected == "Historical Data":
 
     # ===== KEY METRICS =====
     st.subheader("📊 Daily Summary Metrics")
+# ===== WEEKLY STATISTICS TABLE =====
+st.subheader("Weekly Summary (Mean and Standard Deviation)")
+
+if 'Week' in df.columns:
+    stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
+    st.dataframe(stat_table.style.format("{:.2f}"), height=350, use_container_width=True)
+else:
+    st.warning("Week column not found — unable to compute weekly summary.")
+
     metric_cols = st.columns(4)
     
     # pH metric
