@@ -182,8 +182,6 @@ elif selected == "Historical Data":
     # ===== VISUALIZATIONS =====
     st.subheader("📈 Environmental Trends")
 
-
-
    # ===== INTERACTIVE FILTERS =====
 st.subheader("        Filter Data")
 filter_col1, filter_col2 = st.columns(2)
