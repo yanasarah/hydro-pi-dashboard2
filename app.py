@@ -399,27 +399,41 @@ elif selected == "Environment Monitor":
         )
         fig_corr.update_layout(title_text="Sensor Correlation Heatmap", title_x=0.5)
         st.plotly_chart(fig_corr, use_container_width=True)
+
+        #======weekly bar chart=====
        
-        st.markdown("### 📊 Weekly Average Comparison (Bar Chart)")
+                # 📊 Weekly Average Bar Chart (Expanded Version)
+        st.markdown("### 📊 Weekly Average Comparison (Stacked Bar Chart)")
 
-        weekly_avg = df.groupby("Week")[['pH', 'TDS', 'DS18B20']].mean().reset_index()
+        # Choose which sensors to include
+        weekly_avg = df.groupby("Week")[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1']].mean().reset_index()
+        sensor_colors = {
+            'pH': 'green',
+            'TDS': 'blue',
+            'DS18B20': 'orange',
+            'DHT22 1': 'red',
+            'HUM 1': 'purple'
+        }
 
-        # Plot each parameter in separate bars
         fig_bar = go.Figure()
-        for col in ['pH', 'TDS', 'DS18B20']:
+        for sensor in ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1']:
             fig_bar.add_trace(go.Bar(
                 x=weekly_avg['Week'],
-                y=weekly_avg[col],
-                name=col
+                y=weekly_avg[sensor],
+                name=sensor,
+                marker_color=sensor_colors.get(sensor, None),
+                hovertemplate=f"<b>{sensor}</b><br>Week: %{{x}}<br>Avg: %{{y:.2f}}<extra></extra>"
             ))
 
         fig_bar.update_layout(
-            barmode='group',
+            barmode='stack',  # Try 'group' if you prefer grouped bars
+            title='📦 Stacked Weekly Averages for Key Sensors',
             xaxis_title='Week',
-            yaxis_title='Average Value',
-            title='Weekly Average of pH, TDS, and Water Temp',
-            legend_title='Sensor'
+            yaxis_title='Average Sensor Values',
+            legend_title='Sensor',
+            hovermode='x unified'
         )
+
         st.plotly_chart(fig_bar, use_container_width=True)
 
   ### ==== Current Environment Status   ===========   
