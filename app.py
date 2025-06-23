@@ -108,54 +108,85 @@ def load_daily():
         return pd.DataFrame()
 
 # ============= HOME PAGE =============
-# ============= HOME PAGE =============
+
 if selected == "Home":
+    from datetime import datetime
+    import random
+
     st.markdown("""
-    <div style="padding: 2rem; background: linear-gradient(135deg, #a8e6cf, #dcedc1); 
-                border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); text-align: center;">
-        <h1 style="color: #2e7d32; font-size: 3rem;">🌱 Hydro-Pi Smart Farming</h1>
-        <p style="color: #388e3c; font-size: 1.2rem; margin-top: -10px;">Smarter Growth. Greener Future. 🌿</p>
-    </div>
-    <br>
+        <div style="padding: 2rem; background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+                    border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); text-align: center;">
+            <h1 style="color: #2e7d32; font-size: 3rem;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
+            <p style="color: #388e3c; font-size: 1.2rem; margin-top: -10px;">
+                A greener tomorrow starts with a smarter grow today 🌿
+            </p>
+        </div>
+        <br>
     """, unsafe_allow_html=True)
 
-    st.markdown("### 🌿 Quick Overview", unsafe_allow_html=True)
+    # === Daily Tip or Fact ===
+    facts = [
+        "Spinach thrives best in 5.8–6.2 pH range.",
+        "Keep water temperature under 30°C to avoid root stress.",
+        "TDS over 1200 ppm may cause nutrient burn.",
+        "Humidity affects nutrient uptake and transpiration!",
+        "Check EC daily to catch nutrient issues early."
+    ]
+    st.info(f"💡 Daily Grow Tip: **{random.choice(facts)}**")
 
-    col1, col2 = st.columns([2, 1])  # Left (2x size), Right (1x size)
+    # === Plant Overview Card ===
+    st.markdown("### 🌿 Current Plant Overview")
+    col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.markdown("""
-        <div style="background-color: #f0fff4; border-left: 6px solid #66bb6a; 
-                    padding: 1.5rem; border-radius: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
-                    font-size: 1rem;">
-            🌼 <strong>Did you know?</strong><br>
-            <em>"A garden is a friend you can visit anytime. Start your journey to smarter farming today!"</em>
-        </div>
-        """, unsafe_allow_html=True)
-
+        st.success("""
+        **Plant:** 🥬 *Spinach*  
+        **Cycle:** Vegetative  
+        **Light Hours:** 16/8 (On/Off)  
+        **Nutrient Target (TDS):** 650–750 ppm  
+        **Ideal pH:** 5.8–6.2  
+        """)
     with col2:
-        # Current Plant box
-        st.markdown("""
-        <div style="background-color: #ffffff; border: 2px solid #c8e6c9; 
-                    border-radius: 15px; padding: 1.2rem; text-align: center; 
-                    box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-            <h4 style="margin-top: 0; color: #388e3c;">🌿 Current Plant</h4>
-            <p style="font-weight: bold; font-size: 1.1rem; color: #2e7d32;">🥬 Spinach</p>
-            <img src="https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png" 
-                 alt="Spinach" width="90" style="margin-top: 5px;">
-        </div>
-        """, unsafe_allow_html=True)
+        st.image("https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png", width=120)
 
-        # Small Date box under the plant card
-        st.markdown(f"""
-        <div style="margin-top: 1rem; background: #e8f5e9; padding: 1rem; border-radius: 12px; 
+    # === Quick Metrics ===
+    st.markdown("### 📈 Growth Health Snapshot")
+    snap1, snap2 = st.columns([1, 2])
+    snap1.metric("📊 Growth Score", "84%", delta="+1.2%")
+    snap2.progress(84)
+
+    # === Weekly Goals ===
+    st.markdown("### 🎯 Weekly Care Goals")
+    st.checkbox("🌿 Maintain pH between 5.8–6.2", value=True)
+    st.checkbox("💧 Keep TDS around 700 ppm", value=True)
+    st.checkbox("🌡️ Ensure water temp below 30°C", value=False)
+    st.checkbox("💨 Maintain humidity above 40%", value=True)
+
+    # === Optional: Daily Mini Chart (if data available) ===
+    df = st.session_state.get("df", pd.DataFrame())
+    if not df.empty and 'Day' in df.columns and 'Time' in df.columns:
+        today = df['Day'].max()
+        df_today = df[df['Day'] == today]
+        if not df_today.empty:
+            st.markdown("### 📅 Today’s Sensor Summary")
+            st.line_chart(df_today.set_index('Time')[['pH', 'TDS', 'DS18B20']])
+
+    # === Optional: Image Timeline ===
+    st.markdown("### 🪴 Growth Timeline (WIP)")
+    img_col1, img_col2 = st.columns(2)
+    img_col1.image("https://i.imgur.com/yh6cFLo.jpg", caption="Week 1", use_column_width=True)
+    img_col2.image("https://i.imgur.com/y5jE9bK.jpg", caption="Week 4", use_column_width=True)
+
+    # === Date Card ===
+    st.markdown(f"""
+        <div style="margin-top: 2rem; background: #e8f5e9; padding: 1rem; border-radius: 12px;
                     text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
             <h5 style="color: #2e7d32; margin-bottom: 5px;">📅 Today</h5>
             <p style="font-size: 16px; font-weight: bold; color: #1b5e20;">
                 {datetime.now().strftime("%A, %d %B %Y")}
             </p>
         </div>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 
 # ========= historical data==================== 
