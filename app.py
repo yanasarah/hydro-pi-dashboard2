@@ -124,6 +124,7 @@ if selected == "Home":
 
 # ========= historical data==================== 
 elif selected == "Historical Data": 
+    
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <style>
