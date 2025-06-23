@@ -122,7 +122,6 @@ if selected == "Home":
         """, unsafe_allow_html=True)
 
 
-
 # ========= historical data==================== 
 elif selected == "Historical Data": 
     st.markdown(""" 
@@ -205,7 +204,6 @@ else:
         st.dataframe(stat_table.style.format("{:.2f}"), height=350, use_container_width=True)
     else:
         st.warning("Week column not found — unable to compute weekly summary.")
-
 
 
 
@@ -319,7 +317,6 @@ else:
 
 
 
-
 # ========= ENVIRONMENT MONITOR =========
 elif selected == "Environment Monitor":
     st.markdown("""
@@ -370,8 +367,6 @@ elif selected == "Environment Monitor":
 
     else:
         st.warning("📂 No data available. Please upload an Excel file on the Home page.")
-
-
 
 # ============= GROWTH CONSISTENCY PAGE =============
 elif selected == "Growth Consistency":
