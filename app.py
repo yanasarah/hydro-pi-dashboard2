@@ -308,53 +308,52 @@ elif selected == "Historical Data":
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
-#========ENVIROMENT PART==============
+# ========= ENVIRONMENT MONITOR =========
 elif selected == "Environment Monitor":
-    st.title("📊 Environmental Monitoring Dashboard")
+    st.markdown("""
+        <h1 style='text-align: center; color: #4CAF50;'>🌿 Environment Monitor</h1>
+        <p style='text-align: center;'>Live overview of current plant environment</p>
+    """, unsafe_allow_html=True)
 
-    # Only show uploader if file not already stored
-    if "weekly_file" not in st.session_state:
-        uploaded_file = st.file_uploader("📂 Upload your summary data Excel file", type=["xlsx"])
-        if uploaded_file:
-            st.session_state["weekly_file"] = uploaded_file
+    # Example: extract latest row (assuming df is already cleaned)
+    if not df.empty:
+        latest = df.iloc[-1]
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("🌡️ Temperature (°C)", f"{latest['Temperature']:.1f}")
+        col2.metric("💧 pH Level", f"{latest['pH']:.2f}")
+        col3.metric("⚡ TDS (ppm)", f"{latest['TDS']:.0f}")
+
+        col4, col5, col6 = st.columns(3)
+        col4.metric("🌞 Light (LDR)", f"{latest['LDR']}")
+        col5.metric("💦 Humidity 1 (%)", f"{latest['Humidity1']}")
+        col6.metric("💦 Humidity 2 (%)", f"{latest['Humidity2']}")
+
+        st.markdown("---")
+
+        # 🚨 Warning indicators
+        alerts = []
+        if latest['pH'] < 5.5 or latest['pH'] > 7.5:
+            alerts.append("⚠️ pH out of optimal range (5.5 - 7.5)")
+        if latest['TDS'] > 1200:
+            alerts.append("⚠️ High TDS levels (>1200 ppm)")
+        if latest['Temperature'] > 35:
+            alerts.append("🔥 Temperature too high")
+        if latest['LDR'] < 200:
+            alerts.append("🌑 Low light detected")
+        if latest['Distance'] > 20:
+            alerts.append("🚱 Water level low")
+
+        if alerts:
+            st.error("⚠️ Alerts:")
+            for a in alerts:
+                st.markdown(f"- {a}")
+        else:
+            st.success("✅ All environmental parameters are within healthy range.")
+
     else:
-        uploaded_file = st.session_state["weekly_file"]
+        st.warning("No data available. Please upload a CSV on the Home page.")
 
-    if uploaded_file:
-        try:
-            weekly_df = pd.read_excel(uploaded_file, sheet_name="weekly trend ")
-            st.success("✅ Sheet 'weekly trend ' loaded successfully")
-            st.write("Preview of Weekly Data:", weekly_df.head())
-
-            st.subheader("📈 Weekly Sensor Trends")
-
-            if 'Week' not in weekly_df.columns:
-                st.warning("⚠️ 'Week' column not found in uploaded data.")
-            else:
-                weekly_df = weekly_df.set_index('Week')
-
-                # Titles for each graph
-                trend_labels = {
-                    'Avg TDS': '📉 Average TDS per Week (ppm)',
-                    'Avg pH': '🔬 Average pH per Week',
-                    'Avg DHT22 1': '🌡️ Avg Air Temperature (Sensor 1)',
-                    'Avg HUM 1': '💧 Avg Humidity (Sensor 1)',
-                    'Avg DHT 22 2': '🌡️ Avg Air Temperature (Sensor 2)',
-                    'Avg HUM 2': '💧 Avg Humidity (Sensor 2)',
-                    'Avg DS18B20': '🌡️ Avg Water Temperature (DS18B20)'
-                }
-
-                for col, label in trend_labels.items():
-                    if col in weekly_df.columns:
-                        st.markdown(f"### {label}")
-                        st.line_chart(weekly_df[[col]])
-                    else:
-                        st.warning(f"⚠️ Column '{col}' not found in uploaded data.")
-
-        except Exception as e:
-            st.error(f"❌ Error reading Excel file: {e}")
-    else:
-        st.info("ℹ️ Please upload your Excel file to view environmental trends.")
 
 
 
