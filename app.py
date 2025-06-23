@@ -12,6 +12,7 @@ from datetime import datetime
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
 # ============= STYLING ==============
+# ============= STYLING ==============
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <style>
@@ -24,9 +25,26 @@ st.markdown("""
             background-color: #c0ebc0 !important;
             min-width: 200px !important;
         }
-        .stMetric label {
-            color: #006400 !important;
+
+        /* ✅ Fix metric number color */
+        [data-testid="stMetricValue"] {
+            color: #006400 !important;         /* Dark green numbers */
+            font-weight: bold;
+            font-size: 1.6rem;
         }
+
+        [data-testid="stMetricLabel"] {
+            color: #2e7d32 !important;         /* Metric label */
+            font-size: 1rem;
+        }
+
+        .stMetric {
+            background: #f0fff0;               /* Optional soft green box */
+            padding: 1.2rem;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
         .css-1dp5vir {
             background-color: #c0ebc0 !important;
         }
