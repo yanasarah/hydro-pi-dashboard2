@@ -350,103 +350,85 @@ elif selected == "Historical Data":
 
 #========evironment monitor============
 elif selected == "Environment Monitor":
+    import plotly.graph_objects as go
+    import plotly.figure_factory as ff
+
     st.markdown("""
         <h1 style='text-align: center; color: #4CAF50;'>🌿 Environment Monitor</h1>
         <p style='text-align: center;'>Live overview of current plant environment</p>
     """, unsafe_allow_html=True)
 
-    import plotly.graph_objects as go
-    import plotly.figure_factory as ff
-
     df = st.session_state.get("df", pd.DataFrame())
 
     if not df.empty:
+        # 🧠 Generate synthetic DateTime and Week if not present
+        if 'DateTime' not in df.columns:
+            df['DateTime'] = pd.to_datetime("2025-01-01") + pd.to_timedelta(df['Day'] - 1, unit='D') + pd.to_timedelta(df['Time'].astype(str))
+        if 'Week' not in df.columns:
+            df['Week'] = ((df['Day'] - 1) // 7) + 1
+
         latest = df.iloc[-1]
 
-        weekly_df = load_weekly()
-        if not weekly_df.empty:
-            st.markdown("### 📈 Weekly Sensor Trends")
-            with st.expander("🔍 Click to view recent trends for each sensor"):
-                sensor_columns = ['Avg TDS', 'Avg pH', 'Avg DHT22 1', 'Avg HUM 1', 'Avg DHT 22 2', 'Avg HUM 2', 'Avg DS18B20']
-                available_cols = [col for col in sensor_columns if col in weekly_df.columns]
-                for col in available_cols:
-                    st.line_chart(weekly_df.set_index('Week')[col], use_container_width=True)
+        st.markdown("### 📈 Recent Sensor Trends (pH, TDS, Water Temp)")
+        df_sorted = df.sort_values("DateTime")
+        fig_trend = go.Figure()
+        for col in ['pH', 'TDS', 'DS18B20']:
+            fig_trend.add_trace(go.Scatter(
+                x=df_sorted['DateTime'], y=df_sorted[col],
+                mode='lines+markers',
+                name=col
+            ))
+        fig_trend.update_layout(
+            title="📊 Recent Trends",
+            xaxis_title="Time",
+            yaxis_title="Value",
+            legend_title="Sensor",
+            hovermode="x unified"
+        )
+        st.plotly_chart(fig_trend, use_container_width=True)
 
-        # Data cleaning
-        df_numeric = df.copy()
-        for col in ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']:
-            df_numeric[col] = pd.to_numeric(df_numeric[col], errors='coerce')
+        st.markdown("### 🔗 Correlation Heatmap")
+        corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
+        fig_corr = ff.create_annotated_heatmap(
+            z=corr_matrix.values,
+            x=list(corr_matrix.columns),
+            y=list(corr_matrix.index),
+            annotation_text=corr_matrix.values,
+            colorscale='YlGnBu',
+            showscale=True
+        )
+        fig_corr.update_layout(title_text="Sensor Correlation Heatmap", title_x=0.5)
+        st.plotly_chart(fig_corr, use_container_width=True)
 
-        weekly_summary = df_numeric.groupby('Week').agg({
-            'pH': ['mean', 'std'],
-            'TDS': ['mean', 'std'],
-            'DS18B20': ['mean', 'std'],
-            'DHT22 1': ['mean', 'std'],
-            'HUM 1': ['mean', 'std'],
-            'DHT 22 2': ['mean', 'std'],
-            'HUM 2': ['mean', 'std']
-        }).reset_index()
-
-        weekly_summary.columns = ['Week'] + [f"{col[0]}_{col[1]}" for col in weekly_summary.columns[1:]]
-
-        st.markdown("### 📊 Weekly Summary with Standard Deviation")
-        with st.expander("📉 Click to view weekly mean ± SD"):
-            corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
-            fig_corr = ff.create_annotated_heatmap(
-                z=corr_matrix.values,
-                x=list(corr_matrix.columns),
-                y=list(corr_matrix.index),
-                annotation_text=corr_matrix.values,
-                colorscale='YlGnBu',
-                showscale=True
-            )
-            fig_corr.update_layout(title_text="🔗 Sensor Correlation Heatmap", title_x=0.5)
-            st.plotly_chart(fig_corr, use_container_width=True)
-
-            df_sorted = df.sort_values("DateTime")
-            fig_trend = go.Figure()
-            for col in ['pH', 'TDS', 'DS18B20']:
-                fig_trend.add_trace(go.Scatter(
-                    x=df_sorted['DateTime'], y=df_sorted[col],
-                    mode='lines+markers',
-                    name=col
-                ))
-            fig_trend.update_layout(
-                title="📈 Recent Trends of pH, TDS, and Water Temp",
-                xaxis_title="Time",
-                yaxis_title="Value",
-                legend_title="Sensor",
-                hovermode="x unified"
-            )
-            st.plotly_chart(fig_trend, use_container_width=True)
-
-        # Metrics
+        st.markdown("### 📋 Current Environment Status")
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
         col2.metric("⚡ TDS (ppm)", f"{latest['TDS']:.0f}")
-        col3.metric("🌡️ DS18B20 Temp (°C)", f"{latest['DS18B20']:.1f}")
+        col3.metric("🌡️ Water Temp (DS18B20)", f"{latest['DS18B20']:.1f}°C")
 
         col4, col5, col6 = st.columns(3)
-        col4.metric("🌡️ Air Temp 1 (DHT22)", f"{latest['DHT22 1']:.1f}")
+        col4.metric("🌡️ Air Temp 1", f"{latest['DHT22 1']:.1f}°C")
         col5.metric("💦 Humidity 1", f"{latest['HUM 1']}%")
-        col6.metric("🌡️ Air Temp 2 (DHT22)", f"{latest['DHT 22 2']:.1f}")
+        col6.metric("🌡️ Air Temp 2", f"{latest['DHT 22 2']:.1f}°C")
 
         col7, col8 = st.columns(2)
         col7.metric("💦 Humidity 2", f"{latest['HUM 2']}%")
 
         st.markdown("---")
 
+        # 🚨 Alerts
+        st.markdown("### 🚨 Live Alerts")
         alerts = []
         if latest['pH'] < 5.5 or latest['pH'] > 7.5:
-            alerts.append("⚠️ pH is out of the optimal range (5.5 - 7.5).")
+            alerts.append("⚠️ pH is out of the optimal range (5.5–7.5)")
         if latest['TDS'] > 1200:
-            alerts.append("⚠️ TDS is too high (> 1200 ppm).")
+            alerts.append("⚠️ TDS is too high (> 1200 ppm)")
         if latest['DS18B20'] > 30:
-            alerts.append("🔥 Water temperature is too high.")
+            alerts.append("🔥 Water temperature is too high")
         if latest['HUM 1'] < 40 or latest['HUM 2'] < 40:
-            alerts.append("💧 Humidity is low (< 40%).")
+            alerts.append("💧 Humidity is low (< 40%)")
         if latest['DHT22 1'] > 35 or latest['DHT 22 2'] > 35:
-            alerts.append("🌞 Air temperature is too high.")
+            alerts.append("🌞 Air temperature is too high")
 
         if alerts:
             st.error("⚠️ Environment Alerts:")
@@ -454,7 +436,6 @@ elif selected == "Environment Monitor":
                 st.markdown(f"- {a}")
         else:
             st.success("✅ All parameters are within the healthy range.")
-
     else:
         st.warning("📂 No data available. Please upload an Excel file on the Home page.")
 
