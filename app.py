@@ -399,7 +399,30 @@ elif selected == "Environment Monitor":
         )
         fig_corr.update_layout(title_text="Sensor Correlation Heatmap", title_x=0.5)
         st.plotly_chart(fig_corr, use_container_width=True)
+       
+        st.markdown("### 📊 Weekly Average Comparison (Bar Chart)")
 
+        weekly_avg = df.groupby("Week")[['pH', 'TDS', 'DS18B20']].mean().reset_index()
+
+        # Plot each parameter in separate bars
+        fig_bar = go.Figure()
+        for col in ['pH', 'TDS', 'DS18B20']:
+            fig_bar.add_trace(go.Bar(
+                x=weekly_avg['Week'],
+                y=weekly_avg[col],
+                name=col
+            ))
+
+        fig_bar.update_layout(
+            barmode='group',
+            xaxis_title='Week',
+            yaxis_title='Average Value',
+            title='Weekly Average of pH, TDS, and Water Temp',
+            legend_title='Sensor'
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
+
+  ### ==== Current Environment Status   ===========   
         st.markdown("### 📋 Current Environment Status")
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
