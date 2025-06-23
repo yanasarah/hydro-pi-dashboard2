@@ -371,6 +371,43 @@ elif selected == "Environment Monitor":
 
                 for col in available_cols:
                     st.line_chart(weekly_df.set_index('Week')[col], use_container_width=True)
+      
+        # 🆕 Weekly Mean ± SD Graphs
+        # Convert raw df to numeric just in case
+        df_numeric = df.copy()
+        for col in ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']:
+            df_numeric[col] = pd.to_numeric(df_numeric[col], errors='coerce')
+
+        weekly_summary = df_numeric.groupby('Week').agg({
+            'pH': ['mean', 'std'],
+            'TDS': ['mean', 'std'],
+            'DS18B20': ['mean', 'std'],
+            'DHT22 1': ['mean', 'std'],
+            'HUM 1': ['mean', 'std'],
+            'DHT 22 2': ['mean', 'std'],
+            'HUM 2': ['mean', 'std']
+        }).reset_index()
+
+        weekly_summary.columns = ['Week'] + [f"{col[0]}_{col[1]}" for col in weekly_summary.columns[1:]]
+
+        st.markdown("### 📊 Weekly Summary with Standard Deviation")
+        with st.expander("📉 Click to view weekly mean ± SD"):
+            import matplotlib.pyplot as plt
+
+            def plot_errorbar(x, y_mean, y_std, label, color):
+                fig, ax = plt.subplots()
+                ax.errorbar(x, y_mean, yerr=y_std, fmt='-o', capsize=4, color=color)
+                ax.set_title(f"{label} (Mean ± SD)")
+                ax.set_xlabel("Week")
+                ax.set_ylabel(label)
+                ax.grid(True)
+                st.pyplot(fig)
+
+            plot_errorbar(weekly_summary['Week'], weekly_summary['pH_mean'], weekly_summary['pH_std'], "pH", "green")
+            plot_errorbar(weekly_summary['Week'], weekly_summary['TDS_mean'], weekly_summary['TDS_std'], "TDS", "blue")
+            plot_errorbar(weekly_summary['Week'], weekly_summary['DS18B20_mean'], weekly_summary['DS18B20_std'], "Water Temp (DS18B20)", "orange")
+            plot_errorbar(weekly_summary['Week'], weekly_summary['DHT22 1_mean'], weekly_summary['DHT22 1_std'], "Air Temp 1 (DHT22)", "red")
+            plot_errorbar(weekly_summary['Week'], weekly_summary['HUM 1_mean'], weekly_summary['HUM 1_std'], "Humidity 1", "purple")
 
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
