@@ -316,6 +316,9 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
                 height=300,
                 use_container_width=True)
+
+
+
 # ========= ENVIRONMENT MONITOR =========
 elif selected == "Environment Monitor":
     st.markdown("""
