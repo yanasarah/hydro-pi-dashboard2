@@ -315,45 +315,46 @@ elif selected == "Environment Monitor":
         <p style='text-align: center;'>Live overview of current plant environment</p>
     """, unsafe_allow_html=True)
 
-    # Example: extract latest row (assuming df is already cleaned)
     if not df.empty:
         latest = df.iloc[-1]
 
         col1, col2, col3 = st.columns(3)
-        col1.metric("🌡️ Temperature (°C)", f"{latest['Temperature']:.1f}")
-        col2.metric("💧 pH Level", f"{latest['pH']:.2f}")
-        col3.metric("⚡ TDS (ppm)", f"{latest['TDS']:.0f}")
+        col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
+        col2.metric("⚡ TDS (ppm)", f"{latest['TDS']:.0f}")
+        col3.metric("🌡️ DS18B20 Temp (°C)", f"{latest['DS18B20']:.1f}")
 
         col4, col5, col6 = st.columns(3)
-        col4.metric("🌞 Light (LDR)", f"{latest['LDR']}")
-        col5.metric("💦 Humidity 1 (%)", f"{latest['Humidity1']}")
-        col6.metric("💦 Humidity 2 (%)", f"{latest['Humidity2']}")
+        col4.metric("🌡️ Air Temp 1 (DHT22)", f"{latest['DHT22 1']:.1f}")
+        col5.metric("💦 Humidity 1", f"{latest['HUM 1']}%")
+        col6.metric("🌡️ Air Temp 2 (DHT22)", f"{latest['DHT 22 2']:.1f}")
+
+        col7, col8 = st.columns(2)
+        col7.metric("💦 Humidity 2", f"{latest['HUM 2']}%")
 
         st.markdown("---")
 
-        # 🚨 Warning indicators
+        # 🚨 Alert Conditions
         alerts = []
         if latest['pH'] < 5.5 or latest['pH'] > 7.5:
-            alerts.append("⚠️ pH out of optimal range (5.5 - 7.5)")
+            alerts.append("⚠️ pH is out of the optimal range (5.5 - 7.5).")
         if latest['TDS'] > 1200:
-            alerts.append("⚠️ High TDS levels (>1200 ppm)")
-        if latest['Temperature'] > 35:
-            alerts.append("🔥 Temperature too high")
-        if latest['LDR'] < 200:
-            alerts.append("🌑 Low light detected")
-        if latest['Distance'] > 20:
-            alerts.append("🚱 Water level low")
+            alerts.append("⚠️ TDS is too high (> 1200 ppm).")
+        if latest['DS18B20'] > 30:
+            alerts.append("🔥 Water temperature is too high.")
+        if latest['HUM 1'] < 40 or latest['HUM 2'] < 40:
+            alerts.append("💧 Humidity is low (< 40%).")
+        if latest['DHT22 1'] > 35 or latest['DHT 22 2'] > 35:
+            alerts.append("🌞 Air temperature is too high.")
 
         if alerts:
-            st.error("⚠️ Alerts:")
+            st.error("⚠️ Environment Alerts:")
             for a in alerts:
                 st.markdown(f"- {a}")
         else:
-            st.success("✅ All environmental parameters are within healthy range.")
+            st.success("✅ All parameters are within the healthy range.")
 
     else:
-        st.warning("No data available. Please upload a CSV on the Home page.")
-
+        st.warning("📂 No data available. Please upload a CSV file on the Home page.")
 
 
 
