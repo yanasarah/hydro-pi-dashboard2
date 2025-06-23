@@ -142,25 +142,33 @@ elif selected == "Historical Data":
                            ["Use built-in dataset", "Upload your own Excel file"], 
                            horizontal=True) 
 
-    if data_source == "Upload your own Excel file":
-        uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
-        if uploaded_file:
-            try:
-                df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
-                df['Week'] = df['Week'].ffill()
-                st.success("File uploaded successfully!")
-            except Exception as e:
-                st.error(f"Error reading file: {e}")
-                st.stop()
-        else:
-            st.info("Please upload an Excel file or switch to built-in dataset")
+if data_source == "Upload your own Excel file":
+    uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
+    if uploaded_file:
+        try:
+            df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
+            df['Week'] = df['Week'].ffill()
+            st.success("File uploaded successfully!")
+
+            # ✅ Save to session_state for use in other pages
+            st.session_state["df"] = df
+            st.session_state["uploaded_file"] = uploaded_file
+
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
             st.stop()
     else:
-        df = load_main_data()
-        if df.empty:
-            st.error("Built-in data not available. Please upload a file instead.")
-            st.stop()
-        st.success("Using built-in Hydro-Pi dataset")
+        st.info("Please upload an Excel file or switch to built-in dataset")
+        st.stop()
+else:
+    df = load_main_data()
+    if df.empty:
+        st.error("Built-in data not available. Please upload a file instead.")
+        st.stop()
+    st.success("Using built-in Hydro-Pi dataset")
+
+    # ✅ Save built-in data to session_state too
+    st.session_state["df"] = df
 
     # ===== FILTERING =====
     st.subheader("        Filter Data")
@@ -315,6 +323,9 @@ elif selected == "Environment Monitor":
         <p style='text-align: center;'>Live overview of current plant environment</p>
     """, unsafe_allow_html=True)
 
+    # ✅ Get df safely from session_state
+    df = st.session_state.get("df", pd.DataFrame())
+
     if not df.empty:
         latest = df.iloc[-1]
 
@@ -354,8 +365,7 @@ elif selected == "Environment Monitor":
             st.success("✅ All parameters are within the healthy range.")
 
     else:
-        st.warning("📂 No data available. Please upload a CSV file on the Home page.")
-
+        st.warning("📂 No data available. Please upload an Excel file on the Home page.")
 
 
 
