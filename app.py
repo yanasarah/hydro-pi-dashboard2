@@ -124,17 +124,53 @@ if selected == "Home":
 
 # ========= historical data==================== 
 elif selected == "Historical Data": 
-    st.markdown(""" 
-    <style> 
-        html, body, [class*="st-"] { color: #006400 !important; } 
-        h1, h2, h3, h4, h5, h6 { color: #2e8b57 !important; } 
-        .stMetric label, .stMetric div { color: #006400 !important; } 
-        .dataframe td, .dataframe th { color: #006400 !important; } 
-        label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader { color: #006400 !important; } 
-        .stAlert, .stSuccess, .stWarning { color: #006400 !important; } 
-    </style> 
-    """, unsafe_allow_html=True) 
+st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        .stApp {
+            background-color: #f5fff5;
+            color: #006400 !important;
+            font-family: 'Poppins', sans-serif;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #c0ebc0 !important;
+            min-width: 200px !important;
+        }
 
+        .stMetric {
+            color: #006400 !important;
+        }
+        .stMetric > div {
+            color: #006400 !important;
+        }
+        [data-testid="stMetricValue"] {
+            color: #006400 !important;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+
+        .css-1dp5vir {
+            background-color: #c0ebc0 !important;
+        }
+
+        html, body, [class*="st-"] {
+            color: #006400 !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #2e8b57 !important;
+        }
+        .dataframe td, .dataframe th {
+            color: #006400 !important;
+        }
+        label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader {
+            color: #006400 !important;
+        }
+        .stAlert, .stSuccess, .stWarning {
+            color: #006400 !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+ 
     st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
 
     data_source = st.radio("Select data source:", 
