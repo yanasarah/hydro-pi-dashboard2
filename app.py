@@ -171,7 +171,8 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
- 
+
+
     st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
 
     data_source = st.radio("Select data source:", 
