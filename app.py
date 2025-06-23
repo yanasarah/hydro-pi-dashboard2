@@ -26,7 +26,6 @@ st.markdown("""
             min-width: 200px !important;
         }
 
-        /* ✅ Fix metric number color */
         [data-testid="stMetricValue"] {
             color: #006400 !important;
             font-weight: bold;
@@ -49,10 +48,21 @@ st.markdown("""
             background-color: #c0ebc0 !important;
         }
 
-        /* ✅ Fix for alert box font color (st.error, st.success, st.warning) */
+        /* ✅ STRONGER FIX for st.error / st.success font color */
         div[data-testid="stAlert"] {
-            color: #004d00 !important;   /* Dark green text */
-            font-weight: bold;
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] > div {
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] p {
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] ul li {
+            color: #004d00 !important;
         }
     </style>
 """, unsafe_allow_html=True)
