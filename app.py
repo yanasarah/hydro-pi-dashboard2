@@ -367,66 +367,40 @@ elif selected == "Environment Monitor":
         if not weekly_df.empty:
             st.markdown("### 📈 Weekly Sensor Trends")
 
-            with st.expander("🔍 Click to view recent trends for each sensor"):
-                sensor_columns = ['Avg TDS', 'Avg pH', 'Avg DHT22 1', 'Avg HUM 1', 'Avg DHT 22 2', 'Avg HUM 2', 'Avg DS18B20']
-                available_cols = [col for col in sensor_columns if col in weekly_df.columns]
+    with st.expander("📉 Click to view weekly mean ± SD"):
+    import plotly.figure_factory as ff
 
-                for col in available_cols:
-                    st.line_chart(weekly_df.set_index('Week')[col], use_container_width=True)
-      
-        # 🆕 Weekly Mean ± SD Graphs
-        # Convert raw df to numeric just in case
-        df_numeric = df.copy()
-        for col in ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']:
-            df_numeric[col] = pd.to_numeric(df_numeric[col], errors='coerce')
+    corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
+    fig_corr = ff.create_annotated_heatmap(
+        z=corr_matrix.values,
+        x=list(corr_matrix.columns),
+        y=list(corr_matrix.index),
+        annotation_text=corr_matrix.values,
+        colorscale='YlGnBu',
+        showscale=True
+    )
+    fig_corr.update_layout(title_text="🔗 Sensor Correlation Heatmap", title_x=0.5)
+    st.plotly_chart(fig_corr, use_container_width=True)
 
-        weekly_summary = df_numeric.groupby('Week').agg({
-            'pH': ['mean', 'std'],
-            'TDS': ['mean', 'std'],
-            'DS18B20': ['mean', 'std'],
-            'DHT22 1': ['mean', 'std'],
-            'HUM 1': ['mean', 'std'],
-            'DHT 22 2': ['mean', 'std'],
-            'HUM 2': ['mean', 'std']
-        }).reset_index()
+    df_sorted = df.sort_values("DateTime")
+    fig_trend = go.Figure()
 
-        weekly_summary.columns = ['Week'] + [f"{col[0]}_{col[1]}" for col in weekly_summary.columns[1:]]
+    for col in ['pH', 'TDS', 'DS18B20']:
+        fig_trend.add_trace(go.Scatter(
+            x=df_sorted['DateTime'], y=df_sorted[col],
+            mode='lines+markers',
+            name=col
+        ))
 
-        st.markdown("### 📊 Weekly Summary with Standard Deviation")
-        with st.expander("📉 Click to view weekly mean ± SD"):
-import plotly.figure_factory as ff
+    fig_trend.update_layout(
+        title="📈 Recent Trends of pH, TDS, and Water Temp",
+        xaxis_title="Time",
+        yaxis_title="Value",
+        legend_title="Sensor",
+        hovermode="x unified"
+    )
 
-corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
-fig_corr = ff.create_annotated_heatmap(
-    z=corr_matrix.values,
-    x=list(corr_matrix.columns),
-    y=list(corr_matrix.index),
-    annotation_text=corr_matrix.values,
-    colorscale='YlGnBu',
-    showscale=True
-)
-fig_corr.update_layout(title_text="🔗 Sensor Correlation Heatmap", title_x=0.5)
-st.plotly_chart(fig_corr, use_container_width=True)
-
-df_sorted = df.sort_values("DateTime")
-fig_trend = go.Figure()
-
-for col in ['pH', 'TDS', 'DS18B20']:
-    fig_trend.add_trace(go.Scatter(
-        x=df_sorted['DateTime'], y=df_sorted[col],
-        mode='lines+markers',
-        name=col
-    ))
-
-fig_trend.update_layout(
-    title="📈 Recent Trends of pH, TDS, and Water Temp",
-    xaxis_title="Time",
-    yaxis_title="Value",
-    legend_title="Sensor",
-    hovermode="x unified"
-)
-
-st.plotly_chart(fig_trend, use_container_width=True)
+    st.plotly_chart(fig_trend, use_container_width=True)
 
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
