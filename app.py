@@ -319,6 +319,7 @@ else:
 
 
 
+
 # ========= ENVIRONMENT MONITOR =========
 elif selected == "Environment Monitor":
     st.markdown("""
