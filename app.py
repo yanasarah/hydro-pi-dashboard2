@@ -359,6 +359,16 @@ elif selected == "Environment Monitor":
 
     if not df.empty:
         latest = df.iloc[-1]
+        st.markdown("### 📈 Sensor Trends")
+
+        with st.expander("🔍 Click to view recent trends for each sensor"):
+            st.line_chart(df[['Time', 'pH']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'TDS']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'DS18B20']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'DHT22 1']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'HUM 1']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'DHT 22 2']].set_index('Time'), use_container_width=True)
+            st.line_chart(df[['Time', 'HUM 2']].set_index('Time'), use_container_width=True)
 
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
