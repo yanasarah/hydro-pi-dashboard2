@@ -7,7 +7,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from streamlit_option_menu import option_menu
 from datetime import datetime
-
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
@@ -392,22 +394,39 @@ elif selected == "Environment Monitor":
 
         st.markdown("### 📊 Weekly Summary with Standard Deviation")
         with st.expander("📉 Click to view weekly mean ± SD"):
-            import matplotlib.pyplot as plt
+import plotly.figure_factory as ff
 
-            def plot_errorbar(x, y_mean, y_std, label, color):
-                fig, ax = plt.subplots()
-                ax.errorbar(x, y_mean, yerr=y_std, fmt='-o', capsize=4, color=color)
-                ax.set_title(f"{label} (Mean ± SD)")
-                ax.set_xlabel("Week")
-                ax.set_ylabel(label)
-                ax.grid(True)
-                st.pyplot(fig)
+corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
+fig_corr = ff.create_annotated_heatmap(
+    z=corr_matrix.values,
+    x=list(corr_matrix.columns),
+    y=list(corr_matrix.index),
+    annotation_text=corr_matrix.values,
+    colorscale='YlGnBu',
+    showscale=True
+)
+fig_corr.update_layout(title_text="🔗 Sensor Correlation Heatmap", title_x=0.5)
+st.plotly_chart(fig_corr, use_container_width=True)
 
-            plot_errorbar(weekly_summary['Week'], weekly_summary['pH_mean'], weekly_summary['pH_std'], "pH", "green")
-            plot_errorbar(weekly_summary['Week'], weekly_summary['TDS_mean'], weekly_summary['TDS_std'], "TDS", "blue")
-            plot_errorbar(weekly_summary['Week'], weekly_summary['DS18B20_mean'], weekly_summary['DS18B20_std'], "Water Temp (DS18B20)", "orange")
-            plot_errorbar(weekly_summary['Week'], weekly_summary['DHT22 1_mean'], weekly_summary['DHT22 1_std'], "Air Temp 1 (DHT22)", "red")
-            plot_errorbar(weekly_summary['Week'], weekly_summary['HUM 1_mean'], weekly_summary['HUM 1_std'], "Humidity 1", "purple")
+df_sorted = df.sort_values("DateTime")
+fig_trend = go.Figure()
+
+for col in ['pH', 'TDS', 'DS18B20']:
+    fig_trend.add_trace(go.Scatter(
+        x=df_sorted['DateTime'], y=df_sorted[col],
+        mode='lines+markers',
+        name=col
+    ))
+
+fig_trend.update_layout(
+    title="📈 Recent Trends of pH, TDS, and Water Temp",
+    xaxis_title="Time",
+    yaxis_title="Value",
+    legend_title="Sensor",
+    hovermode="x unified"
+)
+
+st.plotly_chart(fig_trend, use_container_width=True)
 
         col1, col2, col3 = st.columns(3)
         col1.metric("💧 pH Level", f"{latest['pH']:.2f}")
