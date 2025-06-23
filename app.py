@@ -110,81 +110,113 @@ def load_daily():
 # ============= HOME PAGE =============
 
 if selected == "Home":
-    from datetime import datetime
     import random
+    import streamlit.components.v1 as components
 
+    # 🌿 HERO SECTION (WELCOME BANNER)
     st.markdown("""
-        <div style="padding: 2rem; background: linear-gradient(135deg, #a8e6cf, #dcedc1);
-                    border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); text-align: center;">
-            <h1 style="color: #2e7d32; font-size: 3rem;">🌱 Welcome to Hydro-Pi Smart Farming</h1>
-            <p style="color: #388e3c; font-size: 1.2rem; margin-top: -10px;">
-                A greener tomorrow starts with a smarter grow today 🌿
+        <div style="padding: 2.5rem; background: linear-gradient(135deg, #e1f5e1, #b9f0b9);
+                    border-radius: 20px; text-align: center;">
+            <h1 style="color: #1b5e20; font-size: 3rem;">🌿 Welcome to Hydro-Pi</h1>
+            <h3 style="color: #388e3c;">Smart Farming for Every Indoor Grower</h3>
+            <p style="font-size: 1.1rem; color: #2e7d32;">
+                Monitor. Optimize. Harvest better.
             </p>
+            <img src="https://cdn.pixabay.com/photo/2020/06/06/20/35/hydroponics-5267540_1280.jpg"
+                 style="max-height: 300px; margin-top: 1rem; border-radius: 15px;" />
         </div>
         <br>
     """, unsafe_allow_html=True)
 
-    # === Daily Tip or Fact ===
-    facts = [
-        "Spinach thrives best in 5.8–6.2 pH range.",
-        "Keep water temperature under 30°C to avoid root stress.",
-        "TDS over 1200 ppm may cause nutrient burn.",
-        "Humidity affects nutrient uptake and transpiration!",
-        "Check EC daily to catch nutrient issues early."
-    ]
-    st.info(f"💡 Daily Grow Tip: **{random.choice(facts)}**")
+    # 💡 BENEFITS GRID
+    st.markdown("### 💡 Why Use Hydro-Pi?")
+    b1, b2, b3 = st.columns(3)
+    b1.success("📈 **Real-time Monitoring**  \nTrack pH, TDS, temp & humidity.")
+    b2.info("🤖 **Smart Recommendations**  \nGet alerts + AI tips based on live data.")
+    b3.warning("📲 **Easy to Use**  \nAccess anywhere — mobile, tablet or PC.")
 
-    # === Plant Overview Card ===
-    st.markdown("### 🌿 Current Plant Overview")
-    col1, col2 = st.columns([2, 1])
+    # 🌿 CURRENT PLANT SNAPSHOT
+    st.markdown("### 🪴 Current Grow Session")
+    st.success("🧬 Crop: *Spinach*  \n📅 Started: 3 weeks ago  \n⚙️ Method: Deep Water Culture")
 
-    with col1:
-        st.success("""
-        **Plant:** 🥬 *Spinach*  
-        **Cycle:** Vegetative  
-        **Light Hours:** 16/8 (On/Off)  
-        **Nutrient Target (TDS):** 650–750 ppm  
-        **Ideal pH:** 5.8–6.2  
-        """)
-    with col2:
-        st.image("https://www.pngmart.com/files/13/Spinach-PNG-Transparent-Image.png", width=120)
+    # 📸 GROWTH TIMELINE CAROUSEL (OPTION A)
+    st.markdown("### 🌱 Growth Timeline Viewer")
 
-    # === Quick Metrics ===
-    st.markdown("### 📈 Growth Health Snapshot")
-    snap1, snap2 = st.columns([1, 2])
-    snap1.metric("📊 Growth Score", "84%", delta="+1.2%")
-    snap2.progress(84)
+    carousel_html = """
+    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css"/>
+    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-    # === Weekly Goals ===
+    <style>
+    .swiper { width: 100%; height: 400px; border-radius: 15px; overflow: hidden; }
+    .swiper-slide { display: flex; justify-content: center; align-items: center; background: #f0fff4; }
+    .swiper-slide img {
+        width: auto; max-width: 90%; max-height: 350px;
+        border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    </style>
+
+    <div class="swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><img src="growth/week1.png" alt="Week 1"></div>
+        <div class="swiper-slide"><img src="growth/week2.png" alt="Week 2"></div>
+        <div class="swiper-slide"><img src="growth/week3.png" alt="Week 3"></div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+
+    <script>
+    const swiper = new Swiper('.swiper', {
+      loop: true,
+      pagination: { el: '.swiper-pagination' },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      }
+    });
+    </script>
+    """
+
+    components.html(carousel_html, height=450)
+
+    # ✅ WEEKLY GOALS
     st.markdown("### 🎯 Weekly Care Goals")
     st.checkbox("🌿 Maintain pH between 5.8–6.2", value=True)
     st.checkbox("💧 Keep TDS around 700 ppm", value=True)
     st.checkbox("🌡️ Ensure water temp below 30°C", value=False)
     st.checkbox("💨 Maintain humidity above 40%", value=True)
 
-    # === Optional: Daily Mini Chart (if data available) ===
-    df = st.session_state.get("df", pd.DataFrame())
-    if not df.empty and 'Day' in df.columns and 'Time' in df.columns:
-        today = df['Day'].max()
-        df_today = df[df['Day'] == today]
-        if not df_today.empty:
-            st.markdown("### 📅 Today’s Sensor Summary")
-            st.line_chart(df_today.set_index('Time')[['pH', 'TDS', 'DS18B20']])
+    # 📅 DATE + GROW TIP
+    from datetime import datetime
+    facts = [
+        "Spinach thrives in cool, humid environments.",
+        "Deep roots prefer stable TDS levels below 800 ppm.",
+        "Growth slows if pH drifts out of 5.5–6.5 range.",
+        "Hydroponic tanks need 18+ hours of light per day.",
+        "Add beneficial microbes weekly to improve nutrient uptake."
+    ]
 
-    # === Optional: Image Timeline ===
-    st.markdown("### 🪴 Growth Timeline (WIP)")
-    img_col1, img_col2 = st.columns(2)
-    img_col1.image("https://i.imgur.com/yh6cFLo.jpg", caption="Week 1", use_column_width=True)
-    img_col2.image("https://i.imgur.com/y5jE9bK.jpg", caption="Week 4", use_column_width=True)
+    st.markdown("### 📌 Today’s Grow Insight")
+    st.info(f"🌿 **{random.choice(facts)}**")
 
-    # === Date Card ===
     st.markdown(f"""
-        <div style="margin-top: 2rem; background: #e8f5e9; padding: 1rem; border-radius: 12px;
-                    text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-            <h5 style="color: #2e7d32; margin-bottom: 5px;">📅 Today</h5>
+        <div style="margin-top: 1.5rem; background: #e8f5e9; padding: 1rem;
+                    border-radius: 12px; text-align: center;">
+            <h5 style="color: #2e7d32;">📅 Today</h5>
             <p style="font-size: 16px; font-weight: bold; color: #1b5e20;">
                 {datetime.now().strftime("%A, %d %B %Y")}
             </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # 🚀 CTA to Jump into Monitoring
+    st.markdown("""
+        <div style="margin-top: 2rem; background: #dfffe0; padding: 1.5rem; border-radius: 15px; text-align: center;">
+            <h3 style="color: #1b5e20;">Ready to Grow Smarter?</h3>
+            <p style="color: #2e7d32;">Check your plant environment now and get instant recommendations.</p>
+            <a href="#Environment Monitor" style="background-color: #4CAF50; color: white; padding: 10px 20px;
+                      text-decoration: none; border-radius: 10px; font-weight: bold;">🌿 Go to Live Monitor</a>
         </div>
     """, unsafe_allow_html=True)
 
