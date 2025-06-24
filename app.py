@@ -911,7 +911,7 @@ elif selected == "AI Forecast":
             emoji = "🟥" if risk == 'High' else ("🟧" if risk == 'Medium' else "🟩")
             st.markdown(f"{emoji} Week {int(week)} fungus risk: **{risk}**")
 #==week vs hum===
-                 st.markdown("### 📈 Weekly Humidity Trend")
+        st.markdown("### 📈 Weekly Humidity Trend")
 
         import plotly.graph_objects as go
 
