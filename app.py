@@ -720,7 +720,6 @@ elif selected == "Insights":
     """, unsafe_allow_html=True)
 
     st.markdown("### 🌿 Growth Insights")
-
     st.success("✅ Your average pH is within the optimal range (5.8 - 6.2)")
     st.warning("⚠️ TDS has fluctuated more than 15% in the past week — consider rebalancing nutrients.")
     st.info("📈 Growth score improved 12% since last cycle — nice job!")
@@ -728,7 +727,10 @@ elif selected == "Insights":
     st.markdown("### 📊 Trends Overview")
     if 'df' in st.session_state:
         df = st.session_state['df']
-        st.line_chart(df[['pH', 'TDS']] if 'pH' in df and 'TDS' in df else df)
+        if 'pH' in df.columns and 'TDS' in df.columns:
+            st.line_chart(df[['pH', 'TDS']])
+        else:
+            st.line_chart(df)
 
     st.markdown("### 🧠 Smart Suggestions")
     st.markdown("""
@@ -740,40 +742,37 @@ elif selected == "Insights":
 
     st.markdown("Want more AI-driven insights in the future? Stay tuned!")
 
-    # ========== PDF Report Generation ==========
+    # ========== PDF Report Tools ==========
     def generate_pdf(data):
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", "B", 16)
         pdf.cell(200, 10, "Hydro-Pi Weekly Report", ln=True, align='C')
-
         pdf.set_font("Arial", size=12)
         pdf.ln(10)
 
-        # Simulate a report summary
         pdf.cell(200, 10, f"Average pH: {data.get('pH', 'N/A'):.2f}", ln=True)
         pdf.cell(200, 10, f"Average TDS: {data.get('TDS', 'N/A'):.0f} ppm", ln=True)
         pdf.cell(200, 10, f"Avg Temp (DS18B20): {data.get('DS18B20', 'N/A'):.1f} °C", ln=True)
         pdf.ln(5)
         pdf.multi_cell(0, 10, "💡 Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
-
         return pdf.output(dest='S').encode('latin-1')
 
     def download_pdf_button(df):
         if not df.empty:
-            latest_avg = df.tail(50).mean(numeric_only=True)  # use last 50 rows
+            latest_avg = df.tail(50).mean(numeric_only=True)
             pdf_bytes = generate_pdf(latest_avg)
             b64 = base64.b64encode(pdf_bytes).decode()
             href = f'<a href="data:application/octet-stream;base64,{b64}" download="hydro_pi_report.pdf">📄 Download Weekly PDF Report</a>'
             st.markdown(href, unsafe_allow_html=True)
 
-   st.markdown("### 📥 Weekly Report")
-if 'df' in st.session_state:
-    download_pdf_button(st.session_state['df'])
-else:
-    st.warning("No data available to generate the report.")
+    st.markdown("### 📥 Weekly Report")
+    if 'df' in st.session_state:
+        download_pdf_button(st.session_state['df'])
+    else:
+        st.warning("No data available to generate the report.")
 
-
+#====contact part=====
 elif selected == "Contact":
     st.title("📞 Contact Us")
     st.markdown("""
