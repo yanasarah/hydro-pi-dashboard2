@@ -560,15 +560,41 @@ elif selected == "Growth Consistency":
     """, unsafe_allow_html=True)
 
 
-    # Load data
+        # Load data
     df = st.session_state.get("df", pd.DataFrame())
 
     if not df.empty:
         df['Week'] = df['Week'].ffill()
         daily_df = df.groupby('Day')[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DS18B20']].mean().reset_index()
 
-        st.markdown("### 📊 Coefficient of Variation (CV)")
+        # Calculate Coefficient of Variation
         cv = daily_df.std(numeric_only=True) / daily_df.mean(numeric_only=True)
+        max_cv = cv.max()
+
+        if max_cv < 0.1:
+            st.markdown("""
+            <div style='background-color: #e8f5e9; padding: 1.5rem; border-left: 6px solid #66bb6a; border-radius: 10px;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 1rem;'>
+                <h3 style='color: #2e7d32;'>✅ Excellent Consistency</h3>
+                <p style='color: #4e944f; font-size: 16px;'>
+                    All parameters (pH, TDS, Temp, Humidity) are stable with minimal fluctuations.<br>
+                    Your system is perfectly balanced — keep up the good work! 🌱
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style='background-color: #fffde7; padding: 1.5rem; border-left: 6px solid #fbc02d; border-radius: 10px;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 1rem;'>
+                <h3 style='color: #f57f17;'>⚠️ Inconsistencies Detected</h3>
+                <p style='color: #5d4037; font-size: 16px;'>
+                    Some sensors show higher variability. Review trends below and consider stabilizing water or nutrients. 🌿
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # CV Chart
+        st.markdown("### 📊 Coefficient of Variation (CV)")
         cv_df = cv.reset_index()
         cv_df.columns = ['Parameter', 'CV']
         st.bar_chart(cv_df.set_index("Parameter"))
@@ -578,10 +604,12 @@ elif selected == "Growth Consistency":
         - Ideal: CV < 0.1 for critical sensors like pH and TDS
         """)
 
+        # Rolling trends
         st.markdown("### 📈 3-Day Rolling Average Trends")
         rolling_df = daily_df.set_index('Day').rolling(window=3).mean()
         st.line_chart(rolling_df)
 
+        # Parameter-level alerts
         st.markdown("### 🚨 Inconsistency Alerts")
         for param in ['TDS', 'pH', 'DS18B20', 'DHT22 1', 'HUM 1']:
             std = daily_df[param].std()
@@ -590,7 +618,6 @@ elif selected == "Growth Consistency":
                 st.warning(f"⚠️ {param} shows high variability: {std/mean:.2%}")
             elif std / mean <= 0.1:
                 st.success(f"✅ {param} is stable ({std/mean:.2%})")
-
     else:
         st.warning("No data available. Please upload your Excel file on the Home page.")
 
