@@ -711,6 +711,9 @@ elif selected == "About Us":
 
 #==== INSIGHT===============
 elif selected == "Insights":
+    import base64
+    from fpdf import FPDF
+
     st.markdown("""
     <h1 style="color:#2e8b57;">💡 Hydro Insights & Optimization</h1>
     <p style="color:#4e944f;">Data-driven tips based on your environmental trends</p>
@@ -729,46 +732,45 @@ elif selected == "Insights":
 
     st.markdown("### 🧠 Smart Suggestions")
     st.markdown("""
-    - Adjust pH slowly — no more than 0.2 per day
-    - Ideal TDS for spinach: **650–750 ppm**
-    - Maintain water temp below 27°C for root health
+    - Adjust pH slowly — no more than 0.2 per day  
+    - Ideal TDS for spinach: **650–750 ppm**  
+    - Maintain water temp below 27°C for root health  
     - Keep humidity stable (50–70%) to prevent mold
     """)
 
     st.markdown("Want more AI-driven insights in the future? Stay tuned!")
-def generate_pdf(data):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(200, 10, "Hydro-Pi Weekly Report", ln=True, align='C')
 
-    pdf.set_font("Arial", size=12)
-    pdf.ln(10)
+    # ========== PDF Report Generation ==========
+    def generate_pdf(data):
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", "B", 16)
+        pdf.cell(200, 10, "Hydro-Pi Weekly Report", ln=True, align='C')
 
-    # Simulate a report summary
-    pdf.cell(200, 10, f"Average pH: {data.get('pH', 'N/A'):.2f}", ln=True)
-    pdf.cell(200, 10, f"Average TDS: {data.get('TDS', 'N/A'):.0f} ppm", ln=True)
-    pdf.cell(200, 10, f"Avg Temp (DS18B20): {data.get('DS18B20', 'N/A'):.1f} °C", ln=True)
-    pdf.ln(5)
-    pdf.multi_cell(0, 10, "💡 Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
-    return pdf.output(dest='S').encode('latin-1')
-    
-# download part============================================
-def download_pdf_button(df):
-    if not df.empty:
-        latest_avg = df.tail(50).mean(numeric_only=True)  # use last 50 rows as sample
-        pdf_bytes = generate_pdf(latest_avg)
-        b64 = base64.b64encode(pdf_bytes).decode()
-        href = f'<a href="data:application/octet-stream;base64,{b64}" download="hydro_pi_report.pdf">📄 Download Weekly PDF Report</a>'
-        st.markdown(href, unsafe_allow_html=True)
+        pdf.set_font("Arial", size=12)
+        pdf.ln(10)
 
-# Inside your Insights page
-st.markdown("### 📥 Weekly Report")
-download_pdf_button(st.session_state["df"])
+        # Simulate a report summary
+        pdf.cell(200, 10, f"Average pH: {data.get('pH', 'N/A'):.2f}", ln=True)
+        pdf.cell(200, 10, f"Average TDS: {data.get('TDS', 'N/A'):.0f} ppm", ln=True)
+        pdf.cell(200, 10, f"Avg Temp (DS18B20): {data.get('DS18B20', 'N/A'):.1f} °C", ln=True)
+        pdf.ln(5)
+        pdf.multi_cell(0, 10, "💡 Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
 
+        return pdf.output(dest='S').encode('latin-1')
 
+    def download_pdf_button(df):
+        if not df.empty:
+            latest_avg = df.tail(50).mean(numeric_only=True)  # use last 50 rows
+            pdf_bytes = generate_pdf(latest_avg)
+            b64 = base64.b64encode(pdf_bytes).decode()
+            href = f'<a href="data:application/octet-stream;base64,{b64}" download="hydro_pi_report.pdf">📄 Download Weekly PDF Report</a>'
+            st.markdown(href, unsafe_allow_html=True)
 
-#===== CONTACT=====
+    # ⬇️ Button to download
+    st.markdown("### 📥 Weekly Report")
+    download_pdf_button(df)
+
 elif selected == "Contact":
     st.title("📞 Contact Us")
     st.markdown("""
