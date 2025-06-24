@@ -1013,7 +1013,7 @@ elif selected == "Beginner FAQ":
         chat_response("🧠 Based on your inputs, growth conditions are looking **moderate to excellent** if maintained.")
 
         # Generate PDF report
-        def generate_ai_pdf(data):
+       def generate_ai_pdf(data):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
