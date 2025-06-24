@@ -593,7 +593,7 @@ elif selected == "Growth Consistency":
 #====about us======
 elif selected == "About Us":
     # Logo and header
-    st.image("Blue and Green Illustrative Hydroponic Logo Design.png", width=140)
+    st.image("Blue and Green Illustrative Hydroponic Logo Design (1).png", width=140)
     st.markdown("""
     <div style="text-align: center; padding: 2rem;">
         <h1 style="color: #2e8b57; font-family: Poppins; font-size: 2.5rem; margin-bottom: 0.2rem;">
