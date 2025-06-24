@@ -590,9 +590,10 @@ elif selected == "Growth Consistency":
     else:
         st.warning("No daily data available. Please check your data source.")
 
-
-# ============= OTHER PAGES =============
+#====about us======
 elif selected == "About Us":
+    # Logo and header
+    st.image("logo.png", width=140)
     st.markdown("""
     <div style="text-align: center; padding: 2rem;">
         <h1 style="color: #2e8b57; font-family: Poppins; font-size: 2.5rem; margin-bottom: 0.2rem;">
@@ -604,23 +605,21 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-    # Section: What is Hydroponics
+    # What is Hydroponics
     col1, col2 = st.columns([3, 2])
     with col1:
         st.markdown("""
         <p style="color: #3a4f41; font-size: 18px; line-height: 1.7; text-align: justify;">
             <strong>Hydroponics</strong> is a soil-less farming technique that uses water-based nutrient solutions 
-            to grow plants faster, healthier, and more efficiently. By delivering nutrients directly to the roots, 
-            this method enhances growth while reducing water use by up to 90%.
+            to grow plants faster, healthier, and more efficiently. It enhances growth and reduces water usage by up to 90%.
             <br><br>
-            It’s ideal for urban areas, rooftops, and indoor farms — allowing year-round, pesticide-free food production 
-            even in spaces where traditional farming isn’t possible.
+            Ideal for urban areas, rooftops, and indoor farms — enabling year-round, pesticide-free food production.
         </p>
         """, unsafe_allow_html=True)
     with col2:
         st.image("Untitled-design-2.jpg", caption="Hydroponic Farming System", use_container_width=True)
 
-    # Section: Why It Matters
+    # Why It Matters
     st.markdown("### 🌍 Why Hydroponics Matters")
     col_img, col_txt = st.columns([2, 3])
     with col_img:
@@ -628,15 +627,12 @@ elif selected == "About Us":
     with col_txt:
         st.markdown("""
         <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
-            As climate change intensifies and farmland shrinks, hydroponics presents a **sustainable, high-yield solution**.
-            It reduces dependence on weather, pesticides, and transportation — cutting your farm’s footprint while 
-            increasing its productivity.
-            <br><br>
-            You can grow more, waste less, and do it anywhere — even indoors or on rooftops.
+            Hydroponics is a <strong>sustainable, high-yield solution</strong> for modern food challenges.
+            It reduces dependence on weather and space, cutting the carbon footprint while maximizing output.
         </p>
         """, unsafe_allow_html=True)
 
-    # Section: How Hydro-Pi Works
+    # How It Works
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 1.5rem;">""", unsafe_allow_html=True)
     st.markdown("""
     <div style="padding: 1rem 2rem;">
@@ -644,11 +640,8 @@ elif selected == "About Us":
             🚀 How Hydro-Pi Helps You Grow Smarter
         </h3>
         <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
-            Our system combines **sensor automation**, **real-time monitoring**, and **AI recommendations** to ensure optimal growing conditions — 24/7.
-            Whether you're new to hydroponics or scaling a commercial setup, Hydro-Pi adapts to your environment and your goals.
-        </p>
-        <p style="color: #3a4f41; font-size: 17px; line-height: 1.6; text-align: justify;">
-            You get live feedback on pH, TDS, temperature, and humidity. Our dashboard and mobile view let you make data-backed decisions instantly.
+            Hydro-Pi combines sensor automation, real-time monitoring, and AI recommendations to optimize growing 24/7.
+            Whether you're a beginner or a commercial grower, it adapts to your needs.
         </p>
         <p style="color: #2e8b57; font-size: 17px; font-weight: 600; text-align: justify;">
             Grow confidently. Grow cleanly. Grow smart.
@@ -656,31 +649,62 @@ elif selected == "About Us":
     </div>
     """, unsafe_allow_html=True)
 
-    # Section: Vision & Mission
+    # Vision & Mission
     st.markdown("""<hr style="margin-top: 2rem; margin-bottom: 2rem;">""", unsafe_allow_html=True)
     st.markdown("### 🌟 Our Vision & Mission")
     v1, v2 = st.columns(2)
     with v1:
         st.markdown("""
-        <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem;
-                    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
             <h3 style="text-align: center; color: #1b5e20;">🌐 Vision</h3>
             <p style="font-size: 16px; text-align: justify; color: #2e7d32;">
-                To revolutionize agriculture through **smart hydroponic technology** — making food growth cleaner,
+                To revolutionize agriculture through smart hydroponic technology — making food growth cleaner,
                 faster, and more sustainable for everyone, everywhere.
             </p>
         </div>
         """, unsafe_allow_html=True)
     with v2:
         st.markdown("""
-        <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem;
-                    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+        <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
             <h3 style="text-align: center; color: #1b5e20;">🎯 Mission</h3>
             <p style="font-size: 16px; text-align: justify; color: #2e7d32;">
-                To empower urban growers, educators, and communities through **affordable, automated, data-driven farming solutions** — supporting food security, education, and sustainability.
+                To empower growers with user-friendly, automated, data-driven solutions that support food security, education, and sustainability.
             </p>
         </div>
         """, unsafe_allow_html=True)
+
+    # Testimonials
+    st.markdown("### 💬 What Our Growers Say")
+    testi1, testi2 = st.columns(2)
+    with testi1:
+        st.markdown(">“Since I installed Hydro-Pi, my spinach grew faster and fuller. The alerts saved me twice!”  
+        — **Fazli**, Home Grower, Johor")
+    with testi2:
+        st.markdown(">“We use Hydro-Pi in our school greenhouse. The kids love checking plant stats and watching them grow.”  
+        — **Cikgu Nurul**, School Hydroponics Project")
+
+    # Timeline
+    st.markdown("### 🌱 The Journey: Seed to Harvest")
+    timeline_steps = [
+        "🔹 **Week 0:** Germination begins",
+        "🔹 **Week 1-2:** Root and leaf expansion",
+        "🔹 **Week 3-4:** Nutrient boost, temperature and humidity optimization",
+        "🔹 **Week 5+:** Ready to harvest!"
+    ]
+    for step in timeline_steps:
+        st.markdown(f"- {step}")
+
+    # FAQ
+    st.markdown("### ❓ Frequently Asked Questions")
+    with st.expander("🌿 What is hydroponics?"):
+        st.write("Hydroponics is growing plants without soil using water enriched with nutrients.")
+    with st.expander("📊 What does Hydro-Pi monitor?"):
+        st.write("It tracks pH, TDS, temperature, and humidity for optimal plant growth.")
+    with st.expander("📱 Do I need an app?"):
+        st.write("No, just use the web dashboard on any device.")
+    with st.expander("💧 What if pH or nutrients are off?"):
+        st.write("Hydro-Pi notifies you and provides suggestions to fix it.")
+)
 
 #==== INSIGHT===============
 elif selected == "Insights":
