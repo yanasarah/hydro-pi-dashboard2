@@ -823,8 +823,15 @@ elif selected == "Crop Comparison":
         df_cycle = df[df['Cycle'].isin(['Cycle 1', 'Cycle 2'])]
 
         st.subheader("🧮 Summary Statistics by Cycle")
-        summary = df_cycle.groupby('Cycle')[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].agg(['mean', 'std']).round(2)
-        st.dataframe(summary)
+summary = df_cycle.groupby('Cycle')[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].agg(['mean', 'std']).round(2)
+st.dataframe(summary)
+
+st.markdown("""
+<div style="color:#4e944f; font-size: 16px; margin-top: 0.5rem;">
+    📅 <strong>Cycle 1:</strong> Week 1–2 (14 days) <br>
+    📅 <strong>Cycle 2:</strong> Week 3–5 (21 days)
+</div>
+""", unsafe_allow_html=True)
 
         st.markdown("### 📊 Visual Comparison")
 
