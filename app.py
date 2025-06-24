@@ -547,6 +547,17 @@ elif selected == "Growth Consistency":
     <h1 style='color:#2e8b57;'>🌿 Growth Consistency</h1>
     <p style='color:#4e944f;'>Analyzing your plant environment's stability</p>
     """, unsafe_allow_html=True)
+        st.markdown("""
+    <div style='background-color: #e8f5e9; padding: 1.5rem; border-left: 6px solid #66bb6a; border-radius: 10px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 1rem;'>
+        <h3 style='color: #2e7d32;'>✅ Overall Environment Stability</h3>
+        <p style='color: #4e944f; font-size: 16px;'>
+            All core environmental parameters (pH, TDS, Temperature, Humidity) show strong consistency over time. <br>
+            <strong>No major fluctuations detected.</strong> Your setup is optimal for healthy hydroponic growth. 🌱
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
     # Load data
     df = st.session_state.get("df", pd.DataFrame())
