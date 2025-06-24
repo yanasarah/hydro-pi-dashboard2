@@ -767,9 +767,12 @@ elif selected == "Insights":
             href = f'<a href="data:application/octet-stream;base64,{b64}" download="hydro_pi_report.pdf">📄 Download Weekly PDF Report</a>'
             st.markdown(href, unsafe_allow_html=True)
 
-    # ⬇️ Button to download
-    st.markdown("### 📥 Weekly Report")
-    download_pdf_button(df)
+   st.markdown("### 📥 Weekly Report")
+if 'df' in st.session_state:
+    download_pdf_button(st.session_state['df'])
+else:
+    st.warning("No data available to generate the report.")
+
 
 elif selected == "Contact":
     st.title("📞 Contact Us")
