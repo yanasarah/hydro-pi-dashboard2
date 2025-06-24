@@ -10,6 +10,8 @@ from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+from fpdf import FPDF
+import base64
 # Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
@@ -734,6 +736,35 @@ elif selected == "Insights":
     """)
 
     st.markdown("Want more AI-driven insights in the future? Stay tuned!")
+def generate_pdf(data):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(200, 10, "Hydro-Pi Weekly Report", ln=True, align='C')
+
+    pdf.set_font("Arial", size=12)
+    pdf.ln(10)
+
+    # Simulate a report summary
+    pdf.cell(200, 10, f"Average pH: {data.get('pH', 'N/A'):.2f}", ln=True)
+    pdf.cell(200, 10, f"Average TDS: {data.get('TDS', 'N/A'):.0f} ppm", ln=True)
+    pdf.cell(200, 10, f"Avg Temp (DS18B20): {data.get('DS18B20', 'N/A'):.1f} °C", ln=True)
+    pdf.ln(5)
+    pdf.multi_cell(0, 10, "💡 Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
+    return pdf.output(dest='S').encode('latin-1')
+    
+# download part============================================
+def download_pdf_button(df):
+    if not df.empty:
+        latest_avg = df.tail(50).mean(numeric_only=True)  # use last 50 rows as sample
+        pdf_bytes = generate_pdf(latest_avg)
+        b64 = base64.b64encode(pdf_bytes).decode()
+        href = f'<a href="data:application/octet-stream;base64,{b64}" download="hydro_pi_report.pdf">📄 Download Weekly PDF Report</a>'
+        st.markdown(href, unsafe_allow_html=True)
+
+# Inside your Insights page
+st.markdown("### 📥 Weekly Report")
+download_pdf_button(st.session_state["df"])
 
 #===== CONTACT=====
 elif selected == "Contact":
