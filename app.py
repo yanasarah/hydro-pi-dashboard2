@@ -833,8 +833,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-        st.markdown("### 📊 Visual Comparison")
 
+        st.markdown("### 📊 Visual Comparison")
         import plotly.graph_objects as go
         parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
 
