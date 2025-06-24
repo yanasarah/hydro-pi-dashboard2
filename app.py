@@ -1014,8 +1014,6 @@ elif selected == "Beginner FAQ":
 
         # Generate PDF report
        if submitted:
-    # all of this is inside the 'if submitted' block
-
         def generate_ai_pdf(data):
         pdf = FPDF()
         pdf.add_page()
