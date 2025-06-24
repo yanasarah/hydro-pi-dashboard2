@@ -1027,9 +1027,9 @@ elif selected == "Beginner FAQ":
             pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
             pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
             pdf.ln(5)
-            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28°C for root health")
+            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28C for root health")
 
-            return pdf.output(dest='S').encode('latin-1')
+           return pdf.output(dest='S').encode('latin-1', 'ignore')
 
         user_data = {
             "tds": tds,
@@ -1062,7 +1062,6 @@ elif selected == "Beginner FAQ":
         st.markdown("Too much humidity can cause fungal growth. Too little dries out plants. Aim for 50–70%.")
 
     st.caption("Need more help? Visit the 'Contact' page or chat with our support team.")
-
 
 
 
