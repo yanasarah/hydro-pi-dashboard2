@@ -592,6 +592,7 @@ elif selected == "Growth Consistency":
 
 
 # ============= OTHER PAGES =============
+
    elif selected == "About Us":
     st.markdown("""
     <div style="text-align: center; padding: 2rem;">
