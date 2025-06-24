@@ -934,6 +934,59 @@ elif selected == "AI Forecast":
         )
         st.plotly_chart(fig, use_container_width=True)
 
+        # ============== TDS Forecast
+    st.markdown("### 📉 TDS Forecast – Next 2 Days")
+
+# Use daily average TDS
+    if "df" in st.session_state and not st.session_state["df"].empty:
+    df = st.session_state["df"].copy()
+    df["Day"] = df["Day"].ffill()
+    tds_daily = df.groupby("Day")["TDS"].mean().reset_index()
+
+    # Convert day labels to numeric x values
+    tds_daily["DayIndex"] = range(len(tds_daily))
+
+    # Linear regression
+    X = tds_daily["DayIndex"].values.reshape(-1, 1)
+    y = tds_daily["TDS"].values
+    model = LinearRegression()
+    model.fit(X, y)
+
+    # Predict next 2 days
+    future_x = np.array([len(tds_daily), len(tds_daily)+1]).reshape(-1, 1)
+    future_y = model.predict(future_x)
+
+    # Build forecast DataFrame
+    forecast_days = [f"Day {i+1}" for i in range(len(tds_daily))] + ["Tomorrow", "Next Day"]
+    forecast_values = list(tds_daily["TDS"]) + list(future_y)
+    forecast_df = pd.DataFrame({"Day": forecast_days, "TDS": forecast_values})
+
+    # Plot chart
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=forecast_df["Day"],
+        y=forecast_df["TDS"],
+        mode='lines+markers',
+        name="TDS Forecast",
+        line=dict(shape='spline')
+    ))
+    fig.update_layout(
+        title="Projected TDS for Next 2 Days",
+        xaxis_title="Day",
+        yaxis_title="TDS (ppm)",
+        height=400
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 🔍 AI Analysis
+    st.markdown("### 🧠 TDS Trend Insights")
+    if future_y[0] > 1200 or future_y[1] > 1200:
+        st.warning("⚠️ TDS is forecasted to exceed 1200 ppm — consider diluting your solution.")
+    elif future_y[1] < 500:
+        st.info("ℹ️ TDS may drop too low — monitor nutrient levels.")
+    else:
+        st.success("✅ TDS trend appears stable for the next few days.")
+
 #=== kata-kata=
         st.markdown("---")
         st.caption("Forecasts are based on trends from Week 1–5 and are updated as new data is added.")
