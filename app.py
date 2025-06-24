@@ -755,7 +755,7 @@ elif selected == "Insights":
         pdf.cell(200, 10, f"Average TDS: {data.get('TDS', 'N/A'):.0f} ppm", ln=True)
         pdf.cell(200, 10, f"Avg Temp (DS18B20): {data.get('DS18B20', 'N/A'):.1f} °C", ln=True)
         pdf.ln(5)
-        pdf.multi_cell(0, 10, "💡 Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
+        pdf.multi_cell(0, 10, "Insights:\n- pH levels are stable\n- TDS is slightly high, consider diluting\n- Temperature within safe range")
         return pdf.output(dest='S').encode('latin-1')
 
     def download_pdf_button(df):
