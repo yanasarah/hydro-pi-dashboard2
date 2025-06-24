@@ -543,54 +543,44 @@ elif selected == "Environment Monitor":
 
 # ============= GROWTH CONSISTENCY PAGE =============
 elif selected == "Growth Consistency":
-    st.title("Growth Consistency Analysis")
-    daily_df = load_daily()
+    st.markdown("""
+    <h1 style='color:#2e8b57;'>🌿 Growth Consistency</h1>
+    <p style='color:#4e944f;'>Analyzing your plant environment's stability</p>
+    """, unsafe_allow_html=True)
 
-    # Debug: Show the loaded data
-    st.write("Loaded Daily Data:", daily_df)
+    # Load data
+    df = st.session_state.get("df", pd.DataFrame())
 
-    if not daily_df.empty:
-        st.subheader("Daily Variation Analysis")
+    if not df.empty:
+        df['Week'] = df['Week'].ffill()
+        daily_df = df.groupby('Day')[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DS18B20']].mean().reset_index()
 
-        available_params = [col for col in ['Avg TDS', 'Avg pH', 'Avg DHT22 1', 'Avg HUM 1', 'Avg DS18B20'] if col in daily_df.columns]
+        st.markdown("### 📊 Coefficient of Variation (CV)")
+        cv = daily_df.std(numeric_only=True) / daily_df.mean(numeric_only=True)
+        cv_df = cv.reset_index()
+        cv_df.columns = ['Parameter', 'CV']
+        st.bar_chart(cv_df.set_index("Parameter"))
 
-        parameters = st.multiselect(
-            "Select parameters to analyze",
-            available_params,
-            default=['Avg TDS', 'Avg pH'] if 'Avg TDS' in daily_df.columns and 'Avg pH' in daily_df.columns else available_params[:2]
-        )
+        st.info("""
+        - Lower CV = More stable readings  
+        - Ideal: CV < 0.1 for critical sensors like pH and TDS
+        """)
 
-        if parameters:
-            # Coefficient of variation
-            cv_data = daily_df[parameters].std() / daily_df[parameters].mean()
+        st.markdown("### 📈 3-Day Rolling Average Trends")
+        rolling_df = daily_df.set_index('Day').rolling(window=3).mean()
+        st.line_chart(rolling_df)
 
-            st.subheader("Consistency Metrics (Coefficient of Variation)")
-            st.bar_chart(cv_data)
+        st.markdown("### 🚨 Inconsistency Alerts")
+        for param in ['TDS', 'pH', 'DS18B20', 'DHT22 1', 'HUM 1']:
+            std = daily_df[param].std()
+            mean = daily_df[param].mean()
+            if mean != 0 and std / mean > 0.15:
+                st.warning(f"⚠️ {param} shows high variability: {std/mean:.2%}")
+            elif std / mean <= 0.1:
+                st.success(f"✅ {param} is stable ({std/mean:.2%})")
 
-            st.info("""
-            **Interpretation:**
-            - Lower values = more consistent
-            - Higher values = more variable
-            - Ideal: Below 0.1 (10% variation)
-            """)
-
-            # Time series with rolling average
-            if 'Day' in daily_df.columns:
-                st.subheader("7-Day Moving Average")
-                rolling_df = daily_df.set_index('Day')[parameters].rolling(7).mean()
-                st.line_chart(rolling_df)
-            else:
-                st.warning("'Day' column not found for moving average.")
-
-            # Inconsistency alerts
-            st.subheader("Inconsistency Alerts")
-            for param in parameters:
-                std_dev = daily_df[param].std()
-                mean_val = daily_df[param].mean()
-                if mean_val != 0 and std_dev > (mean_val * 0.15):
-                    st.warning(f"High variability in {param} (Std Dev: {std_dev:.2f})")
     else:
-        st.warning("No daily data available. Please check your data source.")
+        st.warning("No data available. Please upload your Excel file on the Home page.")
 
 #====about us======
 elif selected == "About Us":
