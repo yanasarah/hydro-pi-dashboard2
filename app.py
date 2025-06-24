@@ -1012,36 +1012,6 @@ elif selected == "Beginner FAQ":
 
         chat_response("🧠 Based on your inputs, growth conditions are looking **moderate to excellent** if maintained.")
 
-        # Generate PDF report
-        def generate_ai_pdf(data):
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", "B", 16)
-            pdf.cell(200, 10, "Hydro-Pi AI Growth Advisor Report", ln=True, align='C')
-
-            pdf.set_font("Arial", size=12)
-            pdf.ln(10)
-            pdf.cell(200, 10, f"TDS: {data['tds']} ppm", ln=True)
-            pdf.cell(200, 10, f"pH: {data['ph']}", ln=True)
-            pdf.cell(200, 10, f"Water Temp (DS18B20): {data['temp']} °C", ln=True)
-            pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
-            pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
-            pdf.ln(5)
-            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28°C for root health")
-
-            return pdf.output(dest='S').encode('latin-1')
-
-        user_data = {
-            "tds": tds,
-            "ph": ph,
-            "temp": temp,
-            "air_temp": air_temp,
-            "humidity": humidity
-        }
-        pdf_bytes = generate_ai_pdf(user_data)
-        b64 = base64.b64encode(pdf_bytes).decode()
-        href = f'<a href="data:application/octet-stream;base64,{b64}" download="AI_Growth_Report.pdf">📄 Download Your AI Prediction Report</a>'
-        st.markdown(href, unsafe_allow_html=True)
 
     # ========== FAQ Section ==========
     st.markdown("### 📚 Frequently Asked Questions")
