@@ -677,11 +677,13 @@ elif selected == "About Us":
     st.markdown("### 💬 What Our Growers Say")
     testi1, testi2 = st.columns(2)
     with testi1:
-        st.markdown(">“Since I installed Hydro-Pi, my spinach grew faster and fuller. The alerts saved me twice!”  
-        — **Fazli**, Home Grower, Johor")
+        st.markdown(
+    "> “Since I installed Hydro-Pi, my spinach grew faster and fuller. The alerts saved me twice!”  \n"
+    "— **Fazli**, Home Grower, Johor")
     with testi2:
-        st.markdown(">“We use Hydro-Pi in our school greenhouse. The kids love checking plant stats and watching them grow.”  
-        — **Cikgu Nurul**, School Hydroponics Project")
+        st.markdown(
+    "> “We use Hydro-Pi in our school greenhouse. The kids love checking plant stats and watching them grow.”  \n"
+    "— **Cikgu Nurul**, School Hydroponics Project")
 
     # Timeline
     st.markdown("### 🌱 The Journey: Seed to Harvest")
