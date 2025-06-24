@@ -911,6 +911,30 @@ elif selected == "AI Forecast":
             emoji = "🟥" if risk == 'High' else ("🟧" if risk == 'Medium' else "🟩")
             st.markdown(f"{emoji} Week {int(week)} fungus risk: **{risk}**")
 
+                st.markdown("### 📈 Weekly Humidity Trend")
+
+        import plotly.graph_objects as go
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=weekly_humidity.index, y=weekly_humidity['HUM 1'],
+            mode='lines+markers', name='HUM 1'
+        ))
+        fig.add_trace(go.Scatter(
+            x=weekly_humidity.index, y=weekly_humidity['HUM 2'],
+            mode='lines+markers', name='HUM 2'
+        ))
+
+        fig.update_layout(
+            title="Average Weekly Humidity Levels",
+            xaxis_title="Week",
+            yaxis_title="Humidity (%)",
+            yaxis=dict(range=[0, 100]),
+            hovermode="x unified"
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+
         st.markdown("---")
         st.caption("Forecasts are based on trends from Week 1–5 and are updated as new data is added.")
 
