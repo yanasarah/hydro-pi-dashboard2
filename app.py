@@ -75,7 +75,7 @@ st.markdown("""
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast", "Contact"],
+        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact"],
         icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope"],
         menu_icon="cast",
         default_index=0
@@ -934,12 +934,88 @@ elif selected == "AI Forecast":
         )
         st.plotly_chart(fig, use_container_width=True)
 
-#=== katakata=
+#=== kata-kata=
         st.markdown("---")
         st.caption("Forecasts are based on trends from Week 1–5 and are updated as new data is added.")
 
     else:
         st.warning("No data available or missing 'Week' column.")
+#==faq beginner===
+elif selected == "Beginner FAQ":
+    st.markdown("""
+    <h1 style='color:#2e8b57;'>🌱 Beginner FAQ & AI Advisor</h1>
+    <p style='color:#4e944f;'>Start your smart hydroponic journey with answers and live AI feedback</p>
+    """, unsafe_allow_html=True)
+
+    # ========== AI Assistant Section ==========
+    st.markdown("### 🤖 AI Advisor – Input your values")
+
+    with st.form("ai_advice_form"):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            tds = st.number_input("TDS (ppm)", min_value=0, max_value=2000, value=700)
+        with col2:
+            ph = st.number_input("pH Level", min_value=0.0, max_value=14.0, value=6.0, step=0.1)
+        with col3:
+            temp = st.number_input("Water Temp (DS18B20 °C)", min_value=0.0, max_value=50.0, value=26.0)
+
+        col4, col5 = st.columns(2)
+        with col4:
+            air_temp = st.number_input("Air Temperature (DHT22 °C)", min_value=0.0, max_value=50.0, value=28.0)
+        with col5:
+            humidity = st.number_input("Humidity (%)", min_value=0.0, max_value=100.0, value=65.0)
+
+        submitted = st.form_submit_button("Get Prediction")
+
+    if submitted:
+        st.markdown("### 📊 AI-Based Growth Prediction")
+
+        if not (5.5 <= ph <= 6.5):
+            st.warning("⚠️ pH is outside optimal range (5.5–6.5).")
+        else:
+            st.success("✅ pH is ideal for nutrient absorption.")
+
+        if not (600 <= tds <= 800):
+            st.warning("⚠️ TDS may be too low/high for leafy greens.")
+        else:
+            st.success("✅ Nutrient concentration looks great.")
+
+        if temp > 28:
+            st.warning("🔥 Water is too warm — root stress risk.")
+        elif temp < 18:
+            st.warning("🥶 Water is too cold for optimal growth.")
+        else:
+            st.success("✅ Water temperature is healthy.")
+
+        if humidity > 75:
+            st.warning("💧 High humidity — monitor for fungal growth.")
+        elif humidity < 40:
+            st.warning("🌬️ Air too dry — consider misting.")
+        else:
+            st.success("✅ Humidity is within safe range.")
+
+        st.info("🧠 Growth forecast: *Moderate to Excellent* if pH, TDS and temperature are stable over time.")
+
+    # ========== FAQ Section ==========
+    st.markdown("### 📚 Frequently Asked Questions")
+
+    with st.expander("💡 What is hydroponics?"):
+        st.markdown("Hydroponics is a method of growing plants using nutrient-rich water instead of soil.")
+
+    with st.expander("🌿 What plants grow best in hydroponics?"):
+        st.markdown("Leafy greens like spinach, lettuce, basil, and herbs thrive in hydroponic systems.")
+
+    with st.expander("🧪 How often should I check TDS and pH?"):
+        st.markdown("Check at least once daily or every few days. Stability is key for healthy growth.")
+
+    with st.expander("💧 What does TDS mean?"):
+        st.markdown("TDS (Total Dissolved Solids) represents the amount of nutrients in the water. Ideal range for leafy plants: 600–800 ppm.")
+
+    with st.expander("🌦️ Why does humidity matter?"):
+        st.markdown("Too much humidity can cause fungal growth. Too little dries out plants. Aim for 50–70%.")
+
+    st.caption("Need more help? Visit the 'Contact' page or chat with our support team.")
+
 
 
 #====contact part=====
