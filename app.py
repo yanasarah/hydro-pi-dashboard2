@@ -910,8 +910,8 @@ elif selected == "AI Forecast":
         for week, risk in risk_levels:
             emoji = "🟥" if risk == 'High' else ("🟧" if risk == 'Medium' else "🟩")
             st.markdown(f"{emoji} Week {int(week)} fungus risk: **{risk}**")
-
-                st.markdown("### 📈 Weekly Humidity Trend")
+#==week vs hum===
+                 st.markdown("### 📈 Weekly Humidity Trend")
 
         import plotly.graph_objects as go
 
@@ -934,7 +934,7 @@ elif selected == "AI Forecast":
         )
         st.plotly_chart(fig, use_container_width=True)
 
-
+#=== katakata=
         st.markdown("---")
         st.caption("Forecasts are based on trends from Week 1–5 and are updated as new data is added.")
 
