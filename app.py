@@ -972,7 +972,7 @@ elif selected == "Beginner FAQ":
     from fpdf import FPDF
     import base64
 
-        if submitted:
+    if submitted:
         st.markdown("### 🤖 AI Growth Advisor")
         st.markdown("💬 *Processing your data...*")
         time.sleep(1)
@@ -980,7 +980,7 @@ elif selected == "Beginner FAQ":
         def chat_response(msg, success=True):
             style = "background-color: #e8f5e9;" if success else "background-color: #ffebee;"
             st.markdown(f"""
-            <div style="{style} padding: 1rem; border-radius: 10px; margin-bottom: 0.8rem; font-size: 16px;">
+            <div style=\"{style} padding: 1rem; border-radius: 10px; margin-bottom: 0.8rem; font-size: 16px;\">
                 💬 {msg}
             </div>
             """, unsafe_allow_html=True)
@@ -1012,6 +1012,7 @@ elif selected == "Beginner FAQ":
 
         chat_response("🧠 Based on your inputs, growth conditions are looking **moderate to excellent** if maintained.")
 
+        # Generate PDF report
         def generate_ai_pdf(data):
             pdf = FPDF()
             pdf.add_page()
@@ -1026,9 +1027,9 @@ elif selected == "Beginner FAQ":
             pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
             pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
             pdf.ln(5)
-            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28C for root health")
+            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28°C for root health")
 
-            return pdf.output(dest='S').encode('latin-1', 'ignore')
+            return pdf.output(dest='S').encode('latin-1')
 
         user_data = {
             "tds": tds,
@@ -1037,12 +1038,10 @@ elif selected == "Beginner FAQ":
             "air_temp": air_temp,
             "humidity": humidity
         }
-
         pdf_bytes = generate_ai_pdf(user_data)
         b64 = base64.b64encode(pdf_bytes).decode()
         href = f'<a href="data:application/octet-stream;base64,{b64}" download="AI_Growth_Report.pdf">📄 Download Your AI Prediction Report</a>'
         st.markdown(href, unsafe_allow_html=True)
-
 
     # ========== FAQ Section ==========
     st.markdown("### 📚 Frequently Asked Questions")
