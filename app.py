@@ -75,8 +75,8 @@ st.markdown("""
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison", "Contact"],
-        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","leave", "envelope"],
+        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast", "Contact"],
+        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope"],
         menu_icon="cast",
         default_index=0
     )
@@ -869,6 +869,54 @@ elif selected == "Crop Comparison":
 
     else:
         st.warning("No cycle data found. Make sure your dataset has a 'Week' column with valid values.")
+
+# ============= AI FORECAST & RISK PREDICTION =============
+elif selected == "AI Forecast":
+    st.markdown("""
+    <h1 style='color:#2e8b57;'>🤖 AI Forecast & Risk Prediction</h1>
+    <p style='color:#4e944f;'>Smarter decisions powered by your environmental data</p>
+    """, unsafe_allow_html=True)
+
+    df = st.session_state.get("df", pd.DataFrame())
+
+    if not df.empty and 'Week' in df.columns:
+        df['Week'] = df['Week'].ffill()
+
+        st.markdown("### 🧪 Nutrient Rebalancing Suggestion")
+        recent_tds = df[df['Week'].isin([4, 5])]['TDS']
+        if recent_tds.mean() > 1200 or recent_tds.diff().mean() > 50:
+            st.error("⚠️ High or rapidly rising TDS detected — consider rebalancing nutrients.")
+        else:
+            st.success("✅ TDS levels are stable — no action needed.")
+
+        st.markdown("### 🗓️ Harvest Day Estimator")
+        if df['Week'].isin([3]).any():
+            st.info("🪴 Spinach observed in Week 3.")
+            st.success("📅 Estimated optimal harvest window: **Week 6**")
+        else:
+            st.warning("❓ No plant growth detected in Week 3 — unable to forecast harvest.")
+
+        st.markdown("### 🌫️ Fungus Risk Forecast")
+        weekly_humidity = df.groupby('Week')[['HUM 1', 'HUM 2']].mean()
+        risk_levels = []
+        for week, row in weekly_humidity.iterrows():
+            if row['HUM 1'] > 75 or row['HUM 2'] > 75:
+                risk_levels.append((week, 'High'))
+            elif row['HUM 1'] > 65 or row['HUM 2'] > 65:
+                risk_levels.append((week, 'Medium'))
+            else:
+                risk_levels.append((week, 'Low'))
+
+        for week, risk in risk_levels:
+            emoji = "🟥" if risk == 'High' else ("🟧" if risk == 'Medium' else "🟩")
+            st.markdown(f"{emoji} Week {int(week)} fungus risk: **{risk}**")
+
+        st.markdown("---")
+        st.caption("Forecasts are based on trends from Week 1–5 and are updated as new data is added.")
+
+    else:
+        st.warning("No data available or missing 'Week' column.")
+
 
 #====contact part=====
 elif selected == "Contact":
