@@ -766,6 +766,8 @@ def download_pdf_button(df):
 st.markdown("### 📥 Weekly Report")
 download_pdf_button(st.session_state["df"])
 
+
+
 #===== CONTACT=====
 elif selected == "Contact":
     st.title("📞 Contact Us")
