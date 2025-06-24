@@ -1014,22 +1014,22 @@ elif selected == "Beginner FAQ":
 
         # Generate PDF report
         def generate_ai_pdf(data):
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", "B", 16)
-            pdf.cell(200, 10, "Hydro-Pi AI Growth Advisor Report", ln=True, align='C')
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(200, 10, "Hydro-Pi AI Growth Advisor Report", ln=True, align='C')
 
-            pdf.set_font("Arial", size=12)
-            pdf.ln(10)
-            pdf.cell(200, 10, f"TDS: {data['tds']} ppm", ln=True)
-            pdf.cell(200, 10, f"pH: {data['ph']}", ln=True)
-            pdf.cell(200, 10, f"Water Temp (DS18B20): {data['temp']} °C", ln=True)
-            pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
-            pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
-            pdf.ln(5)
-            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28C for root health")
+    pdf.set_font("Arial", size=12)
+    pdf.ln(10)
+    pdf.cell(200, 10, f"TDS: {data['tds']} ppm", ln=True)
+    pdf.cell(200, 10, f"pH: {data['ph']}", ln=True)
+    pdf.cell(200, 10, f"Water Temp (DS18B20): {data['temp']} °C", ln=True)
+    pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
+    pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
+    pdf.ln(5)
+    pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28C for root health")
 
-           return pdf.output(dest='S').encode('latin-1', 'ignore')
+    return pdf.output(dest='S').encode('latin-1', 'ignore')
 
         user_data = {
             "tds": tds,
