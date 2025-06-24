@@ -833,25 +833,27 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# Correct indentation block
+st.markdown("### 📊 Visual Comparison")
 
-        st.markdown("### 📊 Visual Comparison")
-        import plotly.graph_objects as go
-        parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
+import plotly.graph_objects as go
+parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
 
-        for param in parameters:
-            cycle_means = df_cycle.groupby('Cycle')[param].mean()
-            fig = go.Figure(data=[
-                go.Bar(name='Cycle 1', x=[param], y=[cycle_means.get('Cycle 1', 0)]),
-                go.Bar(name='Cycle 2', x=[param], y=[cycle_means.get('Cycle 2', 0)])
-            ])
-            fig.update_layout(
-                title=f"{param} Comparison",
-                barmode='group',
-                yaxis_title=param,
-                xaxis_title="Parameter"
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
+for param in parameters:
+    cycle_means = df_cycle.groupby('Cycle')[param].mean()
+    fig = go.Figure(data=[
+        go.Bar(name='Cycle 1', x=[param], y=[cycle_means.get('Cycle 1', 0)]),
+        go.Bar(name='Cycle 2', x=[param], y=[cycle_means.get('Cycle 2', 0)])
+    ])
+    fig.update_layout(
+        title=f"{param} Comparison",
+        barmode='group',
+        yaxis_title=param,
+        xaxis_title="Parameter"
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    #===ai oberservation=====
         st.markdown("### 🧠 AI Observations")
 
         def get_stability(param):
