@@ -706,7 +706,6 @@ elif selected == "About Us":
         st.write("No, just use the web dashboard on any device.")
     with st.expander("💧 What if pH or nutrients are off?"):
         st.write("Hydro-Pi notifies you and provides suggestions to fix it.")
-)
 
 #==== INSIGHT===============
 elif selected == "Insights":
