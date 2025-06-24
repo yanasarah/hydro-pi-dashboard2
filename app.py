@@ -816,44 +816,41 @@ elif selected == "Crop Comparison":
         # Define cycles by week range
         cycle1_weeks = [1, 2]
         cycle2_weeks = [3, 4, 5]
-
         df['Cycle'] = df['Week'].apply(lambda w: 'Cycle 1' if w in cycle1_weeks else ('Cycle 2' if w in cycle2_weeks else 'Other'))
 
         # Filter only cycle data
         df_cycle = df[df['Cycle'].isin(['Cycle 1', 'Cycle 2'])]
 
         st.subheader("🧮 Summary Statistics by Cycle")
-summary = df_cycle.groupby('Cycle')[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].agg(['mean', 'std']).round(2)
-st.dataframe(summary)
+        summary = df_cycle.groupby('Cycle')[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].agg(['mean', 'std']).round(2)
+        st.dataframe(summary)
 
-st.markdown("""
-<div style="color:#4e944f; font-size: 16px; margin-top: 0.5rem;">
-    📅 <strong>Cycle 1:</strong> Week 1–2 (14 days) <br>
-    📅 <strong>Cycle 2:</strong> Week 3–5 (21 days)
-</div>
-""", unsafe_allow_html=True)
+        st.markdown("""
+        <div style="color:#4e944f; font-size: 16px; margin-top: 0.5rem;">
+            📅 <strong>Cycle 1:</strong> Week 1–2 (14 days) <br>
+            📅 <strong>Cycle 2:</strong> Week 3–5 (21 days)
+        </div>
+        """, unsafe_allow_html=True)
 
-# Correct indentation block
-st.markdown("### 📊 Visual Comparison")
+        st.markdown("### 📊 Visual Comparison")
 
-import plotly.graph_objects as go
-parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
+        import plotly.graph_objects as go
+        parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
 
-for param in parameters:
-    cycle_means = df_cycle.groupby('Cycle')[param].mean()
-    fig = go.Figure(data=[
-        go.Bar(name='Cycle 1', x=[param], y=[cycle_means.get('Cycle 1', 0)]),
-        go.Bar(name='Cycle 2', x=[param], y=[cycle_means.get('Cycle 2', 0)])
-    ])
-    fig.update_layout(
-        title=f"{param} Comparison",
-        barmode='group',
-        yaxis_title=param,
-        xaxis_title="Parameter"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    
-    #===ai oberservation=====
+        for param in parameters:
+            cycle_means = df_cycle.groupby('Cycle')[param].mean()
+            fig = go.Figure(data=[
+                go.Bar(name='Cycle 1', x=[param], y=[cycle_means.get('Cycle 1', 0)]),
+                go.Bar(name='Cycle 2', x=[param], y=[cycle_means.get('Cycle 2', 0)])
+            ])
+            fig.update_layout(
+                title=f"{param} Comparison",
+                barmode='group',
+                yaxis_title=param,
+                xaxis_title="Parameter"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
         st.markdown("### 🧠 AI Observations")
 
         def get_stability(param):
@@ -869,6 +866,7 @@ for param in parameters:
             st.markdown(f"- {get_stability(p)}")
 
         st.info("🌿 Tip: Stability in pH, TDS, and temperature often results in better plant growth.")
+
     else:
         st.warning("No cycle data found. Make sure your dataset has a 'Week' column with valid values.")
 
