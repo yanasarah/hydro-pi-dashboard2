@@ -940,6 +940,7 @@ elif selected == "AI Forecast":
 
     else:
         st.warning("No data available or missing 'Week' column.")
+        
 #==faq beginner===
 elif selected == "Beginner FAQ":
     st.markdown("""
@@ -967,34 +968,80 @@ elif selected == "Beginner FAQ":
 
         submitted = st.form_submit_button("Get Prediction")
 
+    import time
+    from fpdf import FPDF
+    import base64
+
     if submitted:
-        st.markdown("### 📊 AI-Based Growth Prediction")
+        st.markdown("### 🤖 AI Growth Advisor")
+        st.markdown("💬 *Processing your data...*")
+        time.sleep(1)
+
+        def chat_response(msg, success=True):
+            style = "background-color: #e8f5e9;" if success else "background-color: #ffebee;"
+            st.markdown(f"""
+            <div style=\"{style} padding: 1rem; border-radius: 10px; margin-bottom: 0.8rem; font-size: 16px;\">
+                💬 {msg}
+            </div>
+            """, unsafe_allow_html=True)
+            time.sleep(1)
 
         if not (5.5 <= ph <= 6.5):
-            st.warning("⚠️ pH is outside optimal range (5.5–6.5).")
+            chat_response("⚠️ Your pH is outside the optimal range (5.5–6.5). Try adjusting it slowly.", success=False)
         else:
-            st.success("✅ pH is ideal for nutrient absorption.")
+            chat_response("✅ Nice! Your pH is in the ideal range for nutrient absorption.")
 
         if not (600 <= tds <= 800):
-            st.warning("⚠️ TDS may be too low/high for leafy greens.")
+            chat_response("⚠️ Your TDS level may be too low or too high for leafy plants.", success=False)
         else:
-            st.success("✅ Nutrient concentration looks great.")
+            chat_response("✅ Nutrient levels are perfect for healthy hydroponic growth.")
 
         if temp > 28:
-            st.warning("🔥 Water is too warm — root stress risk.")
+            chat_response("🔥 Warning: Your water temperature is quite warm. This can stress roots.", success=False)
         elif temp < 18:
-            st.warning("🥶 Water is too cold for optimal growth.")
+            chat_response("🥶 It's a bit too cold. Consider warming the water slightly.", success=False)
         else:
-            st.success("✅ Water temperature is healthy.")
+            chat_response("✅ Water temperature looks healthy and stable.")
 
         if humidity > 75:
-            st.warning("💧 High humidity — monitor for fungal growth.")
+            chat_response("💧 High humidity could lead to fungal risks. Watch out!", success=False)
         elif humidity < 40:
-            st.warning("🌬️ Air too dry — consider misting.")
+            chat_response("🌬️ It's a bit dry — misting might help keep your plant comfy.", success=False)
         else:
-            st.success("✅ Humidity is within safe range.")
+            chat_response("✅ Humidity is in the sweet spot. Your plants will love it.")
 
-        st.info("🧠 Growth forecast: *Moderate to Excellent* if pH, TDS and temperature are stable over time.")
+        chat_response("🧠 Based on your inputs, growth conditions are looking **moderate to excellent** if maintained.")
+
+        # Generate PDF report
+        def generate_ai_pdf(data):
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 16)
+            pdf.cell(200, 10, "Hydro-Pi AI Growth Advisor Report", ln=True, align='C')
+
+            pdf.set_font("Arial", size=12)
+            pdf.ln(10)
+            pdf.cell(200, 10, f"TDS: {data['tds']} ppm", ln=True)
+            pdf.cell(200, 10, f"pH: {data['ph']}", ln=True)
+            pdf.cell(200, 10, f"Water Temp (DS18B20): {data['temp']} °C", ln=True)
+            pdf.cell(200, 10, f"Air Temp: {data['air_temp']} °C", ln=True)
+            pdf.cell(200, 10, f"Humidity: {data['humidity']}%", ln=True)
+            pdf.ln(5)
+            pdf.multi_cell(0, 10, "Growth Forecast: Moderate to Excellent.\n\nTips:\n- Maintain pH between 5.5–6.5\n- Ideal TDS: 600–800 ppm\n- Watch humidity for fungal risks\n- Keep water below 28°C for root health")
+
+            return pdf.output(dest='S').encode('latin-1')
+
+        user_data = {
+            "tds": tds,
+            "ph": ph,
+            "temp": temp,
+            "air_temp": air_temp,
+            "humidity": humidity
+        }
+        pdf_bytes = generate_ai_pdf(user_data)
+        b64 = base64.b64encode(pdf_bytes).decode()
+        href = f'<a href="data:application/octet-stream;base64,{b64}" download="AI_Growth_Report.pdf">📄 Download Your AI Prediction Report</a>'
+        st.markdown(href, unsafe_allow_html=True)
 
     # ========== FAQ Section ==========
     st.markdown("### 📚 Frequently Asked Questions")
@@ -1015,6 +1062,7 @@ elif selected == "Beginner FAQ":
         st.markdown("Too much humidity can cause fungal growth. Too little dries out plants. Aim for 50–70%.")
 
     st.caption("Need more help? Visit the 'Contact' page or chat with our support team.")
+
 
 
 
