@@ -342,14 +342,13 @@ elif selected == "Historical Data":
     else:
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
-    # ===== GROWTH SCORE MODEL =====
+# ===== GROWTH SCORE MODEL =====
 st.subheader("🌿 Plant Health Analysis")
 
 if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
     # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
-        # Calculate custom growth score
         filtered_df['Growth_Score'] = (
             0.3 * filtered_df['DS18B20'] + 
             0.2 * (100 - filtered_df['HUM 1']) + 
@@ -357,11 +356,11 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             0.25 * filtered_df['pH']
         )
         filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
-                                       (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
-        
+                                    (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
+
         st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-                   # ========== Advanced Predictions ==========
+        # ========== Advanced Predictions ==========
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
@@ -412,7 +411,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
             st.caption("This shows which sensor data most affects the AI's growth prediction.")
 
-            # --- Predicted vs Actual Scatter Plot (no trendline) ---
+            # --- Predicted vs Actual Scatter Plot ---
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
             fig_scatter = go.Figure()
 
@@ -442,43 +441,8 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             )
             st.plotly_chart(fig_scatter, use_container_width=True)
             st.caption("Dots close to the dashed line mean accurate predictions.")
-
-            # --- Predicted vs Actual Scatter Plot ---
-            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
-
-            import plotly.graph_objects as go
-            fig_scatter = go.Figure()
-            fig_scatter.add_trace(go.Scatter(
-                x=pred_df["Actual"],
-                y=pred_df["Predicted"],
-                mode='markers',
-                marker=dict(size=8, color='#43a047'),
-                name="Prediction"
-            ))
-
-# Optional: Add ideal line y = x for reference
-        min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
-        max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
-        fig_scatter.add_trace(go.Scatter(
-            x=[min_val, max_val],
-            y=[min_val, max_val],
-            mode='lines',
-            line=dict(dash='dash', color='gray'),
-            name="Ideal"
-        ))
-
-        fig_scatter.update_layout(
-        title="Actual vs Predicted Growth Score",
-        xaxis_title="Actual",
-        yaxis_title="Predicted",
-        height=400
-        )
-
-        st.plotly_chart(fig_scatter, use_container_width=True)
-        st.caption("Dots close to the dashed line mean accurate predictions.")
-
     else:
-        st.warning("Missing required columns for growth score calculation")
+        st.warning("Missing required columns for growth score calculation.")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
