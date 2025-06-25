@@ -361,7 +361,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
         
         st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-        # ========== Advanced Predictions ==========
+                # ========== Advanced Predictions ==========
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
@@ -391,66 +391,51 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
             st.caption("This number shows how far off the AI predictions are on average using 5-fold validation.")
 
-            st.markdown("""
-            ### 🤖 Growth Score AI Prediction (Cross-Validated)
-
-            This chart shows how well our AI estimates your plant’s health score using pH, TDS, temperature, and humidity.
-
-            - **Actual**: Calculated from sensor data  
-            - **Predicted**: AI model prediction  
-            """)
-
+            st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
             pred_df = pd.DataFrame({
                 "Actual": actuals,
                 "Predicted": predictions
             })
+            st.line_chart(pred_df.reset_index(drop=True))
 
-            pred_df.index = range(len(pred_df))  # Proper index for chart
-            st.line_chart(pred_df)
             # --- Feature Importance ---
-st.markdown("### 📊 Sensor Impact (Feature Importance)")
+            st.markdown("### 📊 Sensor Impact (Feature Importance)")
 
-import matplotlib.pyplot as plt
+            import matplotlib.pyplot as plt
 
-features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-importances = model.feature_importances_
+            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
+            importances = model.feature_importances_
 
-fig_imp, ax = plt.subplots()
-ax.barh(features, importances, color='#66bb6a')
-ax.set_xlabel("Importance Score")
-ax.set_title("Most Influential Sensors for Growth Prediction")
-st.pyplot(fig_imp)
+            fig_imp, ax = plt.subplots()
+            ax.barh(features, importances, color='#66bb6a')
+            ax.set_xlabel("Importance Score")
+            ax.set_title("Most Influential Sensors for Growth Prediction")
+            st.pyplot(fig_imp)
 
-st.caption("This shows which sensor data most affects the AI's growth prediction.")
+            st.caption("This shows which sensor data most affects the AI's growth prediction.")
 
+            # --- Predicted vs Actual Scatter Plot ---
+            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
 
-# --- Predicted vs Actual Scatter Plot ---
-st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
+            import plotly.express as px
 
-import plotly.express as px
+            fig_scatter = px.scatter(
+                pred_df, x="Actual", y="Predicted",
+                trendline="ols",
+                labels={"Actual": "Actual Growth Score", "Predicted": "Predicted Growth Score"},
+                title="Actual vs Predicted Growth Score"
+            )
 
-pred_df = pd.DataFrame({
-    "Actual": actuals,
-    "Predicted": predictions
-})
+            fig_scatter.update_traces(marker=dict(size=8, color='#43a047'))
+            fig_scatter.update_layout(
+                height=400,
+                xaxis=dict(title="Actual"),
+                yaxis=dict(title="Predicted"),
+                showlegend=False
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
 
-fig_scatter = px.scatter(
-    pred_df, x="Actual", y="Predicted",
-    trendline="ols",  # Add regression line
-    labels={"Actual": "Actual Growth Score", "Predicted": "Predicted Growth Score"},
-    title="Actual vs Predicted Growth Score"
-)
-
-fig_scatter.update_traces(marker=dict(size=8, color='#43a047'))
-fig_scatter.update_layout(
-    height=400,
-    xaxis=dict(title="Actual"),
-    yaxis=dict(title="Predicted"),
-    showlegend=False
-)
-st.plotly_chart(fig_scatter, use_container_width=True)
-
-st.caption("Dots close to the line mean accurate predictions. Wide scatter means less accurate.")
+            st.caption("Dots close to the line mean accurate predictions. Wide scatter means less accurate.")
     else:
         st.warning("Missing required columns for growth score calculation")
 
