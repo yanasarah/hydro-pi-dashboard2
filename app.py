@@ -362,21 +362,31 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
         # Machine Learning Prediction with Train/Test Split
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-            from sklearn.model_selection import train_test_split
             from sklearn.ensemble import RandomForestRegressor
+            from sklearn.model_selection import KFold
             from sklearn.metrics import mean_squared_error
+            from math import sqrt
 
             X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
             y = filtered_df['Growth_Score']
 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+            actuals = []
+            predictions = []
+
+            for train_idx, test_idx in kf.split(X):
+            X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+            y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
 
             model = RandomForestRegressor()
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
 
-            from math import sqrt
-            rmse = sqrt(mean_squared_error(y_test, y_pred))
+            actuals.extend(y_test.values)
+            predictions.extend(y_pred)
+
+            rmse = sqrt(mean_squared_error(actuals, predictions))
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
             st.caption("This number shows how far off the AI predictions are on average. Lower = better.")
 
