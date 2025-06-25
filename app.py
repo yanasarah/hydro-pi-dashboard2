@@ -375,7 +375,8 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
 
-            rmse = mean_squared_error(y_test, y_pred, squared=False)
+            from math import sqrt
+            rmse = sqrt(mean_squared_error(y_test, y_pred))
             st.metric("📊 Test RMSE", f"{rmse:.2f}")
 
             pred_df = pd.DataFrame({
