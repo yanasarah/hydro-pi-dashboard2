@@ -447,37 +447,35 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
 
             import plotly.graph_objects as go
-
-fig_scatter = go.Figure()
-
-fig_scatter.add_trace(go.Scatter(
-    x=pred_df["Actual"],
-    y=pred_df["Predicted"],
-    mode='markers',
-    marker=dict(size=8, color='#43a047'),
-    name="Prediction"
-))
+            fig_scatter = go.Figure()
+            fig_scatter.add_trace(go.Scatter(
+                x=pred_df["Actual"],
+                y=pred_df["Predicted"],
+                mode='markers',
+                marker=dict(size=8, color='#43a047'),
+                name="Prediction"
+            ))
 
 # Optional: Add ideal line y = x for reference
-min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
-max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
-fig_scatter.add_trace(go.Scatter(
-    x=[min_val, max_val],
-    y=[min_val, max_val],
-    mode='lines',
-    line=dict(dash='dash', color='gray'),
-    name="Ideal"
-))
+        min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+        max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+        fig_scatter.add_trace(go.Scatter(
+            x=[min_val, max_val],
+            y=[min_val, max_val],
+            mode='lines',
+            line=dict(dash='dash', color='gray'),
+            name="Ideal"
+        ))
 
-fig_scatter.update_layout(
-    title="Actual vs Predicted Growth Score",
-    xaxis_title="Actual",
-    yaxis_title="Predicted",
-    height=400
-)
+        fig_scatter.update_layout(
+        title="Actual vs Predicted Growth Score",
+        xaxis_title="Actual",
+        yaxis_title="Predicted",
+        height=400
+        )
 
-st.plotly_chart(fig_scatter, use_container_width=True)
-st.caption("Dots close to the dashed line mean accurate predictions.")
+        st.plotly_chart(fig_scatter, use_container_width=True)
+        st.caption("Dots close to the dashed line mean accurate predictions.")
 
     else:
         st.warning("Missing required columns for growth score calculation")
