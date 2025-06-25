@@ -451,7 +451,6 @@ fig_scatter.update_layout(
 st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.caption("Dots close to the line mean accurate predictions. Wide scatter means less accurate.")
-
     else:
         st.warning("Missing required columns for growth score calculation")
 
