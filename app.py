@@ -407,6 +407,51 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
             pred_df.index = range(len(pred_df))  # Proper index for chart
             st.line_chart(pred_df)
+            # --- Feature Importance ---
+st.markdown("### 📊 Sensor Impact (Feature Importance)")
+
+import matplotlib.pyplot as plt
+
+features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
+importances = model.feature_importances_
+
+fig_imp, ax = plt.subplots()
+ax.barh(features, importances, color='#66bb6a')
+ax.set_xlabel("Importance Score")
+ax.set_title("Most Influential Sensors for Growth Prediction")
+st.pyplot(fig_imp)
+
+st.caption("This shows which sensor data most affects the AI's growth prediction.")
+
+
+# --- Predicted vs Actual Scatter Plot ---
+st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
+
+import plotly.express as px
+
+pred_df = pd.DataFrame({
+    "Actual": actuals,
+    "Predicted": predictions
+})
+
+fig_scatter = px.scatter(
+    pred_df, x="Actual", y="Predicted",
+    trendline="ols",  # Add regression line
+    labels={"Actual": "Actual Growth Score", "Predicted": "Predicted Growth Score"},
+    title="Actual vs Predicted Growth Score"
+)
+
+fig_scatter.update_traces(marker=dict(size=8, color='#43a047'))
+fig_scatter.update_layout(
+    height=400,
+    xaxis=dict(title="Actual"),
+    yaxis=dict(title="Predicted"),
+    showlegend=False
+)
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+st.caption("Dots close to the line mean accurate predictions. Wide scatter means less accurate.")
+
     else:
         st.warning("Missing required columns for growth score calculation")
 
