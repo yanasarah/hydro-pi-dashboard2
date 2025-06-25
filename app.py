@@ -80,7 +80,7 @@ with st.sidebar:
         menu_icon="cast",
         default_index=0
     )
-
+filtered_df = st.session_state.get("filtered_df", pd.DataFrame())
 # ============= DATA LOADING FUNCTIONS =============
 @st.cache_data
 def load_main_data():
