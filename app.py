@@ -421,7 +421,6 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
             fig_scatter = px.scatter(
                 pred_df, x="Actual", y="Predicted",
-                trendline="ols",
                 labels={"Actual": "Actual Growth Score", "Predicted": "Predicted Growth Score"},
                 title="Actual vs Predicted Growth Score"
             )
