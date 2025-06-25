@@ -349,6 +349,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
     # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
+        # Calculate custom growth score
         filtered_df['Growth_Score'] = (
             0.3 * filtered_df['DS18B20'] + 
             0.2 * (100 - filtered_df['HUM 1']) + 
@@ -356,55 +357,55 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             0.25 * filtered_df['pH']
         )
         filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
-                                    (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
-
+                                       (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
+        
         st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-        # Machine Learning Prediction with Train/Test Split
+        # ========== Advanced Predictions ==========
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import KFold
-from sklearn.metrics import mean_squared_error
-from math import sqrt
+            from sklearn.model_selection import KFold
+            from sklearn.metrics import mean_squared_error
+            from math import sqrt
 
-X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-y = filtered_df['Growth_Score']
+            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+            y = filtered_df['Growth_Score']
 
-kf = KFold(n_splits=5, shuffle=True, random_state=42)
+            kf = KFold(n_splits=5, shuffle=True, random_state=42)
+            actuals = []
+            predictions = []
 
-actuals = []
-predictions = []
+            for train_idx, test_idx in kf.split(X):
+                X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+                y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
 
-for train_idx, test_idx in kf.split(X):
-    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-    y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+                model = RandomForestRegressor()
+                model.fit(X_train, y_train)
+                y_pred = model.predict(X_test)
 
-    model = RandomForestRegressor()
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+                actuals.extend(y_test.values)
+                predictions.extend(y_pred)
 
-    actuals.extend(y_test.values)
-    predictions.extend(y_pred)
             rmse = sqrt(mean_squared_error(actuals, predictions))
+
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
-            st.caption("This number shows how far off the AI predictions are on average. Lower = better.")
+            st.caption("This number shows how far off the AI predictions are on average using 5-fold validation.")
 
             st.markdown("""
-### 🤖 Growth Score AI Prediction (Advanced)
+            ### 🤖 Growth Score AI Prediction (Cross-Validated)
 
-This chart shows how well our AI can estimate your plant’s health score based on pH, TDS, temperature, and humidity.
+            This chart shows how well our AI estimates your plant’s health score using pH, TDS, temperature, and humidity.
 
-- **Actual**: The real health score calculated from your sensor data.
-- **Predicted**: What our AI thinks the score should be.
-- If both lines are close — it means our AI model understands your plant environment well! 🌱
-""")
-       
+            - **Actual**: Calculated from sensor data  
+            - **Predicted**: AI model prediction  
+            """)
+
             pred_df = pd.DataFrame({
-                "Actual": y_test.values,
-                "Predicted": y_pred
+                "Actual": actuals,
+                "Predicted": predictions
             })
 
-            pred_df.index = range(len(pred_df))  # Set index for plotting
+            pred_df.index = range(len(pred_df))  # Proper index for chart
             st.line_chart(pred_df)
     else:
         st.warning("Missing required columns for growth score calculation")
