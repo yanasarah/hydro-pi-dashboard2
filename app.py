@@ -384,6 +384,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
                 "Predicted": y_pred
             })
 
+            pred_df.index = range(len(pred_df))  # Set index for plotting
             st.line_chart(pred_df)
     else:
         st.warning("Missing required columns for growth score calculation")
