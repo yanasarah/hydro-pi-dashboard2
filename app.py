@@ -361,12 +361,14 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
         
         st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-                # ========== Advanced Predictions ==========
+                   # ========== Advanced Predictions ==========
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
             from sklearn.metrics import mean_squared_error
             from math import sqrt
+            import matplotlib.pyplot as plt
+            import plotly.graph_objects as go
 
             X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
             y = filtered_df['Growth_Score']
@@ -387,7 +389,6 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
                 predictions.extend(y_pred)
 
             rmse = sqrt(mean_squared_error(actuals, predictions))
-
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
             st.caption("This number shows how far off the AI predictions are on average using 5-fold validation.")
 
@@ -400,9 +401,6 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
             # --- Feature Importance ---
             st.markdown("### 📊 Sensor Impact (Feature Importance)")
-
-            import matplotlib.pyplot as plt
-
             features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
             importances = model.feature_importances_
 
@@ -413,6 +411,37 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             st.pyplot(fig_imp)
 
             st.caption("This shows which sensor data most affects the AI's growth prediction.")
+
+            # --- Predicted vs Actual Scatter Plot (no trendline) ---
+            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
+            fig_scatter = go.Figure()
+
+            fig_scatter.add_trace(go.Scatter(
+                x=pred_df["Actual"],
+                y=pred_df["Predicted"],
+                mode='markers',
+                marker=dict(size=8, color='#43a047'),
+                name="Prediction"
+            ))
+
+            min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+            max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+            fig_scatter.add_trace(go.Scatter(
+                x=[min_val, max_val],
+                y=[min_val, max_val],
+                mode='lines',
+                line=dict(dash='dash', color='gray'),
+                name="Ideal"
+            ))
+
+            fig_scatter.update_layout(
+                title="Actual vs Predicted Growth Score",
+                xaxis_title="Actual",
+                yaxis_title="Predicted",
+                height=400
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
+            st.caption("Dots close to the dashed line mean accurate predictions.")
 
             # --- Predicted vs Actual Scatter Plot ---
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
