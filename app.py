@@ -380,8 +380,7 @@ y_pred = model.predict(X_test)
 # Evaluate
 rmse = mean_squared_error(y_test, y_pred, squared=False)
 st.metric("📊 Test RMSE", f"{rmse:.2f}")
-
-                
+   
                 pred_df = pd.DataFrame({
                     'Time': filtered_df['Time'] if 'Time' in filtered_df.columns else filtered_df.index,
                     'Actual': y,
