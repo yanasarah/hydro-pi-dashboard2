@@ -377,8 +377,9 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
             from math import sqrt
             rmse = sqrt(mean_squared_error(y_test, y_pred))
-            st.metric("📊 Test RMSE", f"{rmse:.2f}")
-
+            st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
+            st.caption("This number shows how far off the AI predictions are on average. Lower = better.")
+            
             pred_df = pd.DataFrame({
                 "Actual": y_test.values,
                 "Predicted": y_pred
