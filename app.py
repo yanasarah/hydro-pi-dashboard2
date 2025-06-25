@@ -478,6 +478,7 @@ fig_scatter.update_layout(
 
 st.plotly_chart(fig_scatter, use_container_width=True)
 st.caption("Dots close to the dashed line mean accurate predictions.")
+
     else:
         st.warning("Missing required columns for growth score calculation")
 
