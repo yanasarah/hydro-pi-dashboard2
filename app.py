@@ -350,17 +350,21 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
         filtered_df['Growth_Score'] = (
-            0.3 * filtered_df['DS18B20'] + 
-            0.2 * (100 - filtered_df['HUM 1']) + 
-            0.25 * filtered_df['TDS'] / 100 + 
+            0.3 * filtered_df['DS18B20'] +
+            0.2 * (100 - filtered_df['HUM 1']) +
+            0.25 * filtered_df['TDS'] / 100 +
             0.25 * filtered_df['pH']
         )
-        filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
-                                    (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
+        filtered_df['Growth_Score'] = (
+            (filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) /
+            (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
+        ) * 100
 
-        st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
+        st.line_chart(
+            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
+        )
 
-        # ========== Advanced Predictions ==========
+        # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
@@ -368,6 +372,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             from math import sqrt
             import matplotlib.pyplot as plt
             import plotly.graph_objects as go
+            import pandas as pd
 
             X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
             y = filtered_df['Growth_Score']
@@ -387,10 +392,13 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
                 actuals.extend(y_test.values)
                 predictions.extend(y_pred)
 
+                last_model = model  # Keep last trained model for feature importance
+
             rmse = sqrt(mean_squared_error(actuals, predictions))
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
-            st.caption("This number shows how far off the AI predictions are on average using 5-fold validation.")
+            st.caption("This shows how far off the AI predictions are, on average (lower is better).")
 
+            # 📈 Line Chart of Predictions
             st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
             pred_df = pd.DataFrame({
                 "Actual": actuals,
@@ -398,20 +406,19 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             })
             st.line_chart(pred_df.reset_index(drop=True))
 
-            # --- Feature Importance ---
+            # 📊 Feature Importance
             st.markdown("### 📊 Sensor Impact (Feature Importance)")
             features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-            importances = model.feature_importances_
+            importances = last_model.feature_importances_
 
             fig_imp, ax = plt.subplots()
             ax.barh(features, importances, color='#66bb6a')
             ax.set_xlabel("Importance Score")
             ax.set_title("Most Influential Sensors for Growth Prediction")
             st.pyplot(fig_imp)
+            st.caption("Higher scores = more influence on growth score.")
 
-            st.caption("This shows which sensor data most affects the AI's growth prediction.")
-
-            # --- Predicted vs Actual Scatter Plot ---
+            # 🎯 Scatter Plot (Actual vs Predicted)
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
             fig_scatter = go.Figure()
 
@@ -440,7 +447,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
                 height=400
             )
             st.plotly_chart(fig_scatter, use_container_width=True)
-            st.caption("Dots close to the dashed line mean accurate predictions.")
+            st.caption("Dots close to the dashed line = accurate predictions.")
     else:
         st.warning("Missing required columns for growth score calculation.")
 
