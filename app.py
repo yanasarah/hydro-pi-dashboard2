@@ -451,9 +451,10 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
     else:
         st.warning("Missing required columns for growth score calculation.")
 
-    # ===== RECOMMENDATIONS =====
+ # ===== RECOMMENDATIONS =====
+if 'filtered_df' in locals():
     st.subheader("💡 Optimization Recommendations")
-    
+
     if 'pH' in filtered_df.columns:
         avg_pH = filtered_df['pH'].mean()
         if avg_pH < 5.8:
