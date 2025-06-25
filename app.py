@@ -379,7 +379,17 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             rmse = sqrt(mean_squared_error(y_test, y_pred))
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
             st.caption("This number shows how far off the AI predictions are on average. Lower = better.")
-            
+
+            st.markdown("""
+### 🤖 Growth Score AI Prediction (Advanced)
+
+This chart shows how well our AI can estimate your plant’s health score based on pH, TDS, temperature, and humidity.
+
+- **Actual**: The real health score calculated from your sensor data.
+- **Predicted**: What our AI thinks the score should be.
+- If both lines are close — it means our AI model understands your plant environment well! 🌱
+""")
+       
             pred_df = pd.DataFrame({
                 "Actual": y_test.values,
                 "Predicted": y_pred
