@@ -365,9 +365,22 @@ elif selected == "Historical Data":
                 X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
                 y = filtered_df['Growth_Score']
                 
-                model = RandomForestRegressor()
-                model.fit(X, y)
-                predictions = model.predict(X)
+                from sklearn.model_selection import train_test_split
+
+# Split data into 80% train and 20% test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train model on training set only
+model = RandomForestRegressor()
+model.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = model.predict(X_test)
+
+# Evaluate
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+st.metric("📊 Test RMSE", f"{rmse:.2f}")
+
                 
                 pred_df = pd.DataFrame({
                     'Time': filtered_df['Time'] if 'Time' in filtered_df.columns else filtered_df.index,
