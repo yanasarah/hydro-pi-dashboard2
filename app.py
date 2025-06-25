@@ -343,55 +343,49 @@ elif selected == "Historical Data":
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
     # ===== GROWTH SCORE MODEL =====
-    st.subheader("🌿 Plant Health Analysis")
-    
-    if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
-        # Check required columns exist
-        required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
-        if all(col in filtered_df.columns for col in required_cols):
-            filtered_df['Growth_Score'] = (
-                0.3 * filtered_df['DS18B20'] + 
-                0.2 * (100 - filtered_df['HUM 1']) + 
-                0.25 * filtered_df['TDS'] / 100 + 
-                0.25 * filtered_df['pH']
-            )
-            filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
-                                        (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
-            
-            st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
-            
-            # Machine Learning Prediction
-            if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-                X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-                y = filtered_df['Growth_Score']
-                
-                from sklearn.model_selection import train_test_split
+st.subheader("🌿 Plant Health Analysis")
 
-# Split data into 80% train and 20% test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
+    # Check required columns exist
+    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+    if all(col in filtered_df.columns for col in required_cols):
+        filtered_df['Growth_Score'] = (
+            0.3 * filtered_df['DS18B20'] + 
+            0.2 * (100 - filtered_df['HUM 1']) + 
+            0.25 * filtered_df['TDS'] / 100 + 
+            0.25 * filtered_df['pH']
+        )
+        filtered_df['Growth_Score'] = ((filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) / 
+                                    (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())) * 100
 
-# Train model on training set only
-model = RandomForestRegressor()
-model.fit(X_train, y_train)
+        st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-# Predict on test set
-y_pred = model.predict(X_test)
+        # Machine Learning Prediction with Train/Test Split
+        if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
+            from sklearn.model_selection import train_test_split
+            from sklearn.ensemble import RandomForestRegressor
+            from sklearn.metrics import mean_squared_error
 
-# Evaluate
-rmse = mean_squared_error(y_test, y_pred, squared=False)
-st.metric("📊 Test RMSE", f"{rmse:.2f}")
-   
-                pred_df = pd.DataFrame({
-                    'Time': filtered_df['Time'] if 'Time' in filtered_df.columns else filtered_df.index,
-                    'Actual': y,
-                    'Predicted': predictions
-                }).set_index('Time')
-                
-                st.line_chart(pred_df)
-                st.metric("Prediction Accuracy", 
-                         f"{100 - mean_squared_error(y, predictions, squared=False):.1f}%")
-        else:
-            st.warning("Missing required columns for growth score calculation")
+            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+            y = filtered_df['Growth_Score']
+
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+            model = RandomForestRegressor()
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+
+            rmse = mean_squared_error(y_test, y_pred, squared=False)
+            st.metric("📊 Test RMSE", f"{rmse:.2f}")
+
+            pred_df = pd.DataFrame({
+                "Actual": y_test.values,
+                "Predicted": y_pred
+            })
+
+            st.line_chart(pred_df)
+    else:
+        st.warning("Missing required columns for growth score calculation")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
