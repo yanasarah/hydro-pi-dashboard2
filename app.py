@@ -417,24 +417,38 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             # --- Predicted vs Actual Scatter Plot ---
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter)")
 
-            import plotly.express as px
+            import plotly.graph_objects as go
 
-            fig_scatter = px.scatter(
-                pred_df, x="Actual", y="Predicted",
-                labels={"Actual": "Actual Growth Score", "Predicted": "Predicted Growth Score"},
-                title="Actual vs Predicted Growth Score"
-            )
+fig_scatter = go.Figure()
 
-            fig_scatter.update_traces(marker=dict(size=8, color='#43a047'))
-            fig_scatter.update_layout(
-                height=400,
-                xaxis=dict(title="Actual"),
-                yaxis=dict(title="Predicted"),
-                showlegend=False
-            )
-            st.plotly_chart(fig_scatter, use_container_width=True)
+fig_scatter.add_trace(go.Scatter(
+    x=pred_df["Actual"],
+    y=pred_df["Predicted"],
+    mode='markers',
+    marker=dict(size=8, color='#43a047'),
+    name="Prediction"
+))
 
-            st.caption("Dots close to the line mean accurate predictions. Wide scatter means less accurate.")
+# Optional: Add ideal line y = x for reference
+min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+fig_scatter.add_trace(go.Scatter(
+    x=[min_val, max_val],
+    y=[min_val, max_val],
+    mode='lines',
+    line=dict(dash='dash', color='gray'),
+    name="Ideal"
+))
+
+fig_scatter.update_layout(
+    title="Actual vs Predicted Growth Score",
+    xaxis_title="Actual",
+    yaxis_title="Predicted",
+    height=400
+)
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+st.caption("Dots close to the dashed line mean accurate predictions.")
     else:
         st.warning("Missing required columns for growth score calculation")
 
