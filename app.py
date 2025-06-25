@@ -342,6 +342,7 @@ elif selected == "Historical Data":
     else:
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
+
 # ===== GROWTH SCORE MODEL =====
 st.subheader("🌿 Plant Health Analysis")
 
@@ -450,39 +451,37 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             st.caption("Dots close to the dashed line = accurate predictions.")
     else:
         st.warning("Missing required columns for growth score calculation.")
-       
-# ===== RECOMMENDATIONS =====
-st.subheader("💡 Optimization Recommendations")
 
-if 'pH' in filtered_df.columns:
-    avg_pH = filtered_df['pH'].mean()
-    if avg_pH < 5.8:
-        st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
-    elif avg_pH > 6.2:
-        st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
+    # ===== RECOMMENDATIONS =====
+    st.subheader("💡 Optimization Recommendations")
+
+    if 'pH' in filtered_df.columns:
+        avg_pH = filtered_df['pH'].mean()
+        if avg_pH < 5.8:
+            st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
+        elif avg_pH > 6.2:
+            st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
+        else:
+            st.success("✅ pH level is optimal")
     else:
-        st.success("✅ pH level is optimal")
-else:
-    st.warning("pH data not available for recommendations")
+        st.warning("pH data not available for recommendations")
 
-if 'TDS' in filtered_df.columns:
-    avg_tds = filtered_df['TDS'].mean()
-    if avg_tds < 650:
-        st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
-    elif avg_tds > 750:
-        st.warning("⚠️ Nutrient levels high. Consider diluting solution.")
+    if 'TDS' in filtered_df.columns:
+        avg_tds = filtered_df['TDS'].mean()
+        if avg_tds < 650:
+            st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
+        elif avg_tds > 750:
+            st.warning("⚠️ Nutrient levels high. Consider diluting solution.")
+        else:
+            st.success("✅ Nutrient levels are optimal")
     else:
-        st.success("✅ Nutrient levels are optimal")
-else:
-    st.warning("TDS data not available for nutrient recommendations")
-
+        st.warning("TDS data not available for nutrient recommendations")
 
     # ===== RAW DATA =====
     st.subheader("📋 Detailed Measurements")
-    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'), 
-                height=300,
-                use_container_width=True)
-
+    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
+                 height=300,
+                 use_container_width=True)
 
 #========evironment monitor============
 elif selected == "Environment Monitor":
