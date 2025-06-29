@@ -306,7 +306,7 @@ st.subheader("🌿 Plant Health Analysis (Daily Averages)")
 
 if st.checkbox("Calculate Growth Score", True, help="Calculate daily average plant health score based on environmental factors"):
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Day']
-    
+
     if all(col in filtered_df.columns for col in required_cols):
         # Group by 'Day' and calculate mean for key sensors
         daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
@@ -328,7 +328,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 (score_max - score_min)
             ) * 100
         else:
-            daily_avg['Growth_Score'] = 100  # Same value across all days
+            daily_avg['Growth_Score'] = 100  # All scores same
 
         # Plot the daily scores
         st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
@@ -339,76 +339,79 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
 
         # === Advanced AI Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-            from sklearn.ensemble import RandomForestRegressor
-            from sklearn.model_selection import KFold
-            from sklearn.metrics import mean_squared_error
-            from math import sqrt
-            import matplotlib.pyplot as plt
-            import plotly.graph_objects as go
+            if len(daily_avg) >= 5:
+                from sklearn.ensemble import RandomForestRegressor
+                from sklearn.model_selection import KFold
+                from sklearn.metrics import mean_squared_error
+                from math import sqrt
+                import matplotlib.pyplot as plt
+                import plotly.graph_objects as go
 
-            X = daily_avg[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-            y = daily_avg['Growth_Score']
+                X = daily_avg[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+                y = daily_avg['Growth_Score']
 
-            kf = KFold(n_splits=5, shuffle=True, random_state=42)
-            actuals, predictions = [], []
+                kf = KFold(n_splits=5, shuffle=True, random_state=42)
+                actuals, predictions = [], []
 
-            for train_idx, test_idx in kf.split(X):
-                X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-                y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+                for train_idx, test_idx in kf.split(X):
+                    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+                    y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
 
-                model = RandomForestRegressor()
-                model.fit(X_train, y_train)
-                y_pred = model.predict(X_test)
+                    model = RandomForestRegressor()
+                    model.fit(X_train, y_train)
+                    y_pred = model.predict(X_test)
 
-                actuals.extend(y_test.values)
-                predictions.extend(y_pred)
-                last_model = model  # Save last model for feature importance
+                    actuals.extend(y_test.values)
+                    predictions.extend(y_pred)
+                    last_model = model  # Save last model for feature importance
 
-            rmse = sqrt(mean_squared_error(actuals, predictions))
-            st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
+                rmse = sqrt(mean_squared_error(actuals, predictions))
+                st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
 
-            # 📈 Predictions Line Chart
-            st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
-            pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
-            st.line_chart(pred_df.reset_index(drop=True))
+                # 📈 Predictions Line Chart
+                st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
+                pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
+                st.line_chart(pred_df.reset_index(drop=True))
 
-            # 📊 Feature Importance
-            st.markdown("### 📊 Sensor Impact (Feature Importance)")
-            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-            importances = last_model.feature_importances_
+                # 📊 Feature Importance
+                st.markdown("### 📊 Sensor Impact (Feature Importance)")
+                features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
+                importances = last_model.feature_importances_
 
-            fig_imp, ax = plt.subplots()
-            ax.barh(features, importances, color='#66bb6a')
-            ax.set_xlabel("Importance Score")
-            ax.set_title("Most Influential Sensors for Growth Prediction")
-            st.pyplot(fig_imp)
+                fig_imp, ax = plt.subplots()
+                ax.barh(features, importances, color='#66bb6a')
+                ax.set_xlabel("Importance Score")
+                ax.set_title("Most Influential Sensors for Growth Prediction")
+                st.pyplot(fig_imp)
 
-            # 🎯 Scatter Plot
-            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
-            fig_scatter = go.Figure()
-            fig_scatter.add_trace(go.Scatter(
-                x=pred_df["Actual"],
-                y=pred_df["Predicted"],
-                mode='markers',
-                marker=dict(size=8, color='#43a047'),
-                name="Prediction"
-            ))
-            min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
-            max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
-            fig_scatter.add_trace(go.Scatter(
-                x=[min_val, max_val],
-                y=[min_val, max_val],
-                mode='lines',
-                line=dict(dash='dash', color='gray'),
-                name="Ideal"
-            ))
-            fig_scatter.update_layout(
-                title="Actual vs Predicted Growth Score",
-                xaxis_title="Actual",
-                yaxis_title="Predicted",
-                height=400
-            )
-            st.plotly_chart(fig_scatter, use_container_width=True)
+                # 🎯 Scatter Plot
+                st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
+                fig_scatter = go.Figure()
+                fig_scatter.add_trace(go.Scatter(
+                    x=pred_df["Actual"],
+                    y=pred_df["Predicted"],
+                    mode='markers',
+                    marker=dict(size=8, color='#43a047'),
+                    name="Prediction"
+                ))
+                min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+                max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+                fig_scatter.add_trace(go.Scatter(
+                    x=[min_val, max_val],
+                    y=[min_val, max_val],
+                    mode='lines',
+                    line=dict(dash='dash', color='gray'),
+                    name="Ideal"
+                ))
+                fig_scatter.update_layout(
+                    title="Actual vs Predicted Growth Score",
+                    xaxis_title="Actual",
+                    yaxis_title="Predicted",
+                    height=400
+                )
+                st.plotly_chart(fig_scatter, use_container_width=True)
+            else:
+                st.warning("❗ Not enough daily records for AI prediction (minimum 5 needed).")
 
     else:
         st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
