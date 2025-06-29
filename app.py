@@ -265,6 +265,11 @@ elif selected == "Historical Data":
         st.success("Using built-in Hydro-Pi dataset")
         st.session_state["df"] = df
         filtered_df = df.copy()
+        # Ensure filtered_df is always available to all pages
+        if "filtered_df" not in st.session_state:
+            st.session_state["filtered_df"] = df.copy()
+        filtered_df = st.session_state["filtered_df"]
+
 
     # ===== FILTERING =====
     st.subheader("        Filter Data")
