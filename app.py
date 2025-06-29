@@ -319,9 +319,9 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
         ) * 100
 
-        st.line_chart(
-            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
-        )
+         # Just take the last 150 rows
+        recent_scores = filtered_df['Growth_Score'].tail(150).reset_index(drop=True)
+        st.line_chart(recent_scores)
 
         # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
