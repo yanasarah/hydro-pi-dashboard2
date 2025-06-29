@@ -477,8 +477,6 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
                  height=300,
                  use_container_width=True)
-
-
 #========evironment monitor============
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
