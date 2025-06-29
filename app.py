@@ -90,8 +90,8 @@ def load_main_data():
         return df
     except:
         return pd.DataFrame()
-
 @st.cache_data
+
 def load_weekly():
     try:
         return pd.read_excel("summary data.xlsx", sheet_name="weekly trend ")
@@ -99,21 +99,14 @@ def load_weekly():
         st.error(f"Error loading weekly trend data: {e}")
         return pd.DataFrame()
 
+
+
 @st.cache_data
 def load_daily():
     try:
         return pd.read_excel("summary data.xlsx", sheet_name="Average Daily")
     except:
         return pd.DataFrame()
-
-# ============= DATA INITIALIZATION =============
-df = st.session_state.get("df", pd.DataFrame())
-
-# ✅ Ensure filtered_df is always defined safely
-if "filtered_df" not in st.session_state:
-    st.session_state["filtered_df"] = df.copy()
-
-filtered_df = st.session_state["filtered_df"]
 
 # ============= HOME PAGE =============
 
@@ -229,8 +222,7 @@ if selected == "Home":
     """, unsafe_allow_html=True)
 
 
-# =====historical data=====
-
+# ========= historical data==================== 
 elif selected == "Historical Data": 
     st.markdown(""" 
     <style> 
@@ -273,10 +265,6 @@ elif selected == "Historical Data":
         st.success("Using built-in Hydro-Pi dataset")
         st.session_state["df"] = df
 
-    # DEBUGGING DATA PREVIEW
-    st.write("✅ Loaded Columns:", df.columns.tolist())
-    st.write("✅ Sample Data:", df.head())
-
     # ===== FILTERING =====
     st.subheader("        Filter Data")
     filter_col1, filter_col2 = st.columns(2)
@@ -297,8 +285,6 @@ elif selected == "Historical Data":
     else:
         filtered_df = df.copy()
 
-    st.session_state["filtered_df"] = filtered_df
-
     # ===== SUMMARY =====
     st.subheader("           Data Overview") 
     col1, col2, col3 = st.columns(3) 
@@ -315,35 +301,52 @@ elif selected == "Historical Data":
     else:
         st.warning("Week column not found — unable to compute weekly summary.")
 
+
+
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
 
+    # Select only numeric columns and exclude datetime
     numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
 
     if len(numeric_cols) >= 2:
         try:
+            # Create correlation matrix
             corr_matrix = filtered_df[numeric_cols].corr()
+            
+            # Create figure with larger size
             fig, ax = plt.subplots(figsize=(10, 8))
+            
+            # Customize heatmap appearance
             sns.heatmap(
                 corr_matrix, 
                 annot=True, 
                 cmap="YlGnBu", 
                 ax=ax,
-                annot_kws={"size": 10, "color": "black"},
+                annot_kws={"size": 10, "color": "black"},  # Darker annotation text
                 linewidths=.5
             )
+            
+            # Rotate x-axis labels for better readability
             plt.xticks(rotation=45)
+            
+            # Ensure tight layout to prevent cutoff
             plt.tight_layout()
+            
+            # Display in Streamlit
             st.pyplot(fig)
+            
         except Exception as e:
             st.error(f"Error generating correlation heatmap: {e}")
     else:
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
 
-    # ===== GROWTH SCORE MODEL =====
-    st.subheader("🌿 Plant Health Analysis")
+# ===== GROWTH SCORE MODEL =====
+st.subheader("🌿 Plant Health Analysis")
 
+if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
+    # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
         filtered_df['Growth_Score'] = (
@@ -361,94 +364,92 @@ elif selected == "Historical Data":
             filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
         )
 
+        # === Advanced Predictions ===
+        if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
+            from sklearn.ensemble import RandomForestRegressor
+            from sklearn.model_selection import KFold
+            from sklearn.metrics import mean_squared_error
+            from math import sqrt
+            import matplotlib.pyplot as plt
+            import plotly.graph_objects as go
+            import pandas as pd
+
+            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+            y = filtered_df['Growth_Score']
+
+            kf = KFold(n_splits=5, shuffle=True, random_state=42)
+            actuals = []
+            predictions = []
+
+            for train_idx, test_idx in kf.split(X):
+                X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+                y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+                model = RandomForestRegressor()
+                model.fit(X_train, y_train)
+                y_pred = model.predict(X_test)
+
+                actuals.extend(y_test.values)
+                predictions.extend(y_pred)
+
+                last_model = model  # Keep last trained model for feature importance
+
+            rmse = sqrt(mean_squared_error(actuals, predictions))
+            st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
+            st.caption("This shows how far off the AI predictions are, on average (lower is better).")
+
+            # 📈 Line Chart of Predictions
+            st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
+            pred_df = pd.DataFrame({
+                "Actual": actuals,
+                "Predicted": predictions
+            })
+            st.line_chart(pred_df.reset_index(drop=True))
+
+            # 📊 Feature Importance
+            st.markdown("### 📊 Sensor Impact (Feature Importance)")
+            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
+            importances = last_model.feature_importances_
+
+            fig_imp, ax = plt.subplots()
+            ax.barh(features, importances, color='#66bb6a')
+            ax.set_xlabel("Importance Score")
+            ax.set_title("Most Influential Sensors for Growth Prediction")
+            st.pyplot(fig_imp)
+            st.caption("Higher scores = more influence on growth score.")
+
+            # 🎯 Scatter Plot (Actual vs Predicted)
+            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
+            fig_scatter = go.Figure()
+
+            fig_scatter.add_trace(go.Scatter(
+                x=pred_df["Actual"],
+                y=pred_df["Predicted"],
+                mode='markers',
+                marker=dict(size=8, color='#43a047'),
+                name="Prediction"
+            ))
+
+            min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+            max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+            fig_scatter.add_trace(go.Scatter(
+                x=[min_val, max_val],
+                y=[min_val, max_val],
+                mode='lines',
+                line=dict(dash='dash', color='gray'),
+                name="Ideal"
+            ))
+
+            fig_scatter.update_layout(
+                title="Actual vs Predicted Growth Score",
+                xaxis_title="Actual",
+                yaxis_title="Predicted",
+                height=400
+            )
+            st.plotly_chart(fig_scatter, use_container_width=True)
+            st.caption("Dots close to the dashed line = accurate predictions.")
     else:
         st.warning("Missing required columns for growth score calculation.")
-
-    # === Advanced Predictions ===
-    if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-        from sklearn.ensemble import RandomForestRegressor
-        from sklearn.model_selection import KFold
-        from sklearn.metrics import mean_squared_error
-        from math import sqrt
-        import matplotlib.pyplot as plt
-        import plotly.graph_objects as go
-        import pandas as pd
-
-        X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-        y = filtered_df['Growth_Score']
-
-        kf = KFold(n_splits=5, shuffle=True, random_state=42)
-        actuals = []
-        predictions = []
-
-        for train_idx, test_idx in kf.split(X):
-            X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-            y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
-
-            model = RandomForestRegressor()
-            model.fit(X_train, y_train)
-            y_pred = model.predict(X_test)
-
-            actuals.extend(y_test.values)
-            predictions.extend(y_pred)
-
-            last_model = model
-
-        rmse = sqrt(mean_squared_error(actuals, predictions))
-        st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
-        st.caption("This shows how far off the AI predictions are, on average (lower is better).")
-
-        # 📈 Line Chart
-        pred_df = pd.DataFrame({
-            "Actual": actuals,
-            "Predicted": predictions
-        })
-        st.line_chart(pred_df.reset_index(drop=True))
-
-        # 📊 Feature Importance
-        st.markdown("### 📊 Sensor Impact (Feature Importance)")
-        features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-        importances = last_model.feature_importances_
-
-        fig_imp, ax = plt.subplots()
-        ax.barh(features, importances, color='#66bb6a')
-        ax.set_xlabel("Importance Score")
-        ax.set_title("Most Influential Sensors for Growth Prediction")
-        st.pyplot(fig_imp)
-        st.caption("Higher scores = more influence on growth score.")
-
-        # 🎯 Scatter Plot
-        st.markdown("### 🎯 Predicted vs Actual Growth Score")
-        fig_scatter = go.Figure()
-
-        fig_scatter.add_trace(go.Scatter(
-            x=pred_df["Actual"],
-            y=pred_df["Predicted"],
-            mode='markers',
-            marker=dict(size=8, color='#43a047'),
-            name="Prediction"
-        ))
-
-        min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
-        max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
-        fig_scatter.add_trace(go.Scatter(
-            x=[min_val, max_val],
-            y=[min_val, max_val],
-            mode='lines',
-            line=dict(dash='dash', color='gray'),
-            name="Ideal"
-        ))
-
-        fig_scatter.update_layout(
-            title="Actual vs Predicted Growth Score",
-            xaxis_title="Actual",
-            yaxis_title="Predicted",
-            height=400
-        )
-        st.plotly_chart(fig_scatter, use_container_width=True)
-        st.caption("Dots close to the dashed line = accurate predictions.")
-else:
-    st.warning("Missing required columns for growth score calculation.")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
@@ -480,7 +481,6 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
                  height=300,
                  use_container_width=True)
-
 
 #========evironment monitor============
 elif selected == "Environment Monitor":
