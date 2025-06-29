@@ -415,8 +415,6 @@ if 'Day' in filtered_df.columns:
                     st.warning("❗ Not enough daily records for AI prediction (minimum 5 needed).")
         else:
             st.warning("❗ Required sensor columns missing")
-else:
-    st.warning("❗ 'Day' column not found in dataset.")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
