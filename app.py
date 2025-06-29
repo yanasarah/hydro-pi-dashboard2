@@ -138,49 +138,8 @@ if selected == "Home":
 
     # 🌿 CURRENT PLANT SNAPSHOT
     st.markdown("### 🪴 Current Grow Session")
-    st.success("🧬 Crop: *Spinach*  \n📅 Started: 3 weeks ago  \n⚙️ Method: Deep Water Culture")
-
-    # 📸 GROWTH TIMELINE CAROUSEL (OPTION A)
-    st.markdown("### 🌱 Growth Timeline Viewer")
-
-    carousel_html = """
-    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css"/>
-    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
-
-    <style>
-    .swiper { width: 100%; height: 400px; border-radius: 15px; overflow: hidden; }
-    .swiper-slide { display: flex; justify-content: center; align-items: center; background: #f0fff4; }
-    .swiper-slide img {
-        width: auto; max-width: 90%; max-height: 350px;
-        border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    </style>
-
-    <div class="swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide"><img src="growth/week1.png" alt="Week 1"></div>
-        <div class="swiper-slide"><img src="growth/week2.png" alt="Week 2"></div>
-        <div class="swiper-slide"><img src="growth/week3.png" alt="Week 3"></div>
-      </div>
-      <div class="swiper-pagination"></div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-    </div>
-
-    <script>
-    const swiper = new Swiper('.swiper', {
-      loop: true,
-      pagination: { el: '.swiper-pagination' },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-      }
-    });
-    </script>
-    """
-
-    components.html(carousel_html, height=450)
-
+    st.success("🧬 Crop: *Spinach*  \n📅 Started: 3 weeks ago  \n⚙️ Method: Drip")
+    
     # ✅ WEEKLY GOALS
     st.markdown("### 🎯 Weekly Care Goals")
     st.checkbox("🌿 Maintain pH between 5.8–6.2", value=True)
