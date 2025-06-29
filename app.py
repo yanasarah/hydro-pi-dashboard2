@@ -3,52 +3,80 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+from streamlit_option_menu import option_menu
+from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import KFold
-from math import sqrt
-from datetime import datetime
 from fpdf import FPDF
 import base64
-from streamlit_option_menu import option_menu
-import time
-import random
-
-# Page Config
+# Set Streamlit page configuration
 st.set_page_config(page_title="Hydro-Pi Smart Dashboard", layout="wide")
 
-# Initialize filtered_df to prevent NameError
-def get_filtered_df():
-    if "filtered_df" in st.session_state:
-        return st.session_state["filtered_df"]
-    elif "df" in st.session_state:
-        return st.session_state["df"].copy()
-    else:
-        return pd.DataFrame()
-
-filtered_df = get_filtered_df()
-
-# Styling
+# ============= STYLING ==============
 st.markdown("""
-<style>
-    .stApp { background-color: #f5fff5; color: #006400; font-family: 'Poppins', sans-serif; }
-    [data-testid="stSidebar"] { background-color: #c0ebc0; }
-    .stMetric { background: #f0fff0; padding: 1.2rem; border-radius: 15px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
-    div[data-testid="stAlert"] * { color: #004d00 !important; }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        .stApp {
+            background-color: #f5fff5;
+            color: #006400 !important;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        [data-testid="stSidebar"] {
+            background-color: #c0ebc0 !important;
+            min-width: 200px !important;
+        }
+
+        [data-testid="stMetricValue"] {
+            color: #006400 !important;
+            font-weight: bold;
+            font-size: 1.6rem;
+        }
+
+        [data-testid="stMetricLabel"] {
+            color: #2e7d32 !important;
+            font-size: 1rem;
+        }
+
+        .stMetric {
+            background: #f0fff0;
+            padding: 1.2rem;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .css-1dp5vir {
+            background-color: #c0ebc0 !important;
+        }
+
+        /* ✅ STRONGER FIX for st.error / st.success font color */
+        div[data-testid="stAlert"] {
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] > div {
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] p {
+            color: #004d00 !important;
+        }
+
+        div[data-testid="stAlert"] ul li {
+            color: #004d00 !important;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
-# Sidebar Navigation
+# ============= NAVIGATION =============
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights", "Crop Comparison", "AI Forecast", "Beginner FAQ", "Contact"],
-        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb", "cat", "dog", "envelope"],
+        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact"],
+        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope"],
         menu_icon="cast",
         default_index=0
     )
