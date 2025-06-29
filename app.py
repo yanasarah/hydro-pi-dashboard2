@@ -229,7 +229,8 @@ if selected == "Home":
     """, unsafe_allow_html=True)
 
 
-# ========= historical data==================== 
+# FULL UPDATED CODE BLOCK FOR 'HISTORICAL DATA' SECTION WITH FIXES
+
 elif selected == "Historical Data": 
     st.markdown(""" 
     <style> 
@@ -272,6 +273,10 @@ elif selected == "Historical Data":
         st.success("Using built-in Hydro-Pi dataset")
         st.session_state["df"] = df
 
+    # DEBUGGING DATA PREVIEW
+    st.write("✅ Loaded Columns:", df.columns.tolist())
+    st.write("✅ Sample Data:", df.head())
+
     # ===== FILTERING =====
     st.subheader("        Filter Data")
     filter_col1, filter_col2 = st.columns(2)
@@ -292,6 +297,8 @@ elif selected == "Historical Data":
     else:
         filtered_df = df.copy()
 
+    st.session_state["filtered_df"] = filtered_df
+
     # ===== SUMMARY =====
     st.subheader("           Data Overview") 
     col1, col2, col3 = st.columns(3) 
@@ -308,41 +315,26 @@ elif selected == "Historical Data":
     else:
         st.warning("Week column not found — unable to compute weekly summary.")
 
-
-
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
 
-    # Select only numeric columns and exclude datetime
     numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
 
     if len(numeric_cols) >= 2:
         try:
-            # Create correlation matrix
             corr_matrix = filtered_df[numeric_cols].corr()
-            
-            # Create figure with larger size
             fig, ax = plt.subplots(figsize=(10, 8))
-            
-            # Customize heatmap appearance
             sns.heatmap(
                 corr_matrix, 
                 annot=True, 
                 cmap="YlGnBu", 
                 ax=ax,
-                annot_kws={"size": 10, "color": "black"},  # Darker annotation text
+                annot_kws={"size": 10, "color": "black"},
                 linewidths=.5
             )
-            
-            # Rotate x-axis labels for better readability
             plt.xticks(rotation=45)
-            
-            # Ensure tight layout to prevent cutoff
             plt.tight_layout()
-            
-            # Display in Streamlit
             st.pyplot(fig)
-            
         except Exception as e:
             st.error(f"Error generating correlation heatmap: {e}")
     else:
