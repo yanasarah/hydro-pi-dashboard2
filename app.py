@@ -308,6 +308,13 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
     # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
+
+        # ===== Add synthetic 1-day spaced timestamps =====
+        import pandas as pd
+        start_time = pd.Timestamp.today() - pd.Timedelta(days=len(filtered_df))
+        filtered_df['Time'] = pd.date_range(start=start_time, periods=len(filtered_df), freq='1D')
+
+        # ===== Growth Score Calculation =====
         filtered_df['Growth_Score'] = (
             0.3 * filtered_df['DS18B20'] +
             0.2 * (100 - filtered_df['HUM 1']) +
@@ -319,9 +326,8 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
         ) * 100
 
-        st.line_chart(
-            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
-        )
+        # ===== Plot Growth Score Over Time =====
+        st.line_chart(filtered_df.set_index('Time')['Growth_Score'])
 
         # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
@@ -672,7 +678,7 @@ elif selected == "About Us":
             <strong>Hydroponics</strong> is a soil-less farming technique that uses water-based nutrient solutions 
             to grow plants faster, healthier, and more efficiently. It enhances growth and reduces water usage by up to 90%.
             <br><br>
-            Ideal for urban areas, rooftops, and indoor farms — enabling year-round, pesticide-free food production.
+            Ideal for urban areas, rooftops, and indoor farms and enabling year-round, pesticide-free food production.
         </p>
         """, unsafe_allow_html=True)
     with col2:
@@ -717,7 +723,7 @@ elif selected == "About Us":
         <div style="background-color: #cce6cc; border-radius: 12px; padding: 1.5rem; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
             <h3 style="text-align: center; color: #1b5e20;">🌐 Vision</h3>
             <p style="font-size: 16px; text-align: justify; color: #2e7d32;">
-                To revolutionize agriculture through smart hydroponic technology — making food growth cleaner,
+                To revolutionize agriculture through smart hydroponic technology also can making food growth cleaner,
                 faster, and more sustainable for everyone, everywhere.
             </p>
         </div>
