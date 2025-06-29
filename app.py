@@ -229,7 +229,7 @@ if selected == "Home":
     """, unsafe_allow_html=True)
 
 
-# FULL UPDATED CODE BLOCK FOR 'HISTORICAL DATA' SECTION WITH FIXES
+# =====historical data=====
 
 elif selected == "Historical Data": 
     st.markdown(""" 
@@ -344,7 +344,7 @@ elif selected == "Historical Data":
 # ===== GROWTH SCORE MODEL =====
 st.subheader("🌿 Plant Health Analysis")
 
-if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
+
     # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
