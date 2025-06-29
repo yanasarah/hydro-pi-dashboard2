@@ -306,6 +306,7 @@ st.subheader("🌿 Plant Health Analysis (Daily Averages)")
 
 if st.checkbox("Calculate Growth Score", True, help="Calculate daily average plant health score based on environmental factors"):
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Day']
+    
     if all(col in filtered_df.columns for col in required_cols):
         # Group by 'Day' and calculate mean for key sensors
         daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
@@ -319,10 +320,15 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
         )
 
         # Normalize the Growth Score to 0–100
-        daily_avg['Growth_Score'] = (
-            (daily_avg['Growth_Score'] - daily_avg['Growth_Score'].min()) /
-            (daily_avg['Growth_Score'].max() - daily_avg['Growth_Score'].min())
-        ) * 100
+        score_min = daily_avg['Growth_Score'].min()
+        score_max = daily_avg['Growth_Score'].max()
+        if score_max != score_min:
+            daily_avg['Growth_Score'] = (
+                (daily_avg['Growth_Score'] - score_min) /
+                (score_max - score_min)
+            ) * 100
+        else:
+            daily_avg['Growth_Score'] = 100  # If all scores are the same
 
         # Plot the daily scores
         st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
@@ -330,8 +336,9 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
         # Optional: Show the table if needed
         if st.checkbox("Show Daily Growth Score Table"):
             st.dataframe(daily_avg)
+
     else:
-        st.warning("Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
+        st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
 
         # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
