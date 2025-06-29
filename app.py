@@ -301,46 +301,30 @@ elif selected == "Historical Data":
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
 
-# ===== PLANT ANALYSIS FROM WEEKLY SUMMARY =====
-st.subheader("🌿 Weekly Plant Health Analysis (from Summary Table)")
+# ===== GROWTH SCORE MODEL =====
+st.subheader("🌿 Plant Health Analysis")
 
-# Make sure the statistics table is created
-if 'Week' in df.columns:
-    # Recalculate stat_table if needed
-    stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
-
-    # Extract mean values only
-    weekly_means = stat_table.xs('mean', axis=1, level=1).reset_index()
-
-    # Compute Growth Score from means
-    weekly_means['Growth_Score'] = (
-        0.3 * weekly_means['DS18B20'] +
-        0.2 * (100 - weekly_means['HUM 1']) +
-        0.25 * weekly_means['TDS'] / 100 +
-        0.25 * weekly_means['pH']
-    )
-
-    # Normalize growth score
-    score_min = weekly_means['Growth_Score'].min()
-    score_max = weekly_means['Growth_Score'].max()
-    if score_max != score_min:
-        weekly_means['Growth_Score'] = (
-            (weekly_means['Growth_Score'] - score_min) /
-            (score_max - score_min)
+if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
+    # Check required columns exist
+    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+    if all(col in filtered_df.columns for col in required_cols):
+        filtered_df['Growth_Score'] = (
+            0.3 * filtered_df['DS18B20'] +
+            0.2 * (100 - filtered_df['HUM 1']) +
+            0.25 * filtered_df['TDS'] / 100 +
+            0.25 * filtered_df['pH']
+        )
+        filtered_df['Growth_Score'] = (
+            (filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) /
+            (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
         ) * 100
-    else:
-        weekly_means['Growth_Score'] = 100
 
-    # Line Chart
-    st.line_chart(weekly_means.set_index('Week')['Growth_Score'])
+        st.line_chart(
+            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
+        )
 
-    # Show Table
-    if st.checkbox("Show Weekly Growth Score Table (from Summary)"):
-        st.dataframe(weekly_means)
-
-    # === AI Prediction Block ===
-    if st.checkbox("AI Predict Weekly Growth Score", help="Train model using summary means"):
-        if len(weekly_means) >= 5:
+        # === Advanced Predictions ===
+        if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
             from sklearn.metrics import mean_squared_error
@@ -349,12 +333,12 @@ if 'Week' in df.columns:
             import plotly.graph_objects as go
             import pandas as pd
 
-            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-            X = weekly_means[features]
-            y = weekly_means['Growth_Score']
+            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+            y = filtered_df['Growth_Score']
 
             kf = KFold(n_splits=5, shuffle=True, random_state=42)
-            actuals, predictions = [], []
+            actuals = []
+            predictions = []
 
             for train_idx, test_idx in kf.split(X):
                 X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
@@ -366,25 +350,37 @@ if 'Week' in df.columns:
 
                 actuals.extend(y_test.values)
                 predictions.extend(y_pred)
-                last_model = model
+
+                last_model = model  # Keep last trained model for feature importance
 
             rmse = sqrt(mean_squared_error(actuals, predictions))
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
+            st.caption("This shows how far off the AI predictions are, on average (lower is better).")
 
-            st.markdown("### 🤖 AI Predicted vs Actual (Weekly Summary)")
-            pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
+            # 📈 Line Chart of Predictions
+            st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
+            pred_df = pd.DataFrame({
+                "Actual": actuals,
+                "Predicted": predictions
+            })
             st.line_chart(pred_df.reset_index(drop=True))
 
-            st.markdown("### 📊 Feature Importance")
+            # 📊 Feature Importance
+            st.markdown("### 📊 Sensor Impact (Feature Importance)")
+            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
             importances = last_model.feature_importances_
+
             fig_imp, ax = plt.subplots()
             ax.barh(features, importances, color='#66bb6a')
             ax.set_xlabel("Importance Score")
-            ax.set_title("Sensor Influence on Growth")
+            ax.set_title("Most Influential Sensors for Growth Prediction")
             st.pyplot(fig_imp)
+            st.caption("Higher scores = more influence on growth score.")
 
-            st.markdown("### 🎯 Predicted vs Actual Scatter")
+            # 🎯 Scatter Plot (Actual vs Predicted)
+            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
             fig_scatter = go.Figure()
+
             fig_scatter.add_trace(go.Scatter(
                 x=pred_df["Actual"],
                 y=pred_df["Predicted"],
@@ -392,6 +388,7 @@ if 'Week' in df.columns:
                 marker=dict(size=8, color='#43a047'),
                 name="Prediction"
             ))
+
             min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
             max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
             fig_scatter.add_trace(go.Scatter(
@@ -401,17 +398,17 @@ if 'Week' in df.columns:
                 line=dict(dash='dash', color='gray'),
                 name="Ideal"
             ))
+
             fig_scatter.update_layout(
-                title="Predicted vs Actual Growth Score",
+                title="Actual vs Predicted Growth Score",
                 xaxis_title="Actual",
                 yaxis_title="Predicted",
                 height=400
             )
             st.plotly_chart(fig_scatter, use_container_width=True)
-        else:
-            st.warning("❗ Not enough weeks for AI prediction (min 5 required)")
-else:
-    st.warning("❗ Week column not found in dataset")
+            st.caption("Dots close to the dashed line = accurate predictions.")
+    else:
+        st.warning("Missing required columns for growth score calculation.")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
