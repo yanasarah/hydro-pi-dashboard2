@@ -301,39 +301,37 @@ elif selected == "Historical Data":
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
 
-# ===== GROWTH SCORE MODEL =====
-st.subheader("🌿 Plant Health Analysis")
+# ===== GROWTH SCORE MODEL (DAILY AVERAGE) =====
+st.subheader("🌿 Plant Health Analysis (Daily Averages)")
 
-if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
-    # Check required columns exist
-    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+if st.checkbox("Calculate Growth Score", True, help="Calculate daily average plant health score based on environmental factors"):
+    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Day']
     if all(col in filtered_df.columns for col in required_cols):
-
-        # ===== Add synthetic 1-day spaced timestamps =====
-        import pandas as pd
-        start_time = pd.Timestamp.today() - pd.Timedelta(days=len(filtered_df))
-        filtered_df['Time'] = pd.date_range(start=start_time, periods=len(filtered_df), freq='1D')
-
+        # Group by 'Day' and calculate mean for key sensors
         daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
 
-daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
+        # Compute Growth Score using weighted factors
+        daily_avg['Growth_Score'] = (
+            0.3 * daily_avg['DS18B20'] +
+            0.2 * (100 - daily_avg['HUM 1']) +
+            0.25 * daily_avg['TDS'] / 100 +
+            0.25 * daily_avg['pH']
+        )
 
-# Calculate Growth Score on the daily-averaged values
-daily_avg['Growth_Score'] = (
-    0.3 * daily_avg['DS18B20'] +
-    0.2 * (100 - daily_avg['HUM 1']) +
-    0.25 * daily_avg['TDS'] / 100 +
-    0.25 * daily_avg['pH']
-)
+        # Normalize the Growth Score to 0–100
+        daily_avg['Growth_Score'] = (
+            (daily_avg['Growth_Score'] - daily_avg['Growth_Score'].min()) /
+            (daily_avg['Growth_Score'].max() - daily_avg['Growth_Score'].min())
+        ) * 100
 
-# Normalize Growth Score
-daily_avg['Growth_Score'] = (
-    (daily_avg['Growth_Score'] - daily_avg['Growth_Score'].min()) /
-    (daily_avg['Growth_Score'].max() - daily_avg['Growth_Score'].min())
-) * 100
+        # Plot the daily scores
+        st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
 
-# Plot the daily Growth Score
-st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
+        # Optional: Show the table if needed
+        if st.checkbox("Show Daily Growth Score Table"):
+            st.dataframe(daily_avg)
+    else:
+        st.warning("Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
 
         # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
