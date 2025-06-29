@@ -314,17 +314,24 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
         start_time = pd.Timestamp.today() - pd.Timedelta(days=len(filtered_df))
         filtered_df['Time'] = pd.date_range(start=start_time, periods=len(filtered_df), freq='1D')
 
-        # ===== Growth Score Calculation =====
-        filtered_df['Growth_Score'] = (
-            0.3 * filtered_df['DS18B20'] +
-            0.2 * (100 - filtered_df['HUM 1']) +
-            0.25 * filtered_df['TDS'] / 100 +
-            0.25 * filtered_df['pH']
-        )
-        filtered_df['Growth_Score'] = (
-            (filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) /
-            (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
-        ) * 100
+        daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
+
+# Calculate Growth Score on the daily-averaged values
+daily_avg['Growth_Score'] = (
+    0.3 * daily_avg['DS18B20'] +
+    0.2 * (100 - daily_avg['HUM 1']) +
+    0.25 * daily_avg['TDS'] / 100 +
+    0.25 * daily_avg['pH']
+)
+
+# Normalize Growth Score
+daily_avg['Growth_Score'] = (
+    (daily_avg['Growth_Score'] - daily_avg['Growth_Score'].min()) /
+    (daily_avg['Growth_Score'].max() - daily_avg['Growth_Score'].min())
+) * 100
+
+# Plot the daily Growth Score
+st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
 
         # ===== Plot Growth Score Over Time =====
         st.line_chart(filtered_df.set_index('Time')['Growth_Score'])
