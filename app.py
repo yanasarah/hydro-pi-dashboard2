@@ -90,8 +90,8 @@ def load_main_data():
         return df
     except:
         return pd.DataFrame()
-@st.cache_data
 
+@st.cache_data
 def load_weekly():
     try:
         return pd.read_excel("summary data.xlsx", sheet_name="weekly trend ")
@@ -99,14 +99,21 @@ def load_weekly():
         st.error(f"Error loading weekly trend data: {e}")
         return pd.DataFrame()
 
-
-
 @st.cache_data
 def load_daily():
     try:
         return pd.read_excel("summary data.xlsx", sheet_name="Average Daily")
     except:
         return pd.DataFrame()
+
+# ============= DATA INITIALIZATION =============
+df = st.session_state.get("df", pd.DataFrame())
+
+# ✅ Ensure filtered_df is always defined safely
+if "filtered_df" not in st.session_state:
+    st.session_state["filtered_df"] = df.copy()
+
+filtered_df = st.session_state["filtered_df"]
 
 # ============= HOME PAGE =============
 
