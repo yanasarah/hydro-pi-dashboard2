@@ -301,45 +301,49 @@ elif selected == "Historical Data":
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
 
-# ===== GROWTH SCORE MODEL (DAILY AVERAGE) =====
-st.subheader("🌿 Plant Health Analysis (Daily Averages)")
+# ===== GROWTH SCORE MODEL (WEEKLY AVERAGE) =====
+st.subheader("🌿 Plant Health Analysis (Weekly Averages)")
 
-if st.checkbox("Calculate Growth Score", True, help="Calculate daily average plant health score based on environmental factors"):
-    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Day']
+# Ensure 'DateTime' is present and valid
+if 'DateTime' in filtered_df.columns:
+    filtered_df['Week'] = filtered_df['DateTime'].dt.isocalendar().week
+
+if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly average plant health score based on environmental factors"):
+    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Week']
 
     if all(col in filtered_df.columns for col in required_cols):
-        # Group by 'Day' and calculate mean for key sensors
-        daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
+        # Group by 'Week' and calculate mean for key sensors
+        weekly_avg = filtered_df.groupby('Week')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
 
         # Compute Growth Score using weighted factors
-        daily_avg['Growth_Score'] = (
-            0.3 * daily_avg['DS18B20'] +
-            0.2 * (100 - daily_avg['HUM 1']) +
-            0.25 * daily_avg['TDS'] / 100 +
-            0.25 * daily_avg['pH']
+        weekly_avg['Growth_Score'] = (
+            0.3 * weekly_avg['DS18B20'] +
+            0.2 * (100 - weekly_avg['HUM 1']) +
+            0.25 * weekly_avg['TDS'] / 100 +
+            0.25 * weekly_avg['pH']
         )
 
         # Normalize the Growth Score to 0–100
-        score_min = daily_avg['Growth_Score'].min()
-        score_max = daily_avg['Growth_Score'].max()
+        score_min = weekly_avg['Growth_Score'].min()
+        score_max = weekly_avg['Growth_Score'].max()
         if score_max != score_min:
-            daily_avg['Growth_Score'] = (
-                (daily_avg['Growth_Score'] - score_min) /
+            weekly_avg['Growth_Score'] = (
+                (weekly_avg['Growth_Score'] - score_min) /
                 (score_max - score_min)
             ) * 100
         else:
-            daily_avg['Growth_Score'] = 100  # All scores same
+            weekly_avg['Growth_Score'] = 100  # All scores same
 
-        # Plot the daily scores
-        st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
+        # Plot the weekly scores
+        st.line_chart(weekly_avg.set_index('Week')['Growth_Score'])
 
         # Optional: Show the table
-        if st.checkbox("Show Daily Growth Score Table"):
-            st.dataframe(daily_avg)
+        if st.checkbox("Show Weekly Growth Score Table"):
+            st.dataframe(weekly_avg)
 
         # === Advanced AI Predictions ===
-        if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-            if len(daily_avg) >= 5:
+        if st.checkbox("Show Weekly AI Predictions", help="Predict weekly growth score using ML"):
+            if len(weekly_avg) >= 5:
                 from sklearn.ensemble import RandomForestRegressor
                 from sklearn.model_selection import KFold
                 from sklearn.metrics import mean_squared_error
@@ -347,8 +351,8 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 import matplotlib.pyplot as plt
                 import plotly.graph_objects as go
 
-                X = daily_avg[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-                y = daily_avg['Growth_Score']
+                X = weekly_avg[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+                y = weekly_avg['Growth_Score']
 
                 kf = KFold(n_splits=5, shuffle=True, random_state=42)
                 actuals, predictions = [], []
@@ -369,7 +373,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
 
                 # 📈 Predictions Line Chart
-                st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
+                st.markdown("### 🤖 Weekly Growth Score AI Prediction")
                 pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
                 st.line_chart(pred_df.reset_index(drop=True))
 
@@ -411,10 +415,10 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 )
                 st.plotly_chart(fig_scatter, use_container_width=True)
             else:
-                st.warning("❗ Not enough daily records for AI prediction (minimum 5 needed).")
+                st.warning("❗ Not enough weekly records for AI prediction (minimum 5 needed).")
 
     else:
-        st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
+        st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Week")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
