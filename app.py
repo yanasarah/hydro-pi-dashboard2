@@ -75,8 +75,8 @@ st.markdown("""
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact"],
-        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope"],
+        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact", "Weekly Plant Analysis"],
+        icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope", "leaf"],
         menu_icon="cast",
         default_index=0
     )
@@ -113,7 +113,6 @@ def load_daily():
 if selected == "Home":
     import random
     import streamlit.components.v1 as components
-    st.write("Section content coming soon!")
 
     # 🌿 HERO SECTION (WELCOME BANNER)
     st.markdown("""
@@ -194,7 +193,6 @@ elif selected == "Historical Data":
         .stAlert, .stSuccess, .stWarning { color: #006400 !important; } 
     </style> 
     """, unsafe_allow_html=True) 
-    st.write("Section content coming soon!")
 
     st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
 
@@ -445,7 +443,6 @@ else:
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
     import plotly.figure_factory as ff
-    st.write("Section content coming soon!")
 
     st.markdown("""
         <h1 style='text-align: center; color: #4CAF50;'>🌿 Environment Monitor</h1>
@@ -576,7 +573,6 @@ elif selected == "Growth Consistency":
     <h1 style='color:#2e8b57;'>🌿 Growth Consistency</h1>
     <p style='color:#4e944f;'>Analyzing your plant environment's stability</p>
     """, unsafe_allow_html=True)
-    st.write("Section content coming soon!")
 
     st.markdown("""
     <div style='background-color: #e8f5e9; padding: 1.5rem; border-left: 6px solid #66bb6a; border-radius: 10px;
@@ -665,7 +661,6 @@ elif selected == "About Us":
         </h3>
     </div>
     """, unsafe_allow_html=True)
-    st.write("Section content coming soon!")
 
     # What is Hydroponics
     col1, col2 = st.columns([3, 2])
@@ -773,7 +768,6 @@ elif selected == "About Us":
 elif selected == "Insights":
     import base64
     from fpdf import FPDF
-    st.write("Section content coming soon!")
 
     st.markdown("""
     <h1 style="color:#2e8b57;">💡 Hydro Insights & Optimization</h1>
@@ -839,7 +833,6 @@ elif selected == "Crop Comparison":
     <h1 style='color:#2e8b57;'>📊 Crop Cycle Comparison</h1>
     <p style='color:#4e944f;'>Compare environmental trends across different growing cycles</p>
     """, unsafe_allow_html=True)
-    st.write("Section content coming soon!")
 
     df = st.session_state.get("df", pd.DataFrame())
 
@@ -909,7 +902,6 @@ elif selected == "AI Forecast":
     <h1 style='color:#2e8b57;'>🤖 AI Forecast & Risk Prediction</h1>
     <p style='color:#4e944f;'>Smarter decisions powered by your environmental data</p>
     """, unsafe_allow_html=True)
-    st.write("Section content coming soon!")
 
     df = st.session_state.get("df", pd.DataFrame())
 
@@ -1016,7 +1008,6 @@ elif selected == "Beginner FAQ":
     <h1 style='color:#2e8b57;'>🌱 Beginner FAQ & AI Advisor</h1>
     <p style='color:#4e944f;'>Start your smart hydroponic journey with answers and live AI feedback</p>
     """, unsafe_allow_html=True)
-    st.write("Section content coming soon!")
 
     # ========== AI Assistant Section ==========
     st.markdown("### 🤖 AI Advisor – Input your values")
@@ -1113,7 +1104,107 @@ elif selected == "Contact":
         📧 Email: support@hydro-pi.local  
         🌍 Website: [www.hydro-pi.local](#)
     """)
-    st.write("Section content coming soon!")
 
 if __name__ == "__main__":
     pass
+
+
+# ============= WEEKLY PLANT ANALYSIS TAB =============
+elif selected == "Weekly Plant Analysis":
+    st.subheader("🌿 Weekly Plant Health Analysis")
+
+    if 'Week' in df.columns:
+        df['Week'] = df['Week'].fillna(method='ffill')
+
+        stat_table = df.groupby("Week")[['TDS', 'pH', 'HUM 1', 'DS18B20']].mean().reset_index()
+
+        stat_table['Growth_Score'] = (
+            0.3 * stat_table['DS18B20'] +
+            0.2 * (100 - stat_table['HUM 1']) +
+            0.25 * stat_table['TDS'] / 100 +
+            0.25 * stat_table['pH']
+        )
+
+        min_score = stat_table['Growth_Score'].min()
+        max_score = stat_table['Growth_Score'].max()
+        if max_score != min_score:
+            stat_table['Growth_Score'] = ((stat_table['Growth_Score'] - min_score) / (max_score - min_score)) * 100
+        else:
+            stat_table['Growth_Score'] = 100
+
+        st.line_chart(stat_table.set_index('Week')['Growth_Score'])
+
+        if st.checkbox("Show Weekly Growth Table"):
+            st.dataframe(stat_table)
+
+        if st.checkbox("AI Prediction on Weekly Growth"):
+            if len(stat_table) >= 5:
+                from sklearn.ensemble import RandomForestRegressor
+                from sklearn.model_selection import KFold
+                from sklearn.metrics import mean_squared_error
+                from math import sqrt
+                import matplotlib.pyplot as plt
+                import plotly.graph_objects as go
+
+                features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
+                X = stat_table[features]
+                y = stat_table['Growth_Score']
+
+                kf = KFold(n_splits=5, shuffle=True, random_state=42)
+                actuals, predictions = [], []
+
+                for train_idx, test_idx in kf.split(X):
+                    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+                    y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
+
+                    model = RandomForestRegressor()
+                    model.fit(X_train, y_train)
+                    y_pred = model.predict(X_test)
+
+                    actuals.extend(y_test.values)
+                    predictions.extend(y_pred)
+                    last_model = model
+
+                rmse = sqrt(mean_squared_error(actuals, predictions))
+                st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
+
+                pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
+                st.line_chart(pred_df.reset_index(drop=True))
+
+                st.markdown("### 📊 Feature Importance")
+                importances = last_model.feature_importances_
+                fig_imp, ax = plt.subplots()
+                ax.barh(features, importances, color='#66bb6a')
+                ax.set_xlabel("Importance")
+                ax.set_title("Sensor Impact on Growth")
+                st.pyplot(fig_imp)
+
+                st.markdown("### 🎯 Prediction Accuracy")
+                fig_scatter = go.Figure()
+                fig_scatter.add_trace(go.Scatter(
+                    x=pred_df["Actual"],
+                    y=pred_df["Predicted"],
+                    mode='markers',
+                    marker=dict(size=8, color='#43a047'),
+                    name="Prediction"
+                ))
+                min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
+                max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
+                fig_scatter.add_trace(go.Scatter(
+                    x=[min_val, max_val],
+                    y=[min_val, max_val],
+                    mode='lines',
+                    line=dict(dash='dash', color='gray'),
+                    name="Ideal"
+                ))
+                fig_scatter.update_layout(
+                    title="Actual vs Predicted Growth Score",
+                    xaxis_title="Actual",
+                    yaxis_title="Predicted",
+                    height=400
+                )
+                st.plotly_chart(fig_scatter, use_container_width=True)
+            else:
+                st.warning("❗ At least 5 weeks of data are needed for AI prediction.")
+    else:
+        st.warning("❗ 'Week' column not found in dataset.")
