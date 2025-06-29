@@ -221,24 +221,12 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-
-# ========= historical data==================== 
+# ===== HISTORICAL DATA PAGE =====
 elif selected == "Historical Data": 
-    st.markdown(""" 
-    <style> 
-        html, body, [class*="st-"] { color: #006400 !important; } 
-        h1, h2, h3, h4, h5, h6 { color: #2e8b57 !important; } 
-        .stMetric label, .stMetric div { color: #006400 !important; } 
-        .dataframe td, .dataframe th { color: #006400 !important; } 
-        label, .stTextInput, .stSelectbox, .stRadio, .stSlider, .stFileUploader { color: #006400 !important; } 
-        .stAlert, .stSuccess, .stWarning { color: #006400 !important; } 
-    </style> 
-    """, unsafe_allow_html=True) 
+    st.markdown("""<h1 style='color:#2e8b57;'>📈 Historical Data Analysis</h1>""", unsafe_allow_html=True)
 
-    st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
-
-    data_source = st.radio("Select data source:", 
-                           ["Use built-in dataset", "Upload your own Excel file"], 
+    data_source = st.radio("Select data source:",
+                           ["Use built-in dataset", "Upload your own Excel file"],
                            horizontal=True)
 
     if data_source == "Upload your own Excel file":
@@ -265,18 +253,16 @@ elif selected == "Historical Data":
         st.success("Using built-in Hydro-Pi dataset")
         st.session_state["df"] = df
 
-    # ===== FILTERING =====
-    st.subheader("        Filter Data")
-    filter_col1, filter_col2 = st.columns(2)
-
+    # Filtering
+    st.subheader("🔍 Filter Data")
     if 'Week' in df.columns:
-        selected_week = filter_col1.selectbox("Select Week", df['Week'].dropna().unique())
+        selected_week = st.selectbox("Select Week", df['Week'].dropna().unique())
     else:
         selected_week = None
 
     if 'Day' in df.columns and selected_week is not None:
         available_days = df[df['Week'] == selected_week]['Day'].unique()
-        selected_day = filter_col2.selectbox("Select Day", available_days)
+        selected_day = st.selectbox("Select Day", available_days)
     else:
         selected_day = None
 
@@ -285,68 +271,14 @@ elif selected == "Historical Data":
     else:
         filtered_df = df.copy()
 
-    # ===== SUMMARY =====
-    st.subheader("           Data Overview") 
-    col1, col2, col3 = st.columns(3) 
-    col1.metric("Total Records", len(df)) 
-    col2.metric("Days Recorded", df['Day'].nunique() if 'Day' in df.columns else "N/A") 
-    col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A") 
+    st.session_state["filtered_df"] = filtered_df
 
-    # ===== WEEKLY STATISTICS =====
-    st.subheader("Weekly Summary (Mean and Standard Deviation)")
+    # Data Overview
+    st.subheader("📊 Summary Statistics")
+    st.dataframe(filtered_df.describe())
 
-    if 'Week' in df.columns:
-        stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
-        st.dataframe(stat_table.style.format("{:.2f}"), height=350, use_container_width=True)
-    else:
-        st.warning("Week column not found — unable to compute weekly summary.")
-
-
-
-    # ===== CORRELATION ANALYSIS =====
-    st.subheader("🔗 Parameter Correlations")
-
-    # Select only numeric columns and exclude datetime
-    numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
-
-    if len(numeric_cols) >= 2:
-        try:
-            # Create correlation matrix
-            corr_matrix = filtered_df[numeric_cols].corr()
-            
-            # Create figure with larger size
-            fig, ax = plt.subplots(figsize=(10, 8))
-            
-            # Customize heatmap appearance
-            sns.heatmap(
-                corr_matrix, 
-                annot=True, 
-                cmap="YlGnBu", 
-                ax=ax,
-                annot_kws={"size": 10, "color": "black"},  # Darker annotation text
-                linewidths=.5
-            )
-            
-            # Rotate x-axis labels for better readability
-            plt.xticks(rotation=45)
-            
-            # Ensure tight layout to prevent cutoff
-            plt.tight_layout()
-            
-            # Display in Streamlit
-            st.pyplot(fig)
-            
-        except Exception as e:
-            st.error(f"Error generating correlation heatmap: {e}")
-    else:
-        st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
-
-
-# ===== GROWTH SCORE MODEL =====
-st.subheader("🌿 Plant Health Analysis")
-
-if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
-    # Check required columns exist
+    # Recommendation and Growth Score
+    st.subheader("🌿 Plant Health Analysis")
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
     if all(col in filtered_df.columns for col in required_cols):
         filtered_df['Growth_Score'] = (
@@ -360,101 +292,11 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
         ) * 100
 
-        st.line_chart(
-            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
-        )
+        st.line_chart(filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score'])
 
-        # === Advanced Predictions ===
-        if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
-            from sklearn.ensemble import RandomForestRegressor
-            from sklearn.model_selection import KFold
-            from sklearn.metrics import mean_squared_error
-            from math import sqrt
-            import matplotlib.pyplot as plt
-            import plotly.graph_objects as go
-            import pandas as pd
+        # Recommendation Section
+        st.subheader("💡 Optimization Recommendations")
 
-            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-            y = filtered_df['Growth_Score']
-
-            kf = KFold(n_splits=5, shuffle=True, random_state=42)
-            actuals = []
-            predictions = []
-
-            for train_idx, test_idx in kf.split(X):
-                X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-                y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
-
-                model = RandomForestRegressor()
-                model.fit(X_train, y_train)
-                y_pred = model.predict(X_test)
-
-                actuals.extend(y_test.values)
-                predictions.extend(y_pred)
-
-                last_model = model  # Keep last trained model for feature importance
-
-            rmse = sqrt(mean_squared_error(actuals, predictions))
-            st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
-            st.caption("This shows how far off the AI predictions are, on average (lower is better).")
-
-            # 📈 Line Chart of Predictions
-            st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
-            pred_df = pd.DataFrame({
-                "Actual": actuals,
-                "Predicted": predictions
-            })
-            st.line_chart(pred_df.reset_index(drop=True))
-
-            # 📊 Feature Importance
-            st.markdown("### 📊 Sensor Impact (Feature Importance)")
-            features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
-            importances = last_model.feature_importances_
-
-            fig_imp, ax = plt.subplots()
-            ax.barh(features, importances, color='#66bb6a')
-            ax.set_xlabel("Importance Score")
-            ax.set_title("Most Influential Sensors for Growth Prediction")
-            st.pyplot(fig_imp)
-            st.caption("Higher scores = more influence on growth score.")
-
-            # 🎯 Scatter Plot (Actual vs Predicted)
-            st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
-            fig_scatter = go.Figure()
-
-            fig_scatter.add_trace(go.Scatter(
-                x=pred_df["Actual"],
-                y=pred_df["Predicted"],
-                mode='markers',
-                marker=dict(size=8, color='#43a047'),
-                name="Prediction"
-            ))
-
-            min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
-            max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
-            fig_scatter.add_trace(go.Scatter(
-                x=[min_val, max_val],
-                y=[min_val, max_val],
-                mode='lines',
-                line=dict(dash='dash', color='gray'),
-                name="Ideal"
-            ))
-
-            fig_scatter.update_layout(
-                title="Actual vs Predicted Growth Score",
-                xaxis_title="Actual",
-                yaxis_title="Predicted",
-                height=400
-            )
-            st.plotly_chart(fig_scatter, use_container_width=True)
-            st.caption("Dots close to the dashed line = accurate predictions.")
-    else:
-        st.warning("Missing required columns for growth score calculation.")
-
-    # ===== RECOMMENDATIONS =====
-    st.subheader("💡 Optimization Recommendations")
-
-    if 'pH' in filtered_df.columns:
         avg_pH = filtered_df['pH'].mean()
         if avg_pH < 5.8:
             st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
@@ -462,10 +304,7 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
             st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
         else:
             st.success("✅ pH level is optimal")
-    else:
-        st.warning("pH data not available for recommendations")
 
-    if 'TDS' in filtered_df.columns:
         avg_tds = filtered_df['TDS'].mean()
         if avg_tds < 650:
             st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
@@ -474,15 +313,9 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
         else:
             st.success("✅ Nutrient levels are optimal")
     else:
-        st.warning("TDS data not available for nutrient recommendations")
+        st.warning("Missing required columns for growth score calculation.")
 
-    # ===== RAW DATA =====
-    st.subheader("📋 Detailed Measurements")
-    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
-                 height=300,
-                 use_container_width=True)
-
-#========evironment monitor============
+# ===== ENVIRONMENT MONITOR PAGE =====
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
     import plotly.figure_factory as ff
