@@ -316,6 +316,8 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate plant health scor
 
         daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
 
+daily_avg = filtered_df.groupby('Day')[['DS18B20', 'HUM 1', 'TDS', 'pH']].mean().reset_index()
+
 # Calculate Growth Score on the daily-averaged values
 daily_avg['Growth_Score'] = (
     0.3 * daily_avg['DS18B20'] +
@@ -332,9 +334,6 @@ daily_avg['Growth_Score'] = (
 
 # Plot the daily Growth Score
 st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
-
-        # ===== Plot Growth Score Over Time =====
-        st.line_chart(filtered_df.set_index('Time')['Growth_Score'])
 
         # === Advanced Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
