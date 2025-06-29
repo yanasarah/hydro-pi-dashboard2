@@ -328,19 +328,16 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 (score_max - score_min)
             ) * 100
         else:
-            daily_avg['Growth_Score'] = 100  # If all scores are the same
+            daily_avg['Growth_Score'] = 100  # Same value across all days
 
         # Plot the daily scores
         st.line_chart(daily_avg.set_index('Day')['Growth_Score'])
 
-        # Optional: Show the table if needed
+        # Optional: Show the table
         if st.checkbox("Show Daily Growth Score Table"):
             st.dataframe(daily_avg)
 
-    else:
-        st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
-
-        # === Advanced Predictions ===
+        # === Advanced AI Predictions ===
         if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
             from sklearn.ensemble import RandomForestRegressor
             from sklearn.model_selection import KFold
@@ -348,14 +345,12 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
             from math import sqrt
             import matplotlib.pyplot as plt
             import plotly.graph_objects as go
-            import pandas as pd
 
-            X = filtered_df[['pH', 'TDS', 'DS18B20', 'HUM 1']]
-            y = filtered_df['Growth_Score']
+            X = daily_avg[['pH', 'TDS', 'DS18B20', 'HUM 1']]
+            y = daily_avg['Growth_Score']
 
             kf = KFold(n_splits=5, shuffle=True, random_state=42)
-            actuals = []
-            predictions = []
+            actuals, predictions = [], []
 
             for train_idx, test_idx in kf.split(X):
                 X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
@@ -367,19 +362,14 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
 
                 actuals.extend(y_test.values)
                 predictions.extend(y_pred)
-
-                last_model = model  # Keep last trained model for feature importance
+                last_model = model  # Save last model for feature importance
 
             rmse = sqrt(mean_squared_error(actuals, predictions))
             st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
-            st.caption("This shows how far off the AI predictions are, on average (lower is better).")
 
-            # 📈 Line Chart of Predictions
+            # 📈 Predictions Line Chart
             st.markdown("### 🤖 Growth Score AI Prediction (Cross-Validated)")
-            pred_df = pd.DataFrame({
-                "Actual": actuals,
-                "Predicted": predictions
-            })
+            pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
             st.line_chart(pred_df.reset_index(drop=True))
 
             # 📊 Feature Importance
@@ -392,12 +382,10 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
             ax.set_xlabel("Importance Score")
             ax.set_title("Most Influential Sensors for Growth Prediction")
             st.pyplot(fig_imp)
-            st.caption("Higher scores = more influence on growth score.")
 
-            # 🎯 Scatter Plot (Actual vs Predicted)
+            # 🎯 Scatter Plot
             st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
             fig_scatter = go.Figure()
-
             fig_scatter.add_trace(go.Scatter(
                 x=pred_df["Actual"],
                 y=pred_df["Predicted"],
@@ -405,7 +393,6 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 marker=dict(size=8, color='#43a047'),
                 name="Prediction"
             ))
-
             min_val = min(pred_df["Actual"].min(), pred_df["Predicted"].min())
             max_val = max(pred_df["Actual"].max(), pred_df["Predicted"].max())
             fig_scatter.add_trace(go.Scatter(
@@ -415,7 +402,6 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 line=dict(dash='dash', color='gray'),
                 name="Ideal"
             ))
-
             fig_scatter.update_layout(
                 title="Actual vs Predicted Growth Score",
                 xaxis_title="Actual",
@@ -423,9 +409,9 @@ if st.checkbox("Calculate Growth Score", True, help="Calculate daily average pla
                 height=400
             )
             st.plotly_chart(fig_scatter, use_container_width=True)
-            st.caption("Dots close to the dashed line = accurate predictions.")
+
     else:
-        st.warning("Missing required columns for growth score calculation.")
+        st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Day")
 
     # ===== RECOMMENDATIONS =====
     st.subheader("💡 Optimization Recommendations")
