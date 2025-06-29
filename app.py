@@ -340,7 +340,6 @@ elif selected == "Historical Data":
     else:
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
-
 # ===== GROWTH SCORE MODEL =====
 st.subheader("🌿 Plant Health Analysis")
 
@@ -477,6 +476,8 @@ else:
     st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
                  height=300,
                  use_container_width=True)
+
+
 #========evironment monitor============
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
