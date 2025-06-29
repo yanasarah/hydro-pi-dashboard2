@@ -340,25 +340,29 @@ elif selected == "Historical Data":
     else:
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
-# ===== GROWTH SCORE MODEL =====
-st.subheader("🌿 Plant Health Analysis")
 
-required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
-if all(col in filtered_df.columns for col in required_cols):
-    filtered_df['Growth_Score'] = (
-        0.3 * filtered_df['DS18B20'] +
-        0.2 * (100 - filtered_df['HUM 1']) +
-        0.25 * filtered_df['TDS'] / 100 +
-        0.25 * filtered_df['pH']
-    )
-    filtered_df['Growth_Score'] = (
-        (filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) /
-        (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
-    ) * 100
+    # ===== GROWTH SCORE MODEL =====
+    st.subheader("🌿 Plant Health Analysis")
 
-    st.line_chart(
-        filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
-    )
+    required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+    if all(col in filtered_df.columns for col in required_cols):
+        filtered_df['Growth_Score'] = (
+            0.3 * filtered_df['DS18B20'] +
+            0.2 * (100 - filtered_df['HUM 1']) +
+            0.25 * filtered_df['TDS'] / 100 +
+            0.25 * filtered_df['pH']
+        )
+        filtered_df['Growth_Score'] = (
+            (filtered_df['Growth_Score'] - filtered_df['Growth_Score'].min()) /
+            (filtered_df['Growth_Score'].max() - filtered_df['Growth_Score'].min())
+        ) * 100
+
+        st.line_chart(
+            filtered_df.set_index('Time' if 'Time' in filtered_df.columns else filtered_df.index)['Growth_Score']
+        )
+
+    else:
+        st.warning("Missing required columns for growth score calculation.")
 
     # === Advanced Predictions ===
     if st.checkbox("Show Advanced Predictions", help="Show machine learning predictions vs actual growth"):
