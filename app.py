@@ -75,7 +75,7 @@ st.markdown("""
 with st.sidebar:
     selected = option_menu(
         menu_title="🌿 Hydro-Pi Dashboard",
-        options=["Home", "About Us", "Historical Data", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact"],
+        options=["Home", "About Us", "Historical Data", "Weekly Growth", "Environment Monitor", "Growth Consistency", "Insights","Crop Comparison","AI Forecast","Beginner FAQ", "Contact"],
         icons=["house", "info-circle", "clock-history", "bar-chart", "activity", "lightbulb","cat","dog", "envelope"],
         menu_icon="cast",
         default_index=0
@@ -301,30 +301,63 @@ elif selected == "Historical Data":
         st.warning(f"Need at least 2 numeric columns for correlation. Found: {numeric_cols}")
 
 
+
+    st.subheader("💡 Optimization Recommendations")
+
+    if 'pH' in filtered_df.columns:
+        avg_pH = filtered_df['pH'].mean()
+        if avg_pH < 5.8:
+            st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
+        elif avg_pH > 6.2:
+            st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
+        else:
+            st.success("✅ pH level is optimal")
+    else:
+        st.warning("pH data not available for recommendations")
+
+    if 'TDS' in filtered_df.columns:
+        avg_tds = filtered_df['TDS'].mean()
+        if avg_tds < 650:
+            st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
+        elif avg_tds > 750:
+            st.warning("⚠️ Nutrient levels high. Consider diluting solution.")
+        else:
+            st.success("✅ Nutrient levels are optimal")
+    else:
+        st.warning("TDS data not available for nutrient recommendations")
+
+    # ===== RAW DATA =====
+    st.subheader("📋 Detailed Measurements")
+    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
+                 height=300,
+                 use_container_width=True)
+
+#========evironment monitor============
+
+elif selected == "Weekly Growth":
 # ===== WEEKLY PLANT HEALTH ANALYSIS (CLEAN RESET) =====
-elif selected == "Plant Analysis":
-    st.subheader("🌿 Weekly Plant Health Analysis")
-    
-    # Step 1: Confirm Week column exists and fill missing
-    if 'Week' in df.columns:
-        df['Week'] = df['Week'].fillna(method='ffill')  # Fill missing week labels
-    
-        # Step 2: Group by Week and calculate mean
-        stat_table = df.groupby("Week")[['TDS', 'pH', 'HUM 1', 'DS18B20']].mean().reset_index()
-    
-        # Step 3: Compute Growth Score using weighted formula
-        stat_table['Growth_Score'] = (
-            0.3 * stat_table['DS18B20'] +
-            0.2 * (100 - stat_table['HUM 1']) +
-            0.25 * stat_table['TDS'] / 100 +
-            0.25 * stat_table['pH']
-        )
-    
-        # Step 4: Normalize Growth Score
-        min_score = stat_table['Growth_Score'].min()
-        max_score = stat_table['Growth_Score'].max()
-        if max_score != min_score:
-            stat_table['Growth_Score'] = ((stat_table['Growth_Score'] - min_score) / (max_score - min_score)) * 100
+st.subheader("🌿 Weekly Plant Health Analysis")
+
+# Step 1: Confirm Week column exists and fill missing
+if 'Week' in df.columns:
+    df['Week'] = df['Week'].fillna(method='ffill')  # Fill missing week labels
+
+    # Step 2: Group by Week and calculate mean
+    stat_table = df.groupby("Week")[['TDS', 'pH', 'HUM 1', 'DS18B20']].mean().reset_index()
+
+    # Step 3: Compute Growth Score using weighted formula
+    stat_table['Growth_Score'] = (
+        0.3 * stat_table['DS18B20'] +
+        0.2 * (100 - stat_table['HUM 1']) +
+        0.25 * stat_table['TDS'] / 100 +
+        0.25 * stat_table['pH']
+    )
+
+    # Step 4: Normalize Growth Score
+    min_score = stat_table['Growth_Score'].min()
+    max_score = stat_table['Growth_Score'].max()
+    if max_score != min_score:
+        stat_table['Growth_Score'] = ((stat_table['Growth_Score'] - min_score) / (max_score - min_score)) * 100
     else:
         stat_table['Growth_Score'] = 100
 
@@ -410,37 +443,6 @@ else:
     st.warning("❗ 'Week' column not found in dataset.")
 
     # ===== RECOMMENDATIONS =====
-    st.subheader("💡 Optimization Recommendations")
-
-    if 'pH' in filtered_df.columns:
-        avg_pH = filtered_df['pH'].mean()
-        if avg_pH < 5.8:
-            st.warning("⚠️ pH is slightly low. Consider adding pH Up solution.")
-        elif avg_pH > 6.2:
-            st.warning("⚠️ pH is slightly high. Consider adding pH Down solution.")
-        else:
-            st.success("✅ pH level is optimal")
-    else:
-        st.warning("pH data not available for recommendations")
-
-    if 'TDS' in filtered_df.columns:
-        avg_tds = filtered_df['TDS'].mean()
-        if avg_tds < 650:
-            st.warning("⚠️ Nutrient levels low. Consider adding fertilizer.")
-        elif avg_tds > 750:
-            st.warning("⚠️ Nutrient levels high. Consider diluting solution.")
-        else:
-            st.success("✅ Nutrient levels are optimal")
-    else:
-        st.warning("TDS data not available for nutrient recommendations")
-
-    # ===== RAW DATA =====
-    st.subheader("📋 Detailed Measurements")
-    st.dataframe(filtered_df.style.background_gradient(cmap='YlGn'),
-                 height=300,
-                 use_container_width=True)
-
-#========evironment monitor============
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
     import plotly.figure_factory as ff
@@ -1108,3 +1110,4 @@ elif selected == "Contact":
 
 if __name__ == "__main__":
     pass
+
