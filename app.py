@@ -222,6 +222,24 @@ if selected == "Home":
     """, unsafe_allow_html=True)
 
 # ===== HISTORICAL DATA PAGE =====
+st.markdown("""
+<style>
+    .stRadio > label, .stFileUploader label, .stSelectbox label, .stMarkdown p {
+        color: #2e7d32 !important;
+        font-weight: 500;
+    }
+    label[data-baseweb="radio"] {
+        color: #2e7d32 !important;
+    }
+    .css-1cpxqw2 {
+        color: #2e7d32 !important;
+    }
+    .stAlert, .stInfo, .stWarning {
+        color: #2e7d32 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 elif selected == "Historical Data": 
     st.markdown("""<h1 style='color:#2e8b57;'>📈 Historical Data Analysis</h1>""", unsafe_allow_html=True)
 
