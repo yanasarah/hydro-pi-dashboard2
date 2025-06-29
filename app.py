@@ -307,6 +307,11 @@ st.subheader("🌿 Plant Health Analysis")
 if st.checkbox("Calculate Growth Score", True, help="Calculate plant health score based on environmental factors"):
     # Check required columns exist
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH']
+    # Ensure filtered_df always exists
+if "df" in st.session_state:
+    filtered_df = st.session_state["df"].copy()
+else:
+    filtered_df = pd.DataFrame()
     if all(col in filtered_df.columns for col in required_cols):
         filtered_df['Growth_Score'] = (
             0.3 * filtered_df['DS18B20'] +
