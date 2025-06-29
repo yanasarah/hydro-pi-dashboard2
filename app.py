@@ -113,6 +113,7 @@ def load_daily():
 if selected == "Home":
     import random
     import streamlit.components.v1 as components
+    st.write("Section content coming soon!")
 
     # 🌿 HERO SECTION (WELCOME BANNER)
     st.markdown("""
@@ -193,6 +194,7 @@ elif selected == "Historical Data":
         .stAlert, .stSuccess, .stWarning { color: #006400 !important; } 
     </style> 
     """, unsafe_allow_html=True) 
+    st.write("Section content coming soon!")
 
     st.markdown("<h1 style='color:#2e8b57;'>        Historical Data Analysis</h1>", unsafe_allow_html=True) 
 
@@ -443,6 +445,7 @@ else:
 elif selected == "Environment Monitor":
     import plotly.graph_objects as go
     import plotly.figure_factory as ff
+    st.write("Section content coming soon!")
 
     st.markdown("""
         <h1 style='text-align: center; color: #4CAF50;'>🌿 Environment Monitor</h1>
@@ -573,6 +576,7 @@ elif selected == "Growth Consistency":
     <h1 style='color:#2e8b57;'>🌿 Growth Consistency</h1>
     <p style='color:#4e944f;'>Analyzing your plant environment's stability</p>
     """, unsafe_allow_html=True)
+    st.write("Section content coming soon!")
 
     st.markdown("""
     <div style='background-color: #e8f5e9; padding: 1.5rem; border-left: 6px solid #66bb6a; border-radius: 10px;
@@ -661,6 +665,7 @@ elif selected == "About Us":
         </h3>
     </div>
     """, unsafe_allow_html=True)
+    st.write("Section content coming soon!")
 
     # What is Hydroponics
     col1, col2 = st.columns([3, 2])
@@ -768,6 +773,7 @@ elif selected == "About Us":
 elif selected == "Insights":
     import base64
     from fpdf import FPDF
+    st.write("Section content coming soon!")
 
     st.markdown("""
     <h1 style="color:#2e8b57;">💡 Hydro Insights & Optimization</h1>
@@ -833,6 +839,7 @@ elif selected == "Crop Comparison":
     <h1 style='color:#2e8b57;'>📊 Crop Cycle Comparison</h1>
     <p style='color:#4e944f;'>Compare environmental trends across different growing cycles</p>
     """, unsafe_allow_html=True)
+    st.write("Section content coming soon!")
 
     df = st.session_state.get("df", pd.DataFrame())
 
@@ -902,6 +909,7 @@ elif selected == "AI Forecast":
     <h1 style='color:#2e8b57;'>🤖 AI Forecast & Risk Prediction</h1>
     <p style='color:#4e944f;'>Smarter decisions powered by your environmental data</p>
     """, unsafe_allow_html=True)
+    st.write("Section content coming soon!")
 
     df = st.session_state.get("df", pd.DataFrame())
 
@@ -1008,6 +1016,7 @@ elif selected == "Beginner FAQ":
     <h1 style='color:#2e8b57;'>🌱 Beginner FAQ & AI Advisor</h1>
     <p style='color:#4e944f;'>Start your smart hydroponic journey with answers and live AI feedback</p>
     """, unsafe_allow_html=True)
+    st.write("Section content coming soon!")
 
     # ========== AI Assistant Section ==========
     st.markdown("### 🤖 AI Advisor – Input your values")
@@ -1104,6 +1113,7 @@ elif selected == "Contact":
         📧 Email: support@hydro-pi.local  
         🌍 Website: [www.hydro-pi.local](#)
     """)
+    st.write("Section content coming soon!")
 
 if __name__ == "__main__":
     pass
