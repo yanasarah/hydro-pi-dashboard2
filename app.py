@@ -264,6 +264,7 @@ elif selected == "Historical Data":
             st.stop()
         st.success("Using built-in Hydro-Pi dataset")
         st.session_state["df"] = df
+        filtered_df = df.copy()
 
     # ===== FILTERING =====
     st.subheader("        Filter Data")
