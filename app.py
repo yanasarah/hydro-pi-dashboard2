@@ -302,28 +302,29 @@ elif selected == "Historical Data":
 
 
 # ===== WEEKLY PLANT HEALTH ANALYSIS (CLEAN RESET) =====
-st.subheader("🌿 Weekly Plant Health Analysis")
-
-# Step 1: Confirm Week column exists and fill missing
-if 'Week' in df.columns:
-    df['Week'] = df['Week'].fillna(method='ffill')  # Fill missing week labels
-
-    # Step 2: Group by Week and calculate mean
-    stat_table = df.groupby("Week")[['TDS', 'pH', 'HUM 1', 'DS18B20']].mean().reset_index()
-
-    # Step 3: Compute Growth Score using weighted formula
-    stat_table['Growth_Score'] = (
-        0.3 * stat_table['DS18B20'] +
-        0.2 * (100 - stat_table['HUM 1']) +
-        0.25 * stat_table['TDS'] / 100 +
-        0.25 * stat_table['pH']
-    )
-
-    # Step 4: Normalize Growth Score
-    min_score = stat_table['Growth_Score'].min()
-    max_score = stat_table['Growth_Score'].max()
-    if max_score != min_score:
-        stat_table['Growth_Score'] = ((stat_table['Growth_Score'] - min_score) / (max_score - min_score)) * 100
+elif selected == "Plant Analysis":
+    st.subheader("🌿 Weekly Plant Health Analysis")
+    
+    # Step 1: Confirm Week column exists and fill missing
+    if 'Week' in df.columns:
+        df['Week'] = df['Week'].fillna(method='ffill')  # Fill missing week labels
+    
+        # Step 2: Group by Week and calculate mean
+        stat_table = df.groupby("Week")[['TDS', 'pH', 'HUM 1', 'DS18B20']].mean().reset_index()
+    
+        # Step 3: Compute Growth Score using weighted formula
+        stat_table['Growth_Score'] = (
+            0.3 * stat_table['DS18B20'] +
+            0.2 * (100 - stat_table['HUM 1']) +
+            0.25 * stat_table['TDS'] / 100 +
+            0.25 * stat_table['pH']
+        )
+    
+        # Step 4: Normalize Growth Score
+        min_score = stat_table['Growth_Score'].min()
+        max_score = stat_table['Growth_Score'].max()
+        if max_score != min_score:
+            stat_table['Growth_Score'] = ((stat_table['Growth_Score'] - min_score) / (max_score - min_score)) * 100
     else:
         stat_table['Growth_Score'] = 100
 
