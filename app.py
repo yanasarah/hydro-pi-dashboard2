@@ -304,9 +304,9 @@ elif selected == "Historical Data":
 # ===== GROWTH SCORE MODEL (WEEKLY AVERAGE) =====
 st.subheader("🌿 Plant Health Analysis (Weekly Averages)")
 
-# Ensure 'DateTime' is present and valid
-if 'DateTime' in filtered_df.columns:
-    filtered_df['Week'] = filtered_df['DateTime'].dt.isocalendar().week
+# Simulate week number from your manual Day column
+if 'Day' in filtered_df.columns:
+    filtered_df['Week'] = ((filtered_df['Day'] - 1) // 7) + 1
 
 if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly average plant health score based on environmental factors"):
     required_cols = ['DS18B20', 'HUM 1', 'TDS', 'pH', 'Week']
@@ -323,7 +323,7 @@ if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly a
             0.25 * weekly_avg['pH']
         )
 
-        # Normalize the Growth Score to 0–100
+        # Normalize Growth Score
         score_min = weekly_avg['Growth_Score'].min()
         score_max = weekly_avg['Growth_Score'].max()
         if score_max != score_min:
@@ -332,16 +332,16 @@ if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly a
                 (score_max - score_min)
             ) * 100
         else:
-            weekly_avg['Growth_Score'] = 100  # All scores same
+            weekly_avg['Growth_Score'] = 100
 
         # Plot the weekly scores
         st.line_chart(weekly_avg.set_index('Week')['Growth_Score'])
 
-        # Optional: Show the table
+        # Optional: Show table
         if st.checkbox("Show Weekly Growth Score Table"):
             st.dataframe(weekly_avg)
 
-        # === Advanced AI Predictions ===
+        # === AI Prediction ===
         if st.checkbox("Show Weekly AI Predictions", help="Predict weekly growth score using ML"):
             if len(weekly_avg) >= 5:
                 from sklearn.ensemble import RandomForestRegressor
@@ -367,28 +367,24 @@ if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly a
 
                     actuals.extend(y_test.values)
                     predictions.extend(y_pred)
-                    last_model = model  # Save last model for feature importance
+                    last_model = model
 
                 rmse = sqrt(mean_squared_error(actuals, predictions))
                 st.success(f"📊 AI Accuracy (Error Margin): ±{rmse:.2f} points")
 
-                # 📈 Predictions Line Chart
                 st.markdown("### 🤖 Weekly Growth Score AI Prediction")
                 pred_df = pd.DataFrame({"Actual": actuals, "Predicted": predictions})
                 st.line_chart(pred_df.reset_index(drop=True))
 
-                # 📊 Feature Importance
                 st.markdown("### 📊 Sensor Impact (Feature Importance)")
                 features = ['pH', 'TDS', 'DS18B20', 'HUM 1']
                 importances = last_model.feature_importances_
-
                 fig_imp, ax = plt.subplots()
                 ax.barh(features, importances, color='#66bb6a')
                 ax.set_xlabel("Importance Score")
                 ax.set_title("Most Influential Sensors for Growth Prediction")
                 st.pyplot(fig_imp)
 
-                # 🎯 Scatter Plot
                 st.markdown("### 🎯 Predicted vs Actual Growth Score (Scatter Plot)")
                 fig_scatter = go.Figure()
                 fig_scatter.add_trace(go.Scatter(
@@ -416,7 +412,6 @@ if st.checkbox("Calculate Growth Score (Weekly)", True, help="Calculate weekly a
                 st.plotly_chart(fig_scatter, use_container_width=True)
             else:
                 st.warning("❗ Not enough weekly records for AI prediction (minimum 5 needed).")
-
     else:
         st.warning("❗ Missing required columns: DS18B20, HUM 1, TDS, pH or Week")
 
