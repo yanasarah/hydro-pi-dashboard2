@@ -201,18 +201,26 @@ elif selected == "Historical Data":
                            horizontal=True)
 
     if data_source == "Upload your own Excel file":
-        uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
-        if uploaded_file:
-            try:
-                df = pd.read_excel(uploaded_file, sheet_name="Sheet1")
-                df['Week'] = df['Week'].ffill()
-                st.success("File uploaded successfully!")
+    uploaded_file = st.file_uploader("Upload Excel File", type=["xlsx"])
+    if uploaded_file:
+        try:
+            # Get the sheet names first
+            xls = pd.ExcelFile(uploaded_file)
+            first_sheet_name = xls.sheet_names[0]
 
-                st.session_state["df"] = df
-                st.session_state["uploaded_file"] = uploaded_file
-            except Exception as e:
-                st.error(f"Error reading file: {e}")
-                st.stop()
+            # Read the first available sheet
+            df = pd.read_excel(xls, sheet_name=first_sheet_name)
+            df['Week'] = df['Week'].ffill()
+            st.success(f"File uploaded successfully! Using sheet: {first_sheet_name}")
+
+            st.session_state["df"] = df
+            st.session_state["uploaded_file"] = uploaded_file
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            st.stop()
+    else:
+        st.info("Please upload an Excel file or switch to built-in dataset")
+        st.stop()
         else:
             st.info("Please upload an Excel file or switch to built-in dataset")
             st.stop()
