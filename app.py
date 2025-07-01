@@ -222,9 +222,6 @@ elif selected == "Historical Data":
     else:
         st.info("Please upload an Excel file or switch to built-in dataset")
         st.stop()
-        else:
-            st.info("Please upload an Excel file or switch to built-in dataset")
-            st.stop()
     else:
         df = load_main_data()
         if df.empty:
