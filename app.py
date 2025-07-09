@@ -170,15 +170,6 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-   if st.checkbox("🧭 Show Quick Start Guide"):
-        st.markdown("""
-        **Step 1**: Go to 📈 Nutrient Stats to see past trends  
-        **Step 2**: Use 🌡️ Real-Time Monitor to check today’s values  
-        **Step 3**: Tap 💡 Smart Tips to get AI suggestions  
-        **Step 4**: Use 🔍 Crop Comparison to evaluate past batches  
-        """)
-
-
 # ========= historical data==================== 
 elif selected == "Historical Data": 
     st.markdown(""" 
