@@ -456,7 +456,7 @@ elif selected == "Environment Monitor":
 
         latest = df.iloc[-1]
 
-        st.markdown("### 📈 Recent Sensor Trends (pH, TDS, Water Temp)")
+        st.markdown("### 📈 Recent Sensor Trends (pH, Nutrient Level, Water Temp)")
         df_sorted = df.sort_values("DateTime")
         fig_trend = go.Figure()
         for col in ['pH', 'TDS', 'DS18B20']:
