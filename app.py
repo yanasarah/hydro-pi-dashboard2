@@ -474,19 +474,6 @@ elif selected == "Environment Monitor":
         )
         st.plotly_chart(fig_trend, use_container_width=True)
 
-        st.markdown("### 🔗 Correlation Heatmap")
-        corr_matrix = df[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].corr().round(2)
-        fig_corr = ff.create_annotated_heatmap(
-            z=corr_matrix.values,
-            x=list(corr_matrix.columns),
-            y=list(corr_matrix.index),
-            annotation_text=corr_matrix.values,
-            colorscale='YlGnBu',
-            showscale=True
-        )
-        fig_corr.update_layout(title_text="Sensor Correlation Heatmap", title_x=0.5)
-        st.plotly_chart(fig_corr, use_container_width=True)
-
         #======weekly bar chart=====
        
                 # 📊 Weekly Average Bar Chart (Expanded Version)
