@@ -246,6 +246,8 @@ elif selected == "Historical Data":
 
     # ===== WEEKLY STATISTICS =====
     st.subheader("Weekly Summary (Mean and Standard Deviation)")
+    st.markdown("### 📈 Nutrient Trends Over Time")
+    st.markdown("ℹ️ This graph shows daily or weekly trends in pH, TDS, temperature, and humidity.")
 
     if 'Week' in df.columns:
         stat_table = df.groupby("Week")[['TDS', 'pH', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2', 'DS18B20']].agg(['mean', 'std'])
