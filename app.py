@@ -245,7 +245,7 @@ elif selected == "Historical Data":
     col3.metric("Weeks Recorded", df['Week'].nunique() if 'Week' in df.columns else "N/A") 
 
     # ===== WEEKLY STATISTICS =====
-    st.subheader("### 📈 Nutrient Trends Over Time")
+    st.subheader(" 📈 Nutrient Trends Over Time")
     st.markdown("ℹ️ This graph shows  weekly trends in pH, TDS, temperature, and humidity.")
 
     if 'Week' in df.columns:
