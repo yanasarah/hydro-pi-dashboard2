@@ -834,6 +834,7 @@ elif selected == "Crop Comparison":
         df_cycle = df[df['Cycle'].isin(['Cycle 1', 'Cycle 2'])]
 
         st.subheader("🧮 Summary Statistics by Cycle")
+        st.markdown("ℹ️ **This table shows the average and variation of sensor values for each crop cycle.**\nIt helps you compare environmental conditions between Cycle 1 and Cycle 2.")
         summary = df_cycle.groupby('Cycle')[['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']].agg(['mean', 'std']).round(2)
         st.dataframe(summary)
 
@@ -845,6 +846,7 @@ elif selected == "Crop Comparison":
         """, unsafe_allow_html=True)
 
         st.markdown("### 📊 Visual Comparison")
+        st.markdown("ℹ️ **The following bar charts compare average sensor values between the two crop cycles.**\nUse them to see which cycle had better conditions for plant growth.")
 
         import plotly.graph_objects as go
         parameters = ['pH', 'TDS', 'DS18B20', 'DHT22 1', 'HUM 1', 'DHT 22 2', 'HUM 2']
@@ -864,6 +866,7 @@ elif selected == "Crop Comparison":
             st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("### 🧠 AI Observations")
+        st.markdown("ℹ️ **These insights analyze which cycle had more stable readings.**\nStability often means better, less stressful growth for your plants.")
 
         def get_stability(param):
             stds = df_cycle.groupby("Cycle")[param].std()
