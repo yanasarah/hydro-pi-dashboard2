@@ -258,7 +258,7 @@ elif selected == "Historical Data":
 
     # ===== CORRELATION ANALYSIS =====
     st.subheader("🔗 Parameter Correlations")
-
+    st.markdown("ℹ️ This chart reveals how sensor values relate to each other — for example, high TDS often relates to lower pH.")
     # Select only numeric columns and exclude datetime
     numeric_cols = filtered_df.select_dtypes(include=[np.number]).columns.tolist()
 
