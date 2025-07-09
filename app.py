@@ -170,15 +170,13 @@ if selected == "Home":
         </div>
     """, unsafe_allow_html=True)
 
-    # 🚀 CTA to Jump into Monitoring
-    st.markdown("""
-        <div style="margin-top: 2rem; background: #dfffe0; padding: 1.5rem; border-radius: 15px; text-align: center;">
-            <h3 style="color: #1b5e20;">Ready to Grow Smarter?</h3>
-            <p style="color: #2e7d32;">Check your plant environment now and get instant recommendations.</p>
-            <a href="#Environment Monitor" style="background-color: #4CAF50; color: white; padding: 10px 20px;
-                      text-decoration: none; border-radius: 10px; font-weight: bold;">🌿 Go to Live Monitor</a>
-        </div>
-    """, unsafe_allow_html=True)
+   if st.checkbox("🧭 Show Quick Start Guide"):
+        st.markdown("""
+        **Step 1**: Go to 📈 Nutrient Stats to see past trends  
+        **Step 2**: Use 🌡️ Real-Time Monitor to check today’s values  
+        **Step 3**: Tap 💡 Smart Tips to get AI suggestions  
+        **Step 4**: Use 🔍 Crop Comparison to evaluate past batches  
+        """)
 
 
 # ========= historical data==================== 
