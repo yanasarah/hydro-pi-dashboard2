@@ -604,6 +604,7 @@ elif selected == "Growth Consistency":
 
         # CV Chart
         st.markdown("### 📊 Coefficient of Variation (CV)")
+        st.markdown("ℹ️ **This chart shows how stable each sensor reading is over time.**\nLower values mean more consistent readings. Higher variation may signal issues like nutrient imbalances or environmental stress.")
         cv_df = cv.reset_index()
         cv_df.columns = ['Parameter', 'CV']
         st.bar_chart(cv_df.set_index("Parameter"))
@@ -616,10 +617,12 @@ elif selected == "Growth Consistency":
         # Rolling trends
         st.markdown("### 📈 3-Day Rolling Average Trends")
         rolling_df = daily_df.set_index('Day').rolling(window=3).mean()
+        st.markdown("ℹ️ **This line chart smooths out daily data using a 3-day average.**\nIt helps you spot trends without being distracted by daily noise or minor fluctuations.")
         st.line_chart(rolling_df)
 
         # Parameter-level alerts
         st.markdown("### 🚨 Inconsistency Alerts")
+        st.markdown("ℹ️ **Here you'll see alerts if any parameter is too unstable.**\nWe compare standard deviation against the average to detect large swings.")
         for param in ['TDS', 'pH', 'DS18B20', 'DHT22 1', 'HUM 1']:
             std = daily_df[param].std()
             mean = daily_df[param].mean()
